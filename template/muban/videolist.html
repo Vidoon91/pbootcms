@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>{sort:title} - {pboot:sitesubtitle}</title>
+    <meta name="keywords" content="{sort:keywords}">
+    <meta name="description" content="{sort:description}">
+    <meta name="robots" content="index, follow">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;family=Noto+Sans+SC:wght@300;400;500;700&amp;display=swap">
+    <link rel="stylesheet" href="/skin/vendor/tcplayer/tcplayer.min.css">
+    <script src="/skin/vendor/tcplayer/tcplayer.v5.3.3.min.js"></script>
+    
+    <!-- 模块化CSS -->
+    <link rel="stylesheet" href="/skin/css/base.css">
+    <link rel="stylesheet" href="/skin/css/topbar.css">
+    <link rel="stylesheet" href="/skin/css/sidebar.css">
+    <link rel="stylesheet" href="/skin/css/videolist.css">
+    <link rel="stylesheet" href="/skin/css/footer.css">
+    <link rel="stylesheet" href="/skin/css/mobile-tabbar.css">
+    <link rel="stylesheet" href="/skin/css/back-to-top.css">
+</head>
+<body class="sidebar-embedded-page">
+    <!-- 顶部信息栏 -->
+    {include file=topbar.html}
+    
+    <!-- 主导航栏 -->
+    
+    <!-- 侧边栏导航 -->
+<!-- ===== 主内容区包装器 ===== -->
+    <div class="main-content-wrapper">
+    <div class="sidebar-embedded-aside">
+<!-- SIDEBAR_START -->
+{include file=sidebar.html}
+<!-- SIDEBAR_END -->
+    </div>
+        <div class="main-container">
+            <div class="main-content">
+                <div class="content-layout">
+                    <!-- 视频列表页面头部 -->
+                    <div class="video-list-header">
+                        <h1>{sort:name}-{sort:subname}</h1>
+                        <div class="secondary-nav">
+                            <div class="secondary-nav-grid">
+                                {pboot:nav parent={sort:scode}}
+                                <a href="[nav:link]" class="secondary-nav-item">
+                                    <div class="secondary-nav-bg" style="background-image: url('[nav:pic]');"></div>
+                                    <div class="secondary-nav-overlay">
+                                        <div class="secondary-nav-content">
+                                            <div class="secondary-nav-icon"><i class="[nav:ico]"></i></div>
+                                            <h4 class="secondary-nav-name">[nav:subname]</h4>
+                                        </div>
+                                    </div>
+                                </a>
+                                {/pboot:nav}
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 面包屑导航 -->
+                    <div class="breadcrumb-stats-container">
+                        <div class="breadcrumb-section">
+                            <ul class="breadcrumb-list">
+                                <li class="breadcrumb-item"><a href="/" class="breadcrumb-link"><i class="fas fa-home"></i>首页</a></li>
+                                <li class="breadcrumb-item"><a href="{sort:link}" class="breadcrumb-link"><i class="fas fa-video"></i>{sort:name}</a></li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- ===== 横版视频模块 ===== -->
+                    <div class="horizontal-videos-section">
+                        <div class="horizontal-videos-header">
+                            <h2>推荐视频</h2>
+                        </div>
+                        <div class="scroll-container" id="horizontalScrollContainer">
+                            <button class="scroll-nudge left js-slider-prev"><i class="fas fa-chevron-left"></i></button>
+                            <div class="js-horizontal-slider" data-step="1" data-align="start" data-drag="true">
+                                <div class="js-slider-track">
+                                    {pboot:list scode={sort:scode} num=10 order=istop desc sorting asc}
+                                    <div class="js-slider-item horizontal-slider-item">
+                                        <article class="video-card" data-content-id="[list:id]" data-sign-api="/api/tencent-vod-psign.php">
+                                            <div class="video-thumb">
+                                                <video class="preview-video"
+                                                       playsinline
+                                                       preload="none"
+                                                       data-content-id="[list:id]"
+                                                       data-sign-api="/api/tencent-vod-psign.php"
+                                                       data-app-id="[list:ext_tcplayer_app_id]"
+                                                       data-file-id="[list:ext_tcplayer_file_id]"
+                                                       data-psign="[list:ext_tcplayer_psign]"
+                                                       poster="[list:ico]">
+                                                </video>
+                                                <span class="video-play-btn"><i class="fas fa-play"></i></span>
+                                                <span class="video-category">[list:sortname]</span>
+                                                <div class="video-meta-overlay">
+                                                    <div class="video-stats">
+                                                        <span class="video-views"><i class="fas fa-eye"></i>[list:visits]</span>
+                                                        <time class="video-date" datetime="[list:date style=Y-m-d]"><i class="far fa-calendar"></i>[list:date style=Y-m-d]</time>
+                                                    </div>
+                                                    <span class="video-duration-inline"><i class="far fa-clock"></i><span data-video-duration data-content-id="[list:id]" data-sign-api="/api/tencent-vod-psign.php">--:--</span></span>
+                                                </div>
+                                            </div>
+                                            <div class="video-info">
+                                                <h3 class="video-title"><a href="[list:link]">[list:title]</a></h3>
+                                                <p class="video-desc">[list:description len=80]</p>
+                                            </div>
+                                        </article>
+                                    </div>
+                                    {/pboot:list}
+                                </div>
+                            </div>
+                            <button class="scroll-nudge right js-slider-next"><i class="fas fa-chevron-right"></i></button>
+                        </div>
+                    </div>
+
+                    <!-- ===== 竖版视频模块 ===== -->
+                    <div class="vertical-videos-section">
+                        <div class="vertical-videos-header">
+                            <h2>Shorts</h2>
+                        </div>
+                        <div class="scroll-container" id="verticalScrollContainer">
+                            <button class="scroll-nudge left js-slider-prev" aria-label="向左滑动"><i class="fas fa-chevron-left"></i></button>
+                            <div class="js-horizontal-slider" data-step="1" data-align="start" data-drag="true">
+                                <div class="js-slider-track">
+                                    {pboot:list scode=66,67,68 num=10 order=istop desc sorting asc}
+                                    <div class="js-slider-item vertical-slider-item">
+                                        <article class="vertical-video-card" data-content-id="[list:id]" data-sign-api="/api/tencent-vod-psign.php">
+                                            <div class="vertical-video-thumb">
+                                                <img src="[list:ico]" alt="[list:title]" class="vertical-cover-img">
+                                                <video class="vertical-preview-video"
+                                                       playsinline
+                                                       preload="none"
+                                                       data-content-id="[list:id]"
+                                                       data-sign-api="/api/tencent-vod-psign.php"
+                                                       data-app-id="[list:ext_tcplayer_app_id]"
+                                                       data-file-id="[list:ext_tcplayer_file_id]"
+                                                       data-psign="[list:ext_tcplayer_psign]">
+                                                </video>
+                                                <span class="vertical-video-play-btn"><i class="fas fa-play"></i></span>
+                                                <span class="vertical-video-duration" data-video-duration data-content-id="[list:id]" data-sign-api="/api/tencent-vod-psign.php">--:--</span>
+                                                <span class="vertical-video-category">[list:sortname]</span>
+                                                {pboot:if('[list:istop]'=='1')}
+                                                <span class="vertical-video-top-badge">置顶</span>
+                                                {/pboot:if}
+                                            </div>
+                                            <div class="vertical-video-info">
+                                                <h3 class="vertical-video-title"><a href="[list:link]">[list:title]</a></h3>
+                                                <div class="vertical-video-meta">
+                                                    <span class="vertical-video-views"><i class="fas fa-eye"></i>[list:visits]</span>
+                                                    <time class="vertical-video-date" datetime="[list:date style=Y-m-d]"><i class="far fa-calendar"></i>[list:date style=Y-m-d]</time>
+                                                </div>
+                                            </div>
+                                        </article>
+                                    </div>
+                                    {/pboot:list}
+                                </div>
+                            </div>
+                            <button class="scroll-nudge right js-slider-next" aria-label="向右滑动"><i class="fas fa-chevron-right"></i></button>
+                        </div>
+                    </div>
+                    
+                    <!-- CTA -->
+                    <div class="video-cta">
+                        <h2>想观看更多专业视频？</h2>
+                        <p>订阅我们的YouTube频道，获取最新产品视频、安装教程和技术解析，第一时间了解WishPower最新动态。</p>
+                        <div class="video-cta-buttons">
+                            <a href="https://www.youtube.com/@wishpower-videos" target="_blank" class="cta-button primary"><i class="fab fa-youtube"></i>订阅YouTube频道</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 页脚 -->
+    {include file=footer.html}
+    
+    <!-- 移动端底部导航 -->
+    {include file=mobile_tabbar.html}
+    
+    <!-- 返回顶部按钮 -->
+    {include file=back-to-top.html}
+    
+    <!-- JS 模块（注意顺序，videolist.js 必须在最后或依赖后） -->
+    <script src="/skin/js/topbar.js"></script>
+    <script src="/skin/js/sidebar.js"></script>
+    <script src="/skin/js/footer.js"></script>
+    <script src="/skin/js/mobile-tabbar.js"></script>
+    <script src="/skin/js/back-to-top.js"></script>
+    <script src="/skin/js/tencent-video-duration.js?v=tencent_duration_fast_20260623c"></script>
+    <script src="/skin/js/videolist.js?v=tencent_preview_sign_20260623d"></script>
+    <script src="/skin/js/main.js"></script>
+</body>
+</html>

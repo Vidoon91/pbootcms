@@ -1,0 +1,76 @@
+/* ===== mobile-tabbar.css ===== */
+.mobile-tabbar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 62px;
+    background-color: white;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    z-index: 100;
+    border-top: 1px solid #E9ECEF;
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.08);
+    transition: background-color 0.3s ease;
+    padding: 8px 0;
+    will-change: transform;
+}
+@media (min-width: 769px) {
+    .mobile-tabbar {
+        display: none;
+    }
+}
+.tab-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 20%;
+    height: 100%;
+    cursor: pointer;
+    transition: color 0.2s;
+    color: #6C757D;
+    font-size: 11px;
+    position: relative;
+    touch-action: manipulation;
+    padding: 4px 0;
+    border-radius: 8px;
+    flex: 1;
+    text-decoration: none;
+    -webkit-tap-highlight-color: transparent;
+}
+.tab-item.active {
+    color: #1a56db;
+    background: rgba(26, 86, 219, 0.05);
+}
+.tab-item i {
+    font-size: 18px;
+    margin-bottom: 4px;
+    transition: color 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: transparent;
+}
+.tab-item.active i {
+    color: #1a56db;
+    background: rgba(26, 86, 219, 0.1);
+}
+.tab-item:hover {
+    color: #1a56db;
+}
+.tab-item.active::after {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 24px;
+    height: 3px;
+    background: #1a56db;
+    border-radius: 1.5px;
+}

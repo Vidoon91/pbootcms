@@ -1,0 +1,1778 @@
+{include file='common/head.html'}
+
+<div class="layui-body">
+	<div class="layui-tab layui-tab-brief" lay-filter="selectFilterTabs">
+		<ul class="layui-tab-title">
+			<li class="layui-this" lay-id="modelTdk">模型级筛选TDK默认配置</li>
+			<li lay-id="sortTdk">栏目级筛选TDK配置</li>
+			<li lay-id="sort">栏目筛选值配置</li>
+			<li lay-id="sitemap">网站地图生成</li>
+		</ul>
+		<div class="layui-tab-content">
+			<div class="layui-tab-item layui-show">
+				<form action="{url./admin/ContentSort/saveSelectFilterModelTdk}" method="post" class="layui-form">
+					<input type="hidden" name="formcheck" value="{$formcheck}">
+					<div id="selectSeoBuilder" class="layui-card" style="border:1px solid #e6e6e6;margin-bottom:10px;">
+						<div class="layui-card-header">模型级筛选TDK默认配置</div>
+						<div class="layui-card-body">
+							<div class="layui-form-item">
+								<label class="layui-form-label">选择模型</label>
+								<div class="layui-input-inline">
+									<select id="seoModelSelect" lay-filter="seoModelSelect">
+										<option value="">请选择需要配置的模型</option>
+										{foreach $models(key,value)}
+											<option value="[value->mcode]">[value->mcode] - [value->name]</option>
+										{/foreach}
+									</select>
+								</div>
+								<button type="button" class="layui-btn layui-btn-sm" id="editSeoModel">添加 / 编辑配置</button>
+							</div>
+							<div class="layui-form-mid layui-word-aux" id="seoModelStatus" style="float:none;padding-top:0!important;">
+								请先选择一个模型并点击“添加 / 编辑配置”。
+							</div>
+							<fieldset class="layui-elem-field" style="margin-top:10px;">
+								<legend>已保存模型配置</legend>
+								<div class="layui-field-box" id="seoConfiguredModels">暂无已保存的TDK模型配置。</div>
+							</fieldset>
+							<div id="seoModelEditor" style="display:none;">
+								<fieldset class="layui-elem-field">
+									<legend>默认模板</legend>
+									<div class="layui-field-box">
+										<input type="text" id="seoDefaultTitle" class="layui-input" placeholder="标题示例：{filter:ext_voltages} {filter:ext_standard} {sort:name} - {pboot:sitetitle}">
+										<textarea id="seoDefaultKeywords" class="layui-textarea" style="margin-top:8px;min-height:60px;" placeholder="关键词示例：{filter:ext_voltages} {sort:name}, {filter:ext_standard} {sort:name}"></textarea>
+										<textarea id="seoDefaultDescription" class="layui-textarea" style="margin-top:8px;min-height:70px;" placeholder="描述示例：Find {filter:ext_voltages} {sort:name} from WishPower."></textarea>
+									</div>
+								</fieldset>
+								<fieldset class="layui-elem-field">
+									<legend>特殊规则覆盖</legend>
+									<div class="layui-field-box">
+										<button type="button" class="layui-btn layui-btn-sm" id="addSeoRule">添加特殊规则</button>
+										<div id="seoRulesList" style="margin-top:10px;"></div>
+									</div>
+								</fieldset>
+								<div class="layui-form-mid layui-word-aux">
+									占位符：{filter:字段名}、{filters}、{sort:name}、{sort:subname}、{pboot:sitetitle}。特殊规则匹配值可写原始选项、URL slug 或 *。
+									Keywords 以逗号分隔的每一项会独立判断；该项引用的筛选字段未选择时，整项自动隐藏。
+								</div>
+								<div style="clear:both;padding-top:10px;">
+									<button type="submit" class="layui-btn" lay-submit id="saveSeoModel">保存当前TDK配置</button>
+									<button type="button" class="layui-btn layui-btn-primary" id="cancelSeoModel">取消编辑</button>
+									<span class="layui-form-mid layui-word-aux">保存后可继续选择其它模型新增配置。</span>
+								</div>
+							</div>
+						</div>
+					</div>
+					<textarea name="select_url_path_seo_rules" id="selectSeoJson" placeholder='{"models":{}}' class="layui-textarea" style="display:none;min-height:120px;font-family:Consolas,monospace;">{$select_url_path_seo_rules_value}</textarea>
+				</form>
+			</div>
+
+			<div class="layui-tab-item">
+				<form action="{url./admin/ContentSort/saveSelectFilterSortTdk}" method="post" class="layui-form" id="sortSeoForm">
+					<input type="hidden" name="formcheck" value="{$formcheck}">
+					<div class="layui-form-item">
+						<label class="layui-form-label">模型</label>
+						<div class="layui-input-inline">
+							<select name="mcode" id="sortSeoMcode" class="filter-mcode-select" lay-filter="filterMcodeSelect">
+								<option value="">请选择模型</option>
+								{foreach $models(key,value)}
+									<option value="[value->mcode]" {if([$selected_sort_tdk_mcode]==$value->mcode)}selected{/if}>[value->name]</option>
+								{/foreach}
+							</select>
+						</div>
+						<label class="layui-form-label">栏目</label>
+						<div class="layui-input-inline">
+							<select name="scode" id="sortSeoScode" class="filter-scode-select">
+								<option value="">请选择栏目</option>
+								{foreach $sorts(key,value)}
+									<option value="[value->scode]" data-mcode="[value->mcode]" data-pcode="[value->pcode]" {if([$selected_sort_tdk_scode]==$value->scode)}selected{/if}>[value->name]（[value->scode]）</option>
+								{/foreach}
+							</select>
+						</div>
+						<button type="button" class="layui-btn" id="editSortSeo">新增 / 编辑TDK模板</button>
+					</div>
+					<div class="layui-form-mid layui-word-aux" id="sortSeoStatus" style="float:none;padding-top:0!important;">
+						请先选择模型和栏目，然后点击“新增 / 编辑TDK模板”。
+					</div>
+					<fieldset class="layui-elem-field" style="margin-top:10px;">
+						<legend>已配置栏目TDK模板</legend>
+						<div class="layui-field-box" id="sortSeoConfiguredSorts">暂无已配置的栏目TDK模板。</div>
+					</fieldset>
+					<div id="sortSeoEditor" style="display:none;padding:15px 20px 20px 20px;">
+						<div id="sortSeoEditorTitle" style="font-size:16px;font-weight:bold;margin-bottom:12px;">栏目TDK模板配置</div>
+						<fieldset class="layui-elem-field">
+							<legend>默认模板</legend>
+							<div class="layui-field-box">
+								<input type="text" id="sortSeoDefaultTitle" class="layui-input" placeholder="标题示例：{filter:ext_voltages} {filter:ext_standard} {sort:name} - {pboot:sitetitle}">
+								<textarea id="sortSeoDefaultKeywords" class="layui-textarea" style="margin-top:8px;min-height:60px;" placeholder="关键词示例：{filter:ext_voltages} {sort:name}, {filter:ext_standard} {sort:name}"></textarea>
+								<textarea id="sortSeoDefaultDescription" class="layui-textarea" style="margin-top:8px;min-height:70px;" placeholder="描述示例：Find {filter:ext_voltages} {sort:name} from WishPower."></textarea>
+							</div>
+						</fieldset>
+						<fieldset class="layui-elem-field">
+							<legend>特殊规则覆盖</legend>
+							<div class="layui-field-box">
+								<button type="button" class="layui-btn layui-btn-sm" id="addSortSeoRule">添加特殊规则</button>
+								<div id="sortSeoRulesList" style="margin-top:10px;"></div>
+							</div>
+						</fieldset>
+						<div class="layui-form-mid layui-word-aux">
+							栏目级配置优先于模型级默认配置。占位符：{filter:字段名}、{filters}、{sort:name}、{sort:subname}、{pboot:sitetitle}。特殊规则匹配值可写原始选项、URL slug 或 *。
+						</div>
+						<div style="clear:both;padding-top:10px;">
+							<button type="button" class="layui-btn" id="saveSortSeo">保存当前TDK模板</button>
+							<button type="button" class="layui-btn layui-btn-primary" id="clearSortSeo">清空当前栏目配置</button>
+							<button type="button" class="layui-btn layui-btn-primary" id="cancelSortSeo">取消编辑</button>
+						</div>
+					</div>
+					<textarea name="select_filter_seo_rules" id="sortSeoJson" class="layui-textarea" style="display:none;min-height:120px;font-family:Consolas,monospace;"></textarea>
+				</form>
+			</div>
+
+			<div class="layui-tab-item">
+				<form action="{url./admin/ContentSort/saveSelectFilterSortValues}" method="post" class="layui-form" id="sortFilterForm">
+					<input type="hidden" name="formcheck" value="{$formcheck}">
+					<div class="layui-form-item">
+						<label class="layui-form-label">模型</label>
+						<div class="layui-input-inline">
+							<select name="mcode" id="sortFilterMcode" class="filter-mcode-select" lay-filter="filterMcodeSelect">
+								<option value="">请选择模型</option>
+								{foreach $models(key,value)}
+									<option value="[value->mcode]">[value->name]</option>
+								{/foreach}
+							</select>
+						</div>
+						<label class="layui-form-label">栏目</label>
+						<div class="layui-input-inline">
+							<select name="scode" id="sortFilterScode" class="filter-scode-select" lay-filter="sortFilterScode">
+								<option value="">请选择栏目</option>
+								{foreach $sorts(key,value)}
+									<option value="[value->scode]" data-mcode="[value->mcode]" data-pcode="[value->pcode]">[value->name]（[value->scode]）</option>
+								{/foreach}
+							</select>
+						</div>
+						<button type="button" class="layui-btn" id="loadSortFilter">新增 / 编辑筛选值</button>
+					</div>
+					<div class="layui-form-mid layui-word-aux" id="sortFilterStatus" style="float:none;padding-top:0!important;">
+						请先选择模型和栏目，然后点击“新增 / 编辑筛选值”。
+					</div>
+					<fieldset class="layui-elem-field" style="margin-top:10px;">
+						<legend>已配置栏目筛选值</legend>
+						<div class="layui-field-box" id="sortFilterConfiguredSorts">暂无已配置的栏目筛选值。</div>
+					</fieldset>
+					<div id="sortFilterBuilder" style="display:none;">
+						<div id="sortFilterEditorTitle" style="font-size:16px;font-weight:bold;margin-bottom:12px;">栏目筛选值配置</div>
+						<input type="hidden" name="select_filter_values" id="sortFilterValues">
+						<textarea id="sortFilterSyncValues" style="display:none;"></textarea>
+						<div id="sortFilterFields"></div>
+						<div style="clear:both;padding-top:10px;">
+							<button type="button" class="layui-btn" id="saveSortFilter">保存当前栏目筛选值</button>
+							<button type="button" class="layui-btn layui-btn-primary" id="cancelSortFilter">取消编辑</button>
+						</div>
+						<div class="layui-form-mid layui-word-aux" style="float:none;">
+							覆盖值留空时使用模型默认值；勾选同步上级后，产品保存时会将该字段实际选值汇总到父级和爷爷级栏目。
+						</div>
+					</div>
+				</form>
+			</div>
+
+			<div class="layui-tab-item">
+				<form action="{url./admin/ContentSort/sitemap}" method="post" class="layui-form" id="filterSitemapForm">
+					<input type="hidden" name="formcheck" value="{$formcheck}">
+					<div class="layui-form-item">
+						<label class="layui-form-label">模型</label>
+						<div class="layui-input-block">
+							<select name="mcode" id="sitemapMcode" lay-filter="sitemapMcode" lay-verify="required">
+								<option value="">请选择模型</option>
+								{foreach $models(key,value)}
+									<option value="[value->mcode]" {if([$selected_mcode]==$value->mcode)}selected{/if}>[value->name]</option>
+								{/foreach}
+							</select>
+						</div>
+					</div>
+
+					<div class="layui-form-item">
+						<label class="layui-form-label">栏目</label>
+						<div class="layui-input-block">
+							<select name="scode" id="sitemapScode" lay-verify="required">
+								<option value="">请选择栏目</option>
+								{foreach $sorts(key,value)}
+									<option value="[value->scode]" data-mcode="[value->mcode]" data-pcode="[value->pcode]" {if([$selected_scode]==$value->scode)}selected{/if}>[value->name]（[value->scode]）</option>
+								{/foreach}
+							</select>
+						</div>
+					</div>
+
+					<div class="layui-form-item">
+						<div class="layui-input-block">
+							<button class="layui-btn" lay-submit>生成网站地图</button>
+						</div>
+					</div>
+				</form>
+
+				{if([$result])}
+				<fieldset class="layui-elem-field" style="margin-top:20px;">
+					<legend>生成结果</legend>
+					<div class="layui-field-box">
+						<p>文件：{$result->filename}</p>
+						<p>URL数量：{$result->count}</p>
+						<p>地址：<a href="{$result->url}" target="_blank">{$result->url}</a></p>
+						<a href="{$result->url}" target="_blank" class="layui-btn layui-btn-sm layui-btn-normal">查看生成结果</a>
+					</div>
+				</fieldset>
+
+				<fieldset class="layui-elem-field" style="margin-top:20px;">
+					<legend>调试信息</legend>
+					<div class="layui-field-box">
+						<p>模板：{$result->debug->template}</p>
+						<p>模板路径：{$result->debug->template_path}</p>
+						<table class="layui-table">
+							<thead>
+								<tr>
+									<th style="width:180px;">字段</th>
+									<th style="width:90px;">值数量</th>
+									<th>实际读取到的值</th>
+								</tr>
+							</thead>
+							<tbody>
+								{foreach $result->debug_fields(key,value)}
+								<tr>
+									<td>[value->name]</td>
+									<td>[value->count]</td>
+									<td>[value->values]</td>
+								</tr>
+								{/foreach}
+							</tbody>
+						</table>
+					</div>
+				</fieldset>
+				{/if}
+			</div>
+		</div>
+	</div>
+</div>
+
+<style>
+.select-filter-sync-box input[type="checkbox"] {
+	position:absolute;
+	opacity:0;
+	width:0;
+	height:0;
+	margin:0;
+	padding:0;
+}
+.select-filter-sync-box span {
+	display:inline-block;
+	width:22px;
+	height:22px;
+	line-height:22px;
+	text-align:center;
+	border:1px solid #d2d2d2;
+	color:transparent;
+	cursor:pointer;
+	background:#fff;
+}
+.select-filter-sync-box input:checked + span {
+	background:#16b777;
+	border-color:#16b777;
+	color:#fff;
+}
+.sort-filter-auto-values {
+	display:block;
+	max-height:92px;
+	overflow:auto;
+	line-height:20px;
+	white-space:normal;
+	word-break:break-word;
+}
+.sort-filter-manual-help {
+	display:block;
+	margin-top:4px;
+	line-height:18px;
+	color:#999;
+}
+.sort-filter-row textarea {
+	resize:vertical;
+}
+</style>
+<textarea id="sortSeoRulesData" style="display:none;">{$sort_select_filter_seo_rules_json}</textarea>
+<textarea id="selectFilterFieldsData" style="display:none;">{$select_filter_fields_json}</textarea>
+<textarea id="sortFilterValuesData" style="display:none;">{$sort_select_filter_values_json}</textarea>
+<script>
+(function () {
+	var jsonEl = document.getElementById('selectSeoJson');
+	var builder = document.getElementById('selectSeoBuilder');
+	if (!jsonEl || !builder) {
+		return;
+	}
+
+	var modelSelect = document.getElementById('seoModelSelect');
+	var editModelBtn = document.getElementById('editSeoModel');
+	var editorEl = document.getElementById('seoModelEditor');
+	var titleEl = document.getElementById('seoDefaultTitle');
+	var keywordsEl = document.getElementById('seoDefaultKeywords');
+	var descriptionEl = document.getElementById('seoDefaultDescription');
+	var rulesList = document.getElementById('seoRulesList');
+	var addRuleBtn = document.getElementById('addSeoRule');
+	var saveModelBtn = document.getElementById('saveSeoModel');
+	var cancelModelBtn = document.getElementById('cancelSeoModel');
+	var statusEl = document.getElementById('seoModelStatus');
+	var configuredEl = document.getElementById('seoConfiguredModels');
+	var data = readJson();
+	var activeCode = '';
+	var dirty = false;
+
+	function readJson() {
+		try {
+			var parsed = JSON.parse(jsonEl.value || '{}');
+			if (!parsed.models || typeof parsed.models !== 'object') {
+				parsed.models = {};
+			}
+			return parsed;
+		} catch (e) {
+			return {models: {}};
+		}
+	}
+
+	function getSelectedCode() {
+		return modelSelect && modelSelect.value ? modelSelect.value : '';
+	}
+
+	function ensureSavedModel(code) {
+		if (!data.models) {
+			data.models = {};
+		}
+		if (!data.models[code] || Array.isArray(data.models[code])) {
+			data.models[code] = {default: {}, rules: Array.isArray(data.models[code]) ? data.models[code] : []};
+		}
+		if (!data.models[code].default) {
+			data.models[code].default = {};
+		}
+		if (!Array.isArray(data.models[code].rules)) {
+			data.models[code].rules = [];
+		}
+		return data.models[code];
+	}
+
+	function saveJson() {
+		jsonEl.value = JSON.stringify(data, null, 2);
+	}
+
+	function submitCurrentForm() {
+		var form = jsonEl.form;
+		if (form) {
+			form.submit();
+		}
+	}
+
+	function syncEditorToData() {
+		var model = ensureSavedModel(activeCode);
+		model.default.title = titleEl.value.trim();
+		model.default.keywords = keywordsEl.value.trim();
+		model.default.description = descriptionEl.value.trim();
+
+		model.rules = [];
+		var cards = rulesList.querySelectorAll('.seo-rule-card');
+		for (var i = 0; i < cards.length; i++) {
+			var card = cards[i];
+			var rule = {
+				match: {},
+				title: card.querySelector('.seo-rule-title').value.trim(),
+				keywords: card.querySelector('.seo-rule-keywords').value.trim(),
+				description: card.querySelector('.seo-rule-description').value.trim()
+			};
+			var rows = card.querySelectorAll('.seo-match-row');
+			for (var j = 0; j < rows.length; j++) {
+				var field = rows[j].querySelector('.seo-match-field').value.trim();
+				var value = rows[j].querySelector('.seo-match-value').value.trim();
+				if (field && value) {
+					rule.match[field] = value;
+				}
+			}
+			if (Object.keys(rule.match).length) {
+				if (!rule.title) {
+					delete rule.title;
+				}
+				if (!rule.keywords) {
+					delete rule.keywords;
+				}
+				if (!rule.description) {
+					delete rule.description;
+				}
+				model.rules.push(rule);
+			}
+		}
+		saveJson();
+		renderConfiguredModels();
+	}
+
+	function getModelForEdit(code) {
+		if (!data.models || !data.models[code]) {
+			return {default: {}, rules: []};
+		}
+		var model = data.models[code];
+		return {
+			default: model.default || {},
+			rules: Array.isArray(model.rules) ? model.rules : []
+		};
+	}
+
+	function openEditor(code) {
+		if (!code) {
+			alert('请先选择需要配置的模型。');
+			return;
+		}
+		if (dirty && activeCode && activeCode !== code && !confirm('当前配置尚未保存，切换模型将丢失本次修改，是否继续？')) {
+			return;
+		}
+		var model = getModelForEdit(code);
+		activeCode = code;
+		titleEl.value = model.default.title || '';
+		keywordsEl.value = model.default.keywords || '';
+		descriptionEl.value = model.default.description || '';
+		rulesList.innerHTML = '';
+		for (var i = 0; i < model.rules.length; i++) {
+			addRule(model.rules[i]);
+		}
+		dirty = false;
+		editorEl.style.display = 'block';
+		updateStatus();
+	}
+
+	function updateStatus() {
+		if (!statusEl) {
+			return;
+		}
+		if (activeCode) {
+			statusEl.innerHTML = '当前正在编辑模型：' + activeCode + '。修改完成后请点击“保存当前TDK配置”。';
+		} else {
+			statusEl.innerHTML = '请先选择一个模型并点击“添加 / 编辑配置”。';
+		}
+	}
+
+	function renderConfiguredModels() {
+		var html = '';
+		for (var code in (data.models || {})) {
+			if (Object.prototype.hasOwnProperty.call(data.models, code)) {
+				html += '<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;padding:8px 10px;border:1px solid #e6e6e6;background:#fafafa;">' +
+					'<strong style="min-width:64px;">模型 ' + escapeHtml(code) + '</strong>' +
+					'<span style="flex:1;line-height:24px;">' + escapeHtml(getModelSummary(data.models[code])) + '</span>' +
+					' <button type="button" class="layui-btn layui-btn-xs layui-btn-primary seo-edit-saved" data-code="' + escapeHtml(code) + '">编辑</button>' +
+					' <button type="button" class="layui-btn layui-btn-xs layui-btn-danger seo-remove-saved" data-code="' + escapeHtml(code) + '">删除</button></div>';
+			}
+		}
+		configuredEl.innerHTML = html || '暂无已保存的TDK模型配置。';
+		var editButtons = configuredEl.querySelectorAll('.seo-edit-saved');
+		for (var i = 0; i < editButtons.length; i++) {
+			editButtons[i].onclick = function () {
+				var code = this.getAttribute('data-code');
+				modelSelect.value = code;
+				openEditor(code);
+				renderSelect();
+			};
+		}
+		var removeButtons = configuredEl.querySelectorAll('.seo-remove-saved');
+		for (var j = 0; j < removeButtons.length; j++) {
+			removeButtons[j].onclick = function () {
+				var code = this.getAttribute('data-code');
+				if (!confirm('确定删除模型 ' + code + ' 的筛选TDK配置吗？')) {
+					return;
+				}
+				delete data.models[code];
+				if (activeCode === code) {
+					activeCode = '';
+					dirty = false;
+					editorEl.style.display = 'none';
+					updateStatus();
+				}
+				saveJson();
+				submitCurrentForm();
+			};
+		}
+	}
+
+	function getModelSummary(model) {
+		model = model || {};
+		var title = model.default && model.default.title ? model.default.title : '未设置默认Title';
+		var count = Array.isArray(model.rules) ? model.rules.length : 0;
+		return title + '；特殊规则 ' + count + ' 条';
+	}
+
+	function renderSelect() {
+		if (window.layui && layui.form) {
+			layui.form.render('select');
+		}
+	}
+
+	function markDirty() {
+		dirty = true;
+	}
+
+	function addMatchRow(container, field, value) {
+		var row = document.createElement('div');
+		row.className = 'seo-match-row';
+		row.style.cssText = 'display:flex;gap:8px;margin-bottom:8px;';
+		row.innerHTML = '<input type="text" class="layui-input seo-match-field" placeholder="字段名，如 ext_voltages" value="' + escapeHtml(field || '') + '" style="width:220px;">' +
+			'<input type="text" class="layui-input seo-match-value" placeholder="匹配值，如 1.5kV 或 *" value="' + escapeHtml(value || '') + '">' +
+			'<button type="button" class="layui-btn layui-btn-primary layui-btn-sm seo-remove-match">删除</button>';
+		container.appendChild(row);
+		row.querySelector('.seo-remove-match').onclick = function () {
+			row.parentNode.removeChild(row);
+			markDirty();
+		};
+		bindDirty(row);
+	}
+
+	function addRule(rule) {
+		rule = rule || {match: {}};
+		var card = document.createElement('div');
+		card.className = 'seo-rule-card';
+		card.style.cssText = 'border:1px solid #eee;padding:12px;margin-bottom:10px;background:#fafafa;';
+		card.innerHTML = '<div class="seo-rule-matches"></div>' +
+			'<button type="button" class="layui-btn layui-btn-xs seo-add-match">添加匹配字段</button>' +
+			'<button type="button" class="layui-btn layui-btn-danger layui-btn-xs seo-remove-rule" style="float:right;">删除规则</button>' +
+			'<input type="text" class="layui-input seo-rule-title" placeholder="特殊 Title，不填则使用默认模板" style="margin-top:10px;" value="' + escapeHtml(rule.title || '') + '">' +
+			'<textarea class="layui-textarea seo-rule-keywords" placeholder="特殊 Keywords，不填则使用默认模板" style="margin-top:8px;min-height:56px;">' + escapeHtml(rule.keywords || '') + '</textarea>' +
+			'<textarea class="layui-textarea seo-rule-description" placeholder="特殊 Description，不填则使用默认模板" style="margin-top:8px;min-height:64px;">' + escapeHtml(rule.description || '') + '</textarea>';
+		rulesList.appendChild(card);
+
+		var matches = card.querySelector('.seo-rule-matches');
+		var hasMatch = false;
+		for (var key in (rule.match || {})) {
+			if (Object.prototype.hasOwnProperty.call(rule.match, key)) {
+				addMatchRow(matches, key, rule.match[key]);
+				hasMatch = true;
+			}
+		}
+		if (!hasMatch) {
+			addMatchRow(matches, '', '');
+		}
+
+		card.querySelector('.seo-add-match').onclick = function () {
+			addMatchRow(matches, '', '');
+			markDirty();
+		};
+		card.querySelector('.seo-remove-rule').onclick = function () {
+			card.parentNode.removeChild(card);
+			markDirty();
+		};
+		bindDirty(card);
+	}
+
+	function bindDirty(root) {
+		var inputs = root.querySelectorAll('input,textarea');
+		for (var i = 0; i < inputs.length; i++) {
+			inputs[i].oninput = markDirty;
+		}
+	}
+
+	function escapeHtml(text) {
+		return String(text == null ? '' : text).replace(/[&<>"']/g, function (char) {
+			return {'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'}[char];
+		});
+	}
+
+	editModelBtn.onclick = function () {
+		openEditor(getSelectedCode());
+	};
+	addRuleBtn.onclick = function () {
+		addRule();
+		markDirty();
+	};
+	saveModelBtn.onclick = function (event) {
+		if (!activeCode) {
+			event.preventDefault();
+			alert('请先添加或编辑一个模型配置。');
+			return false;
+		}
+		syncEditorToData();
+		dirty = false;
+		return true;
+	};
+	cancelModelBtn.onclick = function () {
+		if (dirty && !confirm('当前配置尚未保存，确定取消编辑吗？')) {
+			return;
+		}
+		activeCode = '';
+		dirty = false;
+		editorEl.style.display = 'none';
+		updateStatus();
+	};
+	jsonEl.onchange = function () {
+		data = readJson();
+		renderConfiguredModels();
+	};
+	bindDirty(editorEl);
+	renderConfiguredModels();
+	updateStatus();
+})();
+
+(function () {
+	var jsonEl = document.getElementById('sortSeoJson');
+	var dataEl = document.getElementById('sortSeoRulesData');
+	var editorEl = document.getElementById('sortSeoEditor');
+	if (!jsonEl || !dataEl || !editorEl) {
+		return;
+	}
+
+	var mcodeSelect = document.getElementById('sortSeoMcode');
+	var scodeSelect = document.getElementById('sortSeoScode');
+	var editBtn = document.getElementById('editSortSeo');
+	var formEl = document.getElementById('sortSeoForm');
+	var titleEl = document.getElementById('sortSeoDefaultTitle');
+	var keywordsEl = document.getElementById('sortSeoDefaultKeywords');
+	var descriptionEl = document.getElementById('sortSeoDefaultDescription');
+	var rulesList = document.getElementById('sortSeoRulesList');
+	var addRuleBtn = document.getElementById('addSortSeoRule');
+	var saveBtn = document.getElementById('saveSortSeo');
+	var clearBtn = document.getElementById('clearSortSeo');
+	var cancelBtn = document.getElementById('cancelSortSeo');
+	var statusEl = document.getElementById('sortSeoStatus');
+	var configuredEl = document.getElementById('sortSeoConfiguredSorts');
+	var editorTitleEl = document.getElementById('sortSeoEditorTitle');
+	var sortRules = readSortRules();
+	var sortOptions = readSortOptions();
+	var activeScode = '';
+	var dirty = false;
+
+	function readSortRules() {
+		try {
+			var parsed = JSON.parse(dataEl.value || '{}');
+			return parsed && typeof parsed === 'object' ? parsed : {};
+		} catch (e) {
+			return {};
+		}
+	}
+
+	function readRuleJson(text) {
+		try {
+			var parsed = JSON.parse(text || '{}');
+			return parsed && typeof parsed === 'object' ? parsed : {default: {}, rules: []};
+		} catch (e) {
+			return {default: {}, rules: []};
+		}
+	}
+
+	function readSortOptions() {
+		var options = [];
+		var select = document.getElementById('sortSeoScode');
+		if (!select) {
+			return options;
+		}
+		for (var i = 0; i < select.options.length; i++) {
+			var option = select.options[i];
+			if (!option.value) {
+				continue;
+			}
+			options.push({
+				value: option.value,
+				mcode: option.getAttribute('data-mcode') || '',
+				pcode: option.getAttribute('data-pcode') || '0',
+				text: option.text
+			});
+		}
+		return options;
+	}
+
+	function readModelOptions(selectId) {
+		var options = [];
+		var select = document.getElementById(selectId);
+		if (!select) {
+			return options;
+		}
+		for (var i = 0; i < select.options.length; i++) {
+			if (select.options[i].value) {
+				options.push({value: select.options[i].value, text: select.options[i].text});
+			}
+		}
+		return options;
+	}
+
+	function getSortOption(scode) {
+		for (var i = 0; i < sortOptions.length; i++) {
+			if (String(sortOptions[i].value) === String(scode)) {
+				return sortOptions[i];
+			}
+		}
+		return null;
+	}
+
+	function getSortLevel(option) {
+		var level = 0;
+		var pcode = option ? String(option.pcode || '0') : '0';
+		while (pcode && pcode !== '0') {
+			var parent = getSortOption(pcode);
+			if (!parent) {
+				break;
+			}
+			level++;
+			pcode = String(parent.pcode || '0');
+		}
+		return level;
+	}
+
+	function getModelText(models, mcode) {
+		for (var i = 0; i < models.length; i++) {
+			if (String(models[i].value) === String(mcode)) {
+				return models[i].text;
+			}
+		}
+		return mcode || '\u672a\u5206\u7ec4\u6a21\u578b';
+	}
+
+	function getSortText(scode) {
+		for (var i = 0; i < sortOptions.length; i++) {
+			if (sortOptions[i].value === scode) {
+				return sortOptions[i].text;
+			}
+		}
+		return scode;
+	}
+
+	function setSortSeoSelects(mcode, scode) {
+		mcodeSelect = document.getElementById('sortSeoMcode');
+		scodeSelect = document.getElementById('sortSeoScode');
+		if (mcodeSelect) {
+			mcodeSelect.value = mcode;
+		}
+		filterSortSeoScodes(scode);
+		if (window.layui && layui.form) {
+			layui.form.render('select');
+		}
+	}
+
+	function filterSortSeoScodes(current) {
+		scodeSelect = document.getElementById('sortSeoScode');
+		var mcode = getSelectedMcode();
+		if (!scodeSelect) {
+			return;
+		}
+		var html = '<option value="">请选择栏目</option>';
+		var hasCurrent = false;
+		for (var i = 0; i < sortOptions.length; i++) {
+			if (!mcode || String(sortOptions[i].mcode) === String(mcode)) {
+				var selected = current && String(current) === String(sortOptions[i].value) ? ' selected' : '';
+				if (selected) {
+					hasCurrent = true;
+				}
+				html += '<option value="' + escapeHtml(sortOptions[i].value) + '" data-mcode="' + escapeHtml(sortOptions[i].mcode) + '" data-pcode="' + escapeHtml(sortOptions[i].pcode) + '"' + selected + '>' + escapeHtml(sortOptions[i].text) + '</option>';
+			}
+		}
+		scodeSelect.innerHTML = html;
+		if (current && !hasCurrent) {
+			scodeSelect.value = '';
+		}
+	}
+
+	function getSelectedScode() {
+		scodeSelect = document.getElementById('sortSeoScode');
+		return scodeSelect && scodeSelect.value ? scodeSelect.value : '';
+	}
+
+	function getSelectedMcode() {
+		mcodeSelect = document.getElementById('sortSeoMcode');
+		return mcodeSelect && mcodeSelect.value ? mcodeSelect.value : '';
+	}
+
+	function getActiveRule() {
+		var current = sortRules[activeScode] || {};
+		var rules = readRuleJson(current.rules || '');
+		return {
+			default: rules.default || {},
+			rules: Array.isArray(rules.rules) ? rules.rules : []
+		};
+	}
+
+	function openEditor() {
+		var scode = getSelectedScode();
+		var mcode = getSelectedMcode();
+		if (!mcode || !scode) {
+			alert('请先选择模型和栏目。');
+			return;
+		}
+		if (sortRules[scode] && String(sortRules[scode].mcode) !== String(mcode)) {
+			alert('模型和栏目不匹配，请重新选择。');
+			return;
+		}
+		if (dirty && activeScode && activeScode !== scode && !confirm('当前配置尚未保存，切换栏目将丢失本次修改，是否继续？')) {
+			return;
+		}
+		activeScode = scode;
+		var data = getActiveRule();
+		titleEl.value = data.default.title || '';
+		keywordsEl.value = data.default.keywords || '';
+		descriptionEl.value = data.default.description || '';
+		rulesList.innerHTML = '';
+		for (var i = 0; i < data.rules.length; i++) {
+			addRule(data.rules[i]);
+		}
+		jsonEl.value = sortRules[activeScode] && sortRules[activeScode].rules ? sortRules[activeScode].rules : '';
+		dirty = false;
+		openEditorLayer();
+		updateStatus();
+	}
+
+	function openEditorLayer() {
+		if (editorTitleEl) {
+			editorTitleEl.innerHTML = '栏目TDK配置：' + escapeHtml(getSortText(activeScode));
+		}
+		editorEl.style.cssText = 'display:block;position:fixed;left:50%;top:50%;width:900px;max-width:92vw;max-height:82vh;overflow:auto;transform:translate(-50%,-50%);z-index:999999;background:#fff;padding:15px 20px 20px 20px;border:1px solid #d2d2d2;box-shadow:0 8px 28px rgba(0,0,0,.18);';
+		editorEl.style.display = 'block';
+	}
+
+	function closeEditorLayer() {
+		editorEl.style.display = 'none';
+		editorEl.style.position = '';
+		editorEl.style.left = '';
+		editorEl.style.top = '';
+		editorEl.style.width = '';
+		editorEl.style.maxWidth = '';
+		editorEl.style.maxHeight = '';
+		editorEl.style.overflow = '';
+		editorEl.style.transform = '';
+		editorEl.style.zIndex = '';
+		editorEl.style.background = '';
+		editorEl.style.border = '';
+		editorEl.style.boxShadow = '';
+	}
+
+	function syncEditorToJson() {
+		if (!activeScode) {
+			return false;
+		}
+		var data = {default: {}, rules: []};
+		if (titleEl.value.trim()) {
+			data.default.title = titleEl.value.trim();
+		}
+		if (keywordsEl.value.trim()) {
+			data.default.keywords = keywordsEl.value.trim();
+		}
+		if (descriptionEl.value.trim()) {
+			data.default.description = descriptionEl.value.trim();
+		}
+
+		var cards = rulesList.querySelectorAll('.sort-seo-rule-card');
+		for (var i = 0; i < cards.length; i++) {
+			var card = cards[i];
+			var rule = {
+				match: {},
+				title: card.querySelector('.sort-seo-rule-title').value.trim(),
+				keywords: card.querySelector('.sort-seo-rule-keywords').value.trim(),
+				description: card.querySelector('.sort-seo-rule-description').value.trim()
+			};
+			var rows = card.querySelectorAll('.sort-seo-match-row');
+			for (var j = 0; j < rows.length; j++) {
+				var field = rows[j].querySelector('.sort-seo-match-field').value.trim();
+				var value = rows[j].querySelector('.sort-seo-match-value').value.trim();
+				if ((field && !value) || (!field && value)) {
+					alert('特殊规则的匹配字段和值必须同时填写。');
+					(field ? rows[j].querySelector('.sort-seo-match-value') : rows[j].querySelector('.sort-seo-match-field')).focus();
+					return false;
+				}
+				if (field && value) {
+					if (!/^ext_[\w-]+$/.test(field)) {
+						alert('匹配字段必须填写字段名，例如 ext_voltages。');
+						rows[j].querySelector('.sort-seo-match-field').focus();
+						return false;
+					}
+					rule.match[field] = value;
+				}
+			}
+			if (!Object.keys(rule.match).length && (rule.title || rule.keywords || rule.description)) {
+				alert('特殊规则必须至少填写一组匹配字段和值；如果不需要匹配条件，请填写到上面的默认模板。');
+				return false;
+			}
+			if (Object.keys(rule.match).length) {
+				if (!rule.title) {
+					delete rule.title;
+				}
+				if (!rule.keywords) {
+					delete rule.keywords;
+				}
+				if (!rule.description) {
+					delete rule.description;
+				}
+				data.rules.push(rule);
+			}
+		}
+
+		if (!Object.keys(data.default).length && !data.rules.length) {
+			jsonEl.value = '';
+		} else {
+			jsonEl.value = JSON.stringify(data, null, 2);
+		}
+		return true;
+	}
+
+	function updateStatus() {
+		if (!statusEl) {
+			return;
+		}
+		if (activeScode) {
+			statusEl.innerHTML = '当前正在编辑栏目：' + activeScode + '。栏目级配置会覆盖模型级默认配置。';
+		} else {
+			statusEl.innerHTML = '请先选择模型和栏目，然后点击“新增 / 编辑TDK模板”。';
+		}
+	}
+
+	function renderConfiguredSorts() {
+		if (!configuredEl) {
+			return;
+		}
+		var groups = {};
+		var configured = {};
+		for (var scode in sortRules) {
+			if (!Object.prototype.hasOwnProperty.call(sortRules, scode)) {
+				continue;
+			}
+			var raw = sortRules[scode] && sortRules[scode].rules ? String(sortRules[scode].rules).trim() : '';
+			if (!raw) {
+				continue;
+			}
+			var rule = readRuleJson(raw);
+			var title = rule.default && rule.default.title ? rule.default.title : '未设置默认Title';
+			var count = Array.isArray(rule.rules) ? rule.rules.length : 0;
+			var option = getSortOption(scode);
+			var mcode = String((sortRules[scode] && sortRules[scode].mcode) || (option && option.mcode) || '');
+			if (!groups[mcode]) {
+				groups[mcode] = [];
+			}
+			configured[scode] = {
+				scode: scode,
+				option: option,
+				title: title,
+				count: count,
+				mcode: mcode
+			};
+		}
+		for (var i = 0; i < sortOptions.length; i++) {
+			if (configured[sortOptions[i].value]) {
+				groups[configured[sortOptions[i].value].mcode].push(configured[sortOptions[i].value]);
+			}
+		}
+		var models = readModelOptions('sortSeoMcode');
+		var html = '';
+		for (var m = 0; m < models.length; m++) {
+			var mcode = String(models[m].value);
+			if (!groups[mcode] || !groups[mcode].length) {
+				continue;
+			}
+			html += '<details open style="margin-bottom:12px;border:1px solid #e6e6e6;background:#fff;">' +
+				'<summary style="padding:8px 10px;background:#f7f7f7;font-weight:bold;cursor:pointer;">模型：' + escapeHtml(getModelText(models, mcode)) + '（' + escapeHtml(mcode) + '）</summary>';
+			for (var j = 0; j < groups[mcode].length; j++) {
+				var item = groups[mcode][j];
+				var level = getSortLevel(item.option);
+				html += '<div style="display:flex;align-items:center;gap:8px;padding:8px 10px 8px ' + (10 + level * 24) + 'px;border-top:1px solid #eee;background:#fafafa;">' +
+					'<span style="min-width:70px;color:#16b777;font-weight:bold;">TDK模板</span>' +
+					'<strong style="min-width:82px;">栏目 ' + escapeHtml(item.scode) + '</strong>' +
+					'<span style="width:220px;line-height:24px;">' + escapeHtml(getSortText(item.scode)) + '</span>' +
+					'<span style="flex:1;line-height:24px;">Title模板：' + escapeHtml(item.title) + '；特殊规则 ' + item.count + ' 条</span>' +
+					'<button type="button" class="layui-btn layui-btn-xs layui-btn-primary sort-seo-edit-saved" data-scode="' + escapeHtml(item.scode) + '">编辑</button>' +
+					'</div>';
+			}
+			html += '</details>';
+		}
+		configuredEl.innerHTML = html || '暂无已配置的栏目TDK模板。';
+		var buttons = configuredEl.querySelectorAll('.sort-seo-edit-saved');
+		for (var i = 0; i < buttons.length; i++) {
+			buttons[i].onclick = function () {
+				var scode = this.getAttribute('data-scode');
+				var item = sortRules[scode] || {};
+				setSortSeoSelects(String(item.mcode || ''), scode);
+				openEditor();
+			};
+		}
+	}
+
+	function addMatchRow(container, field, value) {
+		var row = document.createElement('div');
+		row.className = 'sort-seo-match-row';
+		row.style.cssText = 'display:flex;gap:8px;margin-bottom:8px;';
+		row.innerHTML = '<input type="text" class="layui-input sort-seo-match-field" placeholder="字段名，如 ext_voltages" value="' + escapeHtml(field || '') + '" style="width:220px;">' +
+			'<input type="text" class="layui-input sort-seo-match-value" placeholder="匹配值，如 1.5kV 或 *" value="' + escapeHtml(value || '') + '">' +
+			'<button type="button" class="layui-btn layui-btn-primary layui-btn-sm sort-seo-remove-match">删除</button>';
+		container.appendChild(row);
+		row.querySelector('.sort-seo-remove-match').onclick = function () {
+			row.parentNode.removeChild(row);
+			markDirty();
+		};
+		bindDirty(row);
+	}
+
+	function addRule(rule) {
+		rule = rule || {match: {}};
+		var card = document.createElement('div');
+		card.className = 'sort-seo-rule-card';
+		card.style.cssText = 'border:1px solid #eee;padding:12px;margin-bottom:10px;background:#fafafa;';
+		card.innerHTML = '<div class="sort-seo-rule-matches"></div>' +
+			'<button type="button" class="layui-btn layui-btn-xs sort-seo-add-match">添加匹配字段</button>' +
+			'<button type="button" class="layui-btn layui-btn-danger layui-btn-xs sort-seo-remove-rule" style="float:right;">删除规则</button>' +
+			'<input type="text" class="layui-input sort-seo-rule-title" placeholder="特殊 Title，不填则使用默认模板" style="margin-top:10px;" value="' + escapeHtml(rule.title || '') + '">' +
+			'<textarea class="layui-textarea sort-seo-rule-keywords" placeholder="特殊 Keywords，不填则使用默认模板" style="margin-top:8px;min-height:56px;">' + escapeHtml(rule.keywords || '') + '</textarea>' +
+			'<textarea class="layui-textarea sort-seo-rule-description" placeholder="特殊 Description，不填则使用默认模板" style="margin-top:8px;min-height:64px;">' + escapeHtml(rule.description || '') + '</textarea>';
+		rulesList.appendChild(card);
+
+		var matches = card.querySelector('.sort-seo-rule-matches');
+		var hasMatch = false;
+		for (var key in (rule.match || {})) {
+			if (Object.prototype.hasOwnProperty.call(rule.match, key)) {
+				addMatchRow(matches, key, rule.match[key]);
+				hasMatch = true;
+			}
+		}
+		if (!hasMatch) {
+			addMatchRow(matches, '', '');
+		}
+
+		card.querySelector('.sort-seo-add-match').onclick = function () {
+			addMatchRow(matches, '', '');
+			markDirty();
+		};
+		card.querySelector('.sort-seo-remove-rule').onclick = function () {
+			card.parentNode.removeChild(card);
+			markDirty();
+		};
+		bindDirty(card);
+	}
+
+	function bindDirty(root) {
+		var inputs = root.querySelectorAll('input,textarea');
+		for (var i = 0; i < inputs.length; i++) {
+			inputs[i].oninput = markDirty;
+		}
+	}
+
+	function markDirty() {
+		dirty = true;
+	}
+
+	function clearEditor() {
+		if (!getSelectedScode()) {
+			alert('请先选择模型和栏目。');
+			return;
+		}
+		if (!confirm('确定清空当前栏目的筛选TDK配置吗？')) {
+			return;
+		}
+		activeScode = getSelectedScode();
+		titleEl.value = '';
+		keywordsEl.value = '';
+		descriptionEl.value = '';
+		rulesList.innerHTML = '';
+		jsonEl.value = '';
+		dirty = false;
+		openEditorLayer();
+		updateStatus();
+	}
+
+	function submitSortSeoForm(event) {
+		if (event && event.preventDefault) {
+			event.preventDefault();
+		}
+		if (!activeScode) {
+			alert('请先编辑一个栏目配置。');
+			return false;
+		}
+		if (!syncEditorToJson()) {
+			return false;
+		}
+		if (window.localStorage) {
+			window.localStorage.setItem('selectFilterActiveTab', 'sortTdk');
+		}
+		dirty = false;
+		closeEditorLayer();
+		if (formEl) {
+			formEl.submit();
+		}
+		return false;
+	}
+
+	function escapeHtml(text) {
+		return String(text == null ? '' : text).replace(/[&<>"']/g, function (char) {
+			return {'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'}[char];
+		});
+	}
+
+	editBtn.onclick = openEditor;
+	addRuleBtn.onclick = function () {
+		addRule();
+		markDirty();
+	};
+	saveBtn.onclick = submitSortSeoForm;
+	if (formEl) {
+		formEl.onsubmit = submitSortSeoForm;
+	}
+	clearBtn.onclick = clearEditor;
+	cancelBtn.onclick = function () {
+		if (dirty && !confirm('当前配置尚未保存，确定取消编辑吗？')) {
+			return;
+		}
+		activeScode = '';
+		dirty = false;
+		closeEditorLayer();
+		updateStatus();
+	};
+	if (mcodeSelect) {
+		mcodeSelect.onchange = function () {
+			activeScode = '';
+			closeEditorLayer();
+			updateStatus();
+		};
+	}
+	if (scodeSelect) {
+		scodeSelect.onchange = function () {
+			activeScode = '';
+			closeEditorLayer();
+			updateStatus();
+		};
+	}
+	bindDirty(editorEl);
+	renderConfiguredSorts();
+	updateStatus();
+})();
+
+(function () {
+	var fieldsEl = document.getElementById('selectFilterFieldsData');
+	var valuesEl = document.getElementById('sortFilterValuesData');
+	var builderEl = document.getElementById('sortFilterBuilder');
+	if (!fieldsEl || !valuesEl || !builderEl) {
+		return;
+	}
+
+	var mcodeSelect = document.getElementById('sortFilterMcode');
+	var scodeSelect = document.getElementById('sortFilterScode');
+	var loadBtn = document.getElementById('loadSortFilter');
+	var saveBtn = document.getElementById('saveSortFilter');
+	var cancelBtn = document.getElementById('cancelSortFilter');
+	var fieldsBox = document.getElementById('sortFilterFields');
+	var valuesInput = document.getElementById('sortFilterValues');
+	var syncRaw = document.getElementById('sortFilterSyncValues');
+	var statusEl = document.getElementById('sortFilterStatus');
+	var configuredEl = document.getElementById('sortFilterConfiguredSorts');
+	var editorTitleEl = document.getElementById('sortFilterEditorTitle');
+	var fields = readJson(fieldsEl.value || '[]', []);
+	var sortValues = readJson(valuesEl.value || '{}', {});
+	var sortOptions = readSortOptions();
+	var activeScode = '';
+
+	function readJson(text, fallback) {
+		try {
+			var parsed = JSON.parse(text || '');
+			return parsed && typeof parsed === 'object' ? parsed : fallback;
+		} catch (e) {
+			return fallback;
+		}
+	}
+
+	function getSelectedMcode() {
+		mcodeSelect = document.getElementById('sortFilterMcode');
+		return mcodeSelect && mcodeSelect.value ? mcodeSelect.value : '';
+	}
+
+	function getSelectedScode() {
+		scodeSelect = document.getElementById('sortFilterScode');
+		return scodeSelect && scodeSelect.value ? scodeSelect.value : '';
+	}
+
+	function readSortOptions() {
+		var options = [];
+		var select = document.getElementById('sortFilterScode');
+		if (!select) {
+			return options;
+		}
+		for (var i = 0; i < select.options.length; i++) {
+			var option = select.options[i];
+			if (!option.value) {
+				continue;
+			}
+			options.push({
+				value: option.value,
+				mcode: option.getAttribute('data-mcode') || '',
+				pcode: option.getAttribute('data-pcode') || '0',
+				text: option.text
+			});
+		}
+		return options;
+	}
+
+	function readModelOptions(selectId) {
+		var options = [];
+		var select = document.getElementById(selectId);
+		if (!select) {
+			return options;
+		}
+		for (var i = 0; i < select.options.length; i++) {
+			if (select.options[i].value) {
+				options.push({value: select.options[i].value, text: select.options[i].text});
+			}
+		}
+		return options;
+	}
+
+	function getSortOption(scode) {
+		for (var i = 0; i < sortOptions.length; i++) {
+			if (String(sortOptions[i].value) === String(scode)) {
+				return sortOptions[i];
+			}
+		}
+		return null;
+	}
+
+	function getSortLevel(option) {
+		var level = 0;
+		var pcode = option ? String(option.pcode || '0') : '0';
+		while (pcode && pcode !== '0') {
+			var parent = getSortOption(pcode);
+			if (!parent) {
+				break;
+			}
+			level++;
+			pcode = String(parent.pcode || '0');
+		}
+		return level;
+	}
+
+	function getModelText(models, mcode) {
+		for (var i = 0; i < models.length; i++) {
+			if (String(models[i].value) === String(mcode)) {
+				return models[i].text;
+			}
+		}
+		return mcode || '未分组模型';
+	}
+
+	function getSortText(scode) {
+		for (var i = 0; i < sortOptions.length; i++) {
+			if (String(sortOptions[i].value) === String(scode)) {
+				return sortOptions[i].text;
+			}
+		}
+		return scode;
+	}
+
+	function getModelFields(mcode) {
+		var rows = [];
+		for (var i = 0; i < fields.length; i++) {
+			if (String(fields[i].mcode) === String(mcode)) {
+				rows.push(fields[i]);
+			}
+		}
+		return rows;
+	}
+
+	function getFieldInfo(rows, name) {
+		for (var i = 0; i < rows.length; i++) {
+			if (rows[i].name === name) {
+				return rows[i];
+			}
+		}
+		return null;
+	}
+
+	function hasChildSort(scode) {
+		for (var i = 0; i < sortOptions.length; i++) {
+			if (String(sortOptions[i].pcode || '0') === String(scode)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	function getActiveValues() {
+		var item = sortValues[activeScode] || {};
+		var isParent = hasChildSort(activeScode);
+		var manual = Object.prototype.hasOwnProperty.call(item, 'manual') ? item.manual : item.values;
+		if (!isParent && (!manual || String(manual).trim() === '')) {
+			manual = item.values;
+		}
+		return {
+			values: readJson(manual || '{}', {}),
+			finalValues: readJson(item.values || '{}', {}),
+			isParent: isParent,
+			sync: readJson(item.sync || '{}', {})
+		};
+	}
+
+	function getRenderValues(data) {
+		if (!data.isParent) {
+			return data.values || {};
+		}
+		var values = {};
+		var finalValues = data.finalValues || {};
+		var manualValues = data.values || {};
+		for (var field in finalValues) {
+			if (Object.prototype.hasOwnProperty.call(finalValues, field)) {
+				values[field] = manualValues[field] || '';
+			}
+		}
+		for (var manualField in manualValues) {
+			if (Object.prototype.hasOwnProperty.call(manualValues, manualField)) {
+				values[manualField] = manualValues[manualField];
+			}
+		}
+		return values;
+	}
+
+	function openBuilder() {
+		var mcode = getSelectedMcode();
+		var scode = getSelectedScode();
+		if (!mcode || !scode) {
+			alert('请先选择模型和栏目。');
+			return;
+		}
+		if (sortValues[scode] && String(sortValues[scode].mcode) !== String(mcode)) {
+			alert('模型和栏目不匹配，请重新选择。');
+			return;
+		}
+		if (!sortValues[scode]) {
+			sortValues[scode] = {mcode: mcode, values: '{}', sync: '{}'};
+		}
+		activeScode = scode;
+		renderBuilder();
+		openBuilderLayer();
+		updateStatus();
+	}
+
+	function resetBuilder() {
+		activeScode = '';
+		closeBuilderLayer();
+		updateStatus();
+	}
+
+	function openBuilderLayer() {
+		if (editorTitleEl) {
+			editorTitleEl.innerHTML = '栏目筛选值配置：' + escapeHtml(getSortText(activeScode));
+		}
+		builderEl.style.cssText = 'display:block;position:fixed;left:50%;top:50%;width:980px;max-width:94vw;max-height:84vh;overflow:auto;transform:translate(-50%,-50%);z-index:999999;background:#fff;padding:15px 20px 20px 20px;border:1px solid #d2d2d2;box-shadow:0 8px 28px rgba(0,0,0,.18);';
+		builderEl.style.display = 'block';
+	}
+
+	function closeBuilderLayer() {
+		builderEl.style.display = 'none';
+		builderEl.style.position = '';
+		builderEl.style.left = '';
+		builderEl.style.top = '';
+		builderEl.style.width = '';
+		builderEl.style.maxWidth = '';
+		builderEl.style.maxHeight = '';
+		builderEl.style.overflow = '';
+		builderEl.style.transform = '';
+		builderEl.style.zIndex = '';
+		builderEl.style.background = '';
+		builderEl.style.border = '';
+		builderEl.style.boxShadow = '';
+	}
+
+	function updateStatus() {
+		if (!statusEl) {
+			return;
+		}
+		if (activeScode) {
+			statusEl.innerHTML = '当前正在编辑栏目：' + activeScode + '。添加字段后点击“保存当前栏目筛选值”。';
+		} else {
+			statusEl.innerHTML = '请先选择模型和栏目，然后点击“新增 / 编辑筛选值”。';
+		}
+	}
+
+	function renderConfiguredFilters() {
+		if (!configuredEl) {
+			return;
+		}
+		var groups = {};
+		var configured = {};
+		for (var scode in sortValues) {
+			if (!Object.prototype.hasOwnProperty.call(sortValues, scode)) {
+				continue;
+			}
+			var item = sortValues[scode] || {};
+			var values = readJson(item.values || '{}', {});
+			var sync = readJson(item.sync || '{}', {});
+			var valueKeys = Object.keys(values);
+			var syncKeys = Object.keys(sync);
+			if (!valueKeys.length && !syncKeys.length) {
+				continue;
+			}
+			var option = getSortOption(scode);
+			var mcode = String(item.mcode || (option && option.mcode) || '');
+			if (!groups[mcode]) {
+				groups[mcode] = [];
+			}
+			configured[scode] = {
+				scode: scode,
+				option: option,
+				valueCount: valueKeys.length,
+				syncCount: syncKeys.length,
+				mcode: mcode
+			};
+		}
+		for (var i = 0; i < sortOptions.length; i++) {
+			if (configured[sortOptions[i].value]) {
+				groups[configured[sortOptions[i].value].mcode].push(configured[sortOptions[i].value]);
+			}
+		}
+		var models = readModelOptions('sortFilterMcode');
+		var html = '';
+		for (var m = 0; m < models.length; m++) {
+			var mcode = String(models[m].value);
+			if (!groups[mcode] || !groups[mcode].length) {
+				continue;
+			}
+			html += '<details open style="margin-bottom:12px;border:1px solid #e6e6e6;background:#fff;">' +
+				'<summary style="padding:8px 10px;background:#f7f7f7;font-weight:bold;cursor:pointer;">模型：' + escapeHtml(getModelText(models, mcode)) + '（' + escapeHtml(mcode) + '）</summary>';
+			for (var j = 0; j < groups[mcode].length; j++) {
+				var row = groups[mcode][j];
+				var level = getSortLevel(row.option);
+				html += '<div style="display:flex;align-items:center;gap:8px;padding:8px 10px 8px ' + (10 + level * 24) + 'px;border-top:1px solid #eee;background:#fafafa;">' +
+					'<span style="min-width:70px;color:#1e9fff;font-weight:bold;">筛选值</span>' +
+					'<strong style="min-width:82px;">栏目 ' + escapeHtml(row.scode) + '</strong>' +
+					'<span style="width:220px;line-height:24px;">' + escapeHtml(getSortText(row.scode)) + '</span>' +
+					'<span style="flex:1;line-height:24px;">筛选字段：' + row.valueCount + ' 个；同步上级：' + row.syncCount + ' 个</span>' +
+					'<button type="button" class="layui-btn layui-btn-xs layui-btn-primary sort-filter-edit-saved" data-scode="' + escapeHtml(row.scode) + '">编辑</button>' +
+					'</div>';
+			}
+			html += '</details>';
+		}
+		configuredEl.innerHTML = html || '暂无已配置的栏目筛选值。';
+		var buttons = configuredEl.querySelectorAll('.sort-filter-edit-saved');
+		for (var i = 0; i < buttons.length; i++) {
+			buttons[i].onclick = function () {
+				var scode = this.getAttribute('data-scode');
+				var item = sortValues[scode] || {};
+				setSortFilterSelects(String(item.mcode || ''), scode);
+				openBuilder();
+			};
+		}
+	}
+
+	function setSortFilterSelects(mcode, scode) {
+		mcodeSelect = document.getElementById('sortFilterMcode');
+		scodeSelect = document.getElementById('sortFilterScode');
+		if (mcodeSelect) {
+			mcodeSelect.value = mcode;
+		}
+		filterSortFilterScodes(scode);
+		if (window.layui && layui.form) {
+			layui.form.render('select');
+		}
+	}
+
+	function filterSortFilterScodes(current) {
+		scodeSelect = document.getElementById('sortFilterScode');
+		var mcode = getSelectedMcode();
+		if (!scodeSelect) {
+			return;
+		}
+		var html = '<option value="">请选择栏目</option>';
+		var hasCurrent = false;
+		for (var i = 0; i < sortOptions.length; i++) {
+			if (!mcode || String(sortOptions[i].mcode) === String(mcode)) {
+				var selected = current && String(current) === String(sortOptions[i].value) ? ' selected' : '';
+				if (selected) {
+					hasCurrent = true;
+				}
+				html += '<option value="' + escapeHtml(sortOptions[i].value) + '" data-mcode="' + escapeHtml(sortOptions[i].mcode) + '" data-pcode="' + escapeHtml(sortOptions[i].pcode) + '"' + selected + '>' + escapeHtml(sortOptions[i].text) + '</option>';
+			}
+		}
+		scodeSelect.innerHTML = html;
+		if (current && !hasCurrent) {
+			scodeSelect.value = '';
+		}
+	}
+
+	function renderFieldSelect(rows, used) {
+		var html = '<select class="select-filter-new-field" lay-ignore style="height:38px;min-width:240px;margin-right:8px;">' +
+			'<option value="">请选择筛选字段</option>';
+		for (var i = 0; i < rows.length; i++) {
+			if (!used[rows[i].name]) {
+				html += '<option value="' + escapeHtml(rows[i].name) + '">' + escapeHtml((rows[i].description || rows[i].name) + '（' + rows[i].name + '）') + '</option>';
+			}
+		}
+		return html + '</select>';
+	}
+
+	function renderBuilder() {
+		var mcode = getSelectedMcode();
+		var rows = getModelFields(mcode);
+		if (!rows.length) {
+			fieldsBox.innerHTML = '<div class="layui-form-mid layui-word-aux" style="float:none;">该模型没有配置可筛选的字段选项。</div>';
+			valuesInput.value = '';
+			return;
+		}
+
+		var data = getActiveValues();
+		valuesInput.value = JSON.stringify(data.values);
+		syncRaw.value = JSON.stringify(data.sync);
+		var used = {};
+		var rowsHtml = '';
+		var renderValues = getRenderValues(data);
+		for (var name in renderValues) {
+			if (!Object.prototype.hasOwnProperty.call(renderValues, name)) {
+				continue;
+			}
+			var item = getFieldInfo(rows, name);
+			if (!item) {
+				continue;
+			}
+			used[item.name] = true;
+			var override = renderValues[name] === false ? '' : renderValues[name];
+			var finalValue = data.finalValues && data.finalValues[name] ? data.finalValues[name] : '';
+			var sourceValue = data.isParent ? (finalValue || item.value) : item.value;
+			var inputPlaceholder = data.isParent ? '\u53ea\u586b\u5199\u5f53\u524d\u680f\u76ee\u7684\u989d\u5916\u503c\uff0c\u591a\u4e2a\u503c\u7528\u9017\u53f7\u5206\u9694' : '\u7559\u7a7a\u65f6\u4f7f\u7528\u6a21\u578b\u9ed8\u8ba4\u503c';
+			var inputHelp = data.isParent ? '<span class="sort-filter-manual-help">\u8fd9\u91cc\u586b\u5199\u7236\u680f\u76ee\u81ea\u5df1\u8865\u5145\u7684\u503c\uff1b\u4fdd\u5b58\u540e\u4f1a\u4e0e\u4e0b\u7ea7\u81ea\u52a8\u6c47\u603b\u503c\u5408\u5e76\u3002</span>' : '';
+			rowsHtml += '<tr class="sort-filter-row" data-field="' + escapeHtml(item.name) + '">' +
+				'<td><strong>' + escapeHtml(item.description || item.name) + '</strong><br><span class="layui-word-aux">' + escapeHtml(item.name) + '</span></td>' +
+				'<td><span class="layui-word-aux sort-filter-auto-values">' + escapeHtml(sourceValue) + '</span></td>' +
+				'<td><textarea name="select_filter_override[' + escapeHtml(item.name) + ']" class="layui-textarea sort-filter-override" style="min-height:74px;" placeholder="' + inputPlaceholder + '">' + escapeHtml(override) + '</textarea>' + inputHelp + '</td>' +
+				'<td><label class="select-filter-sync-box" title="保存后产品选值自动同步到上级"><input type="checkbox" name="select_filter_sync[' + escapeHtml(item.name) + ']" value="1" class="sort-filter-sync-parent" lay-ignore style="display:none;"' + (data.sync[item.name] ? ' checked' : '') + '><span>✓</span></label></td>' +
+				'<td><button type="button" class="layui-btn layui-btn-danger layui-btn-xs sort-filter-remove">删除</button></td></tr>';
+		}
+		var addHtml = '<div style="margin:0 0 10px 0;">' + renderFieldSelect(rows, used) +
+			'<button type="button" class="layui-btn layui-btn-sm sort-filter-add">添加字段</button></div>';
+		var sourceTitle = data.isParent ? '\u81ea\u52a8\u6c47\u603b/\u6700\u7ec8\u53ef\u7528\u503c' : '\u6a21\u578b\u9ed8\u8ba4\u503c';
+		var editTitle = data.isParent ? '\u672c\u680f\u76ee\u624b\u52a8\u8865\u5145\u503c' : '\u672c\u680f\u76ee\u8986\u76d6\u503c';
+		var html = addHtml + '<table class="layui-table" style="margin:0 0 10px 0;"><thead><tr>' +
+			'<th style="width:170px;">筛选字段</th>' +
+			'<th>' + sourceTitle + '</th>' +
+			'<th style="width:360px;">' + editTitle + '</th>' +
+			'<th style="width:90px;">同步上级</th>' +
+			'<th style="width:80px;">操作</th></tr></thead><tbody>' + rowsHtml;
+		if (!Object.keys(used).length) {
+			html += '<tr><td colspan="5">当前栏目还没有添加筛选字段，请点击上方“添加字段”。</td></tr>';
+		}
+		html += '</tbody></table>';
+		fieldsBox.innerHTML = html;
+		bindBuilderEvents(rows);
+		syncValuesInput();
+	}
+
+	function bindBuilderEvents(rows) {
+		var rowEls = fieldsBox.querySelectorAll('.sort-filter-row');
+		for (var i = 0; i < rowEls.length; i++) {
+			(function (row) {
+				var input = row.querySelector('.sort-filter-override');
+				var remove = row.querySelector('.sort-filter-remove');
+				var syncCheck = row.querySelector('.sort-filter-sync-parent');
+				input.oninput = syncValuesInput;
+				if (syncCheck) {
+					syncCheck.onchange = syncValuesInput;
+				}
+				remove.onclick = function () {
+					syncValuesInput();
+					var field = row.getAttribute('data-field');
+					var data = getActiveValues();
+					delete data.values[field];
+					delete data.sync[field];
+					setActiveValues(data);
+					renderBuilder();
+				};
+			})(rowEls[i]);
+		}
+
+		var add = fieldsBox.querySelector('.sort-filter-add');
+		if (add) {
+			add.onclick = function () {
+				var select = fieldsBox.querySelector('.select-filter-new-field');
+				if (!select || !select.value) {
+					return;
+				}
+				var data = getActiveValues();
+				data.values[select.value] = '';
+				setActiveValues(data);
+				renderConfiguredFilters();
+				renderBuilder();
+			};
+		}
+	}
+
+	function syncValuesInput() {
+		var values = {};
+		var sync = {};
+		var rows = fieldsBox.querySelectorAll('.sort-filter-row');
+		for (var i = 0; i < rows.length; i++) {
+			var field = rows[i].getAttribute('data-field');
+			var input = rows[i].querySelector('.sort-filter-override');
+			var syncCheck = rows[i].querySelector('.sort-filter-sync-parent');
+			values[field] = input ? input.value.trim() : '';
+			if (syncCheck && syncCheck.checked) {
+				sync[field] = 1;
+			}
+		}
+		valuesInput.value = JSON.stringify(values);
+		syncRaw.value = JSON.stringify(sync);
+		if (!sortValues[activeScode]) {
+			sortValues[activeScode] = {mcode: getSelectedMcode(), values: '{}', sync: '{}'};
+		}
+		sortValues[activeScode].values = valuesInput.value;
+		sortValues[activeScode].manual = valuesInput.value;
+		sortValues[activeScode].sync = syncRaw.value;
+	}
+
+	function setActiveValues(data) {
+		if (!sortValues[activeScode]) {
+			sortValues[activeScode] = {mcode: getSelectedMcode(), values: '{}', sync: '{}'};
+		}
+		sortValues[activeScode].values = JSON.stringify(data.values || {});
+		sortValues[activeScode].manual = sortValues[activeScode].values;
+		sortValues[activeScode].sync = JSON.stringify(data.sync || {});
+	}
+
+	function escapeHtml(text) {
+		return String(text == null ? '' : text).replace(/[&<>"']/g, function (char) {
+			return {'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'}[char];
+		});
+	}
+
+	loadBtn.onclick = openBuilder;
+	saveBtn.onclick = submitForm;
+	cancelBtn.onclick = function () {
+		activeScode = '';
+		closeBuilderLayer();
+		updateStatus();
+	};
+	if (mcodeSelect) {
+		mcodeSelect.onchange = resetBuilder;
+	}
+	if (scodeSelect) {
+		scodeSelect.onchange = resetBuilder;
+	}
+	if (document.getElementById('sortFilterForm')) {
+		document.getElementById('sortFilterForm').onsubmit = submitForm;
+	}
+
+	function submitForm(event) {
+		if (event && event.preventDefault) {
+			event.preventDefault();
+		}
+		if (!activeScode) {
+			openBuilder();
+		}
+		if (!activeScode) {
+			alert('请先选择模型和栏目。');
+			return false;
+		}
+		syncValuesInput();
+		if (window.localStorage) {
+			window.localStorage.setItem('selectFilterActiveTab', 'sort');
+		}
+		closeBuilderLayer();
+		document.getElementById('sortFilterForm').submit();
+		return false;
+	}
+
+	window.addEventListener('load', function () {
+		if (window.layui && layui.form) {
+			layui.form.on('select(filterMcodeSelect)', function (data) {
+				if (data.elem && data.elem.id === 'sortFilterMcode') {
+					setTimeout(resetBuilder, 0);
+				}
+			});
+			layui.form.on('select(sortFilterScode)', function () {
+				setTimeout(resetBuilder, 0);
+			});
+		}
+	});
+	renderConfiguredFilters();
+	updateStatus();
+})();
+
+window.addEventListener('load', function () {
+	var element = layui.element;
+	var form = layui.form;
+	var $ = layui.jquery || window.jQuery;
+	var allSorts = [];
+
+	$('#sitemapScode option').each(function () {
+		var option = $(this);
+		if (!option.val()) {
+			return;
+		}
+		allSorts.push({
+			value: option.val(),
+			mcode: String(option.attr('data-mcode') || ''),
+			pcode: String(option.attr('data-pcode') || '0'),
+			text: option.text(),
+			selected: option.prop('selected')
+		});
+	});
+
+	function buildSortOptions(mcode, current) {
+		var html = '<option value="">请选择栏目</option>';
+		var hasCurrent = false;
+		for (var i = 0; i < allSorts.length; i++) {
+			if (!mcode || allSorts[i].mcode === mcode) {
+				var selected = current === allSorts[i].value || (!current && allSorts[i].selected) ? ' selected' : '';
+				if (current === allSorts[i].value) {
+					hasCurrent = true;
+				}
+				html += '<option value="' + allSorts[i].value + '" data-mcode="' + allSorts[i].mcode + '" data-pcode="' + allSorts[i].pcode + '"' + selected + '>' + allSorts[i].text + '</option>';
+			}
+		}
+		return {
+			html: html,
+			hasCurrent: hasCurrent
+		};
+	}
+
+	function filterSitemapSorts() {
+		var mcode = String($('#sitemapMcode').val() || '');
+		var current = $('#sitemapScode').val();
+		var data = buildSortOptions(mcode, current);
+		$('#sitemapScode').html(data.html);
+		if (current && !data.hasCurrent) {
+			$('#sitemapScode').val('');
+		}
+		form.render('select');
+	}
+
+	function filterGenericSorts(mcodeSelect) {
+		var mcode = String($(mcodeSelect).val() || '');
+		var container = $(mcodeSelect).closest('.layui-form-item');
+		var target = container.find('.filter-scode-select');
+		var current = target.val();
+		if (!current) {
+			var selectedOption = target.find('option:selected');
+			current = selectedOption.val() || '';
+		}
+		var data = buildSortOptions(mcode, current);
+		target.html(data.html);
+		if (current && !data.hasCurrent) {
+			target.val('');
+		}
+		form.render('select');
+	}
+
+	form.on('select(sitemapMcode)', function () {
+		filterSitemapSorts();
+	});
+	form.on('select(filterMcodeSelect)', function (data) {
+		filterGenericSorts(data.elem);
+	});
+	$('#sitemapMcode').on('change', function () {
+		filterSitemapSorts();
+	});
+	$('.filter-mcode-select').on('change', function () {
+		filterGenericSorts(this);
+	});
+
+	filterSitemapSorts();
+	$('.filter-mcode-select').each(function () {
+		filterGenericSorts(this);
+	});
+
+	if (window.localStorage) {
+		var activeTab = window.localStorage.getItem('selectFilterActiveTab');
+		if (activeTab) {
+			element.tabChange('selectFilterTabs', activeTab);
+			window.localStorage.removeItem('selectFilterActiveTab');
+		}
+	}
+
+	{if([$selected_sort_tdk_scode])}
+	element.tabChange('selectFilterTabs', 'sortTdk');
+	{/if}
+
+	{if([$result])}
+	element.tabChange('selectFilterTabs', 'sitemap');
+	{/if}
+});
+</script>
+
+{include file='common/foot.html'}

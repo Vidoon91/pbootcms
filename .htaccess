@@ -1,0 +1,16 @@
+<IfModule mod_rewrite.c>
+    Options +FollowSymlinks
+    RewriteEngine On
+
+    # 禁止指定IP访问
+    RewriteCond %{REMOTE_ADDR} ^74\.7\.242\.48$
+    RewriteRule .* - [F,L]
+    
+    RewriteCond %{REMOTE_ADDR} ^216\.73\.216\.14$
+    RewriteRule .* - [F,L]
+
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{REQUEST_FILENAME} !-f
+
+    RewriteRule ^(.*)$ index.php?p=$1 [QSA,PT,L]
+</IfModule>

@@ -1,0 +1,690 @@
+VideoDown 智能下载策略 · 最终优化版需求文档
+==================================================
+一、项目目标
+==================================================
+对现有 videodown.py 下载模块进行架构级迭代优化，目标是：
+
+以「失败反馈驱动」的智能策略选择
+
+将"下载方式 / 网络与认证 / 解析能力"解耦
+
+提高 YouTube / TikTok / Instagram / Twitter(X) / B站 的成功率
+
+所有失败必须可解释、可追溯、可复现
+
+不破坏现有 UI / 日志 / 信号机制
+
+==================================================
+二、总体设计原则（强制）
+==================================================
+
+策略选择必须基于 stderr 反馈，不允许盲目重试
+
+Cookie / Deno.js 属于"能力补偿"，不是下载层级
+
+每个视频任务必须维护独立 DownloadContext
+
+已判定的失败条件，后续策略必须继承
+
+最终失败必须输出完整失败链路
+
+==================================================
+三、现有文件架构要求
+==================================================
+【必须使用的现有文件】
+
+videodown.py - 主下载模块（包含所有下载策略）
+
+cookie.py - Cookie管理器
+
+denojs.py - Deno.js解析器
+
+rizhi.py - 日志处理器
+
+【禁止新增文件】
+
+不创建 download_context.py
+
+不创建 url_normalizer.py
+
+不创建 error_analyzer.py
+
+不创建 platform_strategy.py
+
+【解决方案】
+将所有功能集成到现有 videodown.py 中，通过内部类实现：
+
+DownloadContext 类
+
+ErrorAnalyzer 类
+
+PlatformStrategyManager 类
+
+URLNormalizer 类
+
+==================================================
+四、下载前 URL 处理与规范化（必须先执行）
+==================================================
+
+【目的】
+减少无效参数、规避风控、统一链接形态，避免"能下却被参数害死"。
+
+4.1 通用 URL 清洗规则（所有平台）
+
+下载前必须对原始 URL 进行标准化处理：
+
+去除以下无关参数：
+
+utm_*
+
+feature=
+
+fbclid
+
+gclid
+
+spm
+
+si
+
+tracking_id
+
+share_source
+
+&pp=*
+
+&embeds_referring_euri
+
+&source_ve_path
+
+保留必要参数：
+
+v=（YouTube视频ID）
+
+list=（仅当用户明确允许下载播放列表）
+
+t=（时间点，可选）
+
+bv=（B站视频ID）
+
+av=（B站旧版ID）
+
+强制移除：
+
+所有无关的分享和跟踪参数
+
+4.2 平台专属 URL 规范化
+
+【YouTube】
+
+https://youtu.be/ID → https://www.youtube.com/watch?v=ID
+
+https://www.youtube.com/shorts/ID → 保留 shorts 结构
+
+强制只保留：
+https://www.youtube.com/watch?v=ID
+或
+https://www.youtube.com/shorts/ID
+
+【Instagram】
+
+移除 ?igshid=*
+
+Reels 统一为：
+https://www.instagram.com/reel/ID/
+
+普通视频：
+https://www.instagram.com/p/ID/
+
+【TikTok】
+
+去除 ?is_from_webapp=*
+
+去除 ?sender_device=*
+
+统一为：
+https://www.tiktok.com/@USER/video/ID
+
+【Twitter / X】
+
+mobile.twitter.com → x.com
+
+强制使用：
+https://x.com/USER/status/ID
+
+【Bilibili】
+
+保留 BV 号主链接
+
+去除 ?spm_id_from=*
+
+去除分享跟踪参数
+
+4.3 URL 处理失败规则
+
+URL 无法识别平台 → 直接失败
+
+Shorts / Reels 判断必须在 URL 规范化后执行
+
+==================================================
+五、DownloadContext 类（必须实现在 videodown.py 中）
+==================================================
+
+python
+class DownloadContext:
+    """下载上下文 - 记录下载任务的状态和错误链"""
+    
+    def __init__(self):
+        # 状态标志
+        self.need_cookie = False      # 需要登录态
+        self.need_deno = False        # yt-dlp extractor 不可用
+        self.rate_limited = False     # IP/频率限制（立即终止）
+        self.extractor_failed = False # 提取器失败
+        
+        # 错误记录
+        self.last_error = None        # 最后一次错误类型
+        self.error_chain = []         # 失败路径记录
+        self.last_error_message = ""  # 最后一次错误消息
+        
+        # 平台信息
+        self.platform = None          # 平台名称
+        self.original_url = None      # 原始URL
+        self.normalized_url = None    # 规范化后的URL
+        
+        # 下载信息
+        self.download_type = "video"  # 下载类型
+        self.is_shorts = False        # 是否为Shorts/Reels
+        
+        # 策略执行记录
+        self.strategy_history = []    # 策略执行历史
+        
+    def add_error(self, strategy_name, error_source, error_message=""):
+        """添加错误到错误链"""
+        # 实现错误记录逻辑...
+    
+    def add_success(self, strategy_name):
+        """记录成功策略"""
+        # 实现成功记录逻辑...
+    
+    def can_continue(self):
+        """检查是否可以继续尝试下载"""
+        if self.rate_limited:
+            return False
+        return True
+    
+    def get_error_chain_text(self):
+        """获取错误链文本表示"""
+        # 实现错误链文本生成...
+==================================================
+六、错误分析器（必须实现在 videodown.py 中）
+==================================================
+
+python
+class ErrorAnalyzer:
+    """错误分析器 - 根据stderr分析错误来源"""
+    
+    @staticmethod
+    def analyze_error(stderr_text, platform_name):
+        """分析错误来源"""
+        # 实现错误分析逻辑...
+    
+    @staticmethod
+    def should_retry_with_cookie(error_source):
+        """判断是否需要使用Cookie重试"""
+        # 实现Cookie判断逻辑...
+    
+    @staticmethod
+    def should_retry_with_deno(error_source):
+        """判断是否需要使用Deno.js重试"""
+        # 实现Deno.js判断逻辑...
+    
+    @staticmethod
+    def is_rate_limited(error_source):
+        """判断是否被限速"""
+        # 实现限速判断逻辑...
+==================================================
+七、平台策略管理器（必须实现在 videodown.py 中）
+==================================================
+
+python
+class PlatformStrategyManager:
+    """平台策略管理器"""
+    
+    def __init__(self):
+        # 平台识别模式
+        self.platform_patterns = {...}
+    
+    def identify_platform(self, url):
+        """识别URL所属平台"""
+        # 实现平台识别逻辑...
+    
+    def parse_and_normalize_url(self, url):
+        """解析并规范化URL"""
+        # 实现URL规范化逻辑...
+    
+    def _normalize_youtube_url(self, url):
+        """规范化YouTube URL"""
+        # 实现YouTube URL规范化...
+    
+    def _normalize_tiktok_url(self, url):
+        """规范化TikTok URL"""
+        # 实现TikTok URL规范化...
+    
+    # ... 其他平台规范化方法 ...
+==================================================
+八、整体下载流程（强制执行顺序）
+==================================================
+
+STEP 0：URL 规范化 + 初始化 DownloadContext
+text
+输入: 原始URL
+处理: URL规范化 + 平台识别
+输出: DownloadContext 初始化完成
+STEP 1：通用下载（General / No Cookie）
+text
+策略: yt-dlp 基础命令（无Cookie）
+参数: 基础参数 + 平台无关
+成功: → 结束 ✅
+失败: → 分析 stderr，更新 context
+STEP 2：决策分流
+text
+分析 context 状态:
+├── rate_limited = true → 立即失败 ❌
+├── need_cookie = true → 进入 Cookie 分支
+└── need_deno = true → 进入 Deno 分支
+STEP 3：通用下载（General / Cookie）
+text
+条件: need_cookie = true
+策略: yt-dlp 基础命令 + Cookie
+成功: → 结束 ✅
+失败: → 分析 stderr
+    ├── 出现 extractor 失败 → need_deno = true
+    └── 继续下一步
+STEP 4：Deno.js 解析下载
+text
+条件: need_deno = true 且 Deno 可用
+策略: Deno.js 解析 → yt-dlp 下载直链
+成功: → 结束 ✅
+失败: → 根据 Deno 失败处理规则处理
+STEP 5：平台专属下载（继承 context 状态）
+text
+条件: 使用平台专属参数
+继承:
+├── need_cookie → 必须带 Cookie
+├── need_deno → 禁止再用 yt-dlp extractor
+└── 平台特定优化参数
+成功: → 结束 ✅
+失败: → 最终失败 ❌
+STEP 6：最终失败输出
+text
+输出:
+- 原始URL和平台信息
+- 完整的 error_chain
+- 策略执行历史
+- 明确的失败原因和建议
+==================================================
+九、通用下载命令模板
+==================================================
+
+9.1 视频下载（无 Cookie）
+bash
+yt-dlp \
+ --no-playlist \
+ --no-part \
+ --ignore-errors \
+ --continue \
+ --newline \
+ --ffmpeg-location "FFMPEG_PATH" \
+ --user-agent "随机UA" \
+ --merge-output-format mp4 \
+ --postprocessor-args "ffmpeg:-c copy -movflags +faststart" \
+ -f "bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best" \
+ -o "%(title)s-%(id)s.%(ext)s" \
+ URL
+9.2 视频下载（带 Cookie）
+bash
+yt-dlp \
+ --cookies "COOKIE_FILE" \
+ --geo-bypass \
+ --no-playlist \
+ --no-part \
+ --ignore-errors \
+ --continue \
+ --newline \
+ --ffmpeg-location "FFMPEG_PATH" \
+ --merge-output-format mp4 \
+ --postprocessor-args "ffmpeg:-c copy -movflags +faststart" \
+ -f "bestvideo[ext=mp4]+bestaudio[ext=m4a]/best" \
+ -o "%(title)s-%(id)s.%(ext)s" \
+ URL
+9.3 音频下载
+bash
+yt-dlp \
+ --extract-audio \
+ --audio-format mp3 \
+ --audio-quality 0 \
+ --no-playlist \
+ --ignore-errors \
+ --continue \
+ --newline \
+ --ffmpeg-location "FFMPEG_PATH" \
+ -f "bestaudio/best" \
+ -o "%(title)s-%(id)s.%(ext)s" \
+ URL
+==================================================
+十、平台专属命令（集成到 PlatformStrategyManager）
+==================================================
+
+10.1 YouTube 普通视频
+bash
+ --extractor-args "youtube:player_client=web" \
+ --add-header "Referer:https://www.youtube.com/" \
+ --socket-timeout 30 \
+ --retries 5
+10.2 YouTube Shorts（简化单流）
+bash
+ --extractor-args "youtube:skip=dash" \
+ --add-header "Referer:https://www.youtube.com/" \
+ -f "bestvideo[ext=mp4]+bestaudio[ext=m4a]/best"
+10.3 Instagram Post / Reels
+bash
+ --add-header "Referer:https://www.instagram.com/" \
+ --sleep-requests 3 \
+ --max-sleep-interval 10
+10.4 TikTok
+bash
+ --no-check-certificate \
+ --add-header "Referer:https://www.tiktok.com/" \
+ --sleep-requests 2
+10.5 Twitter (X)
+bash
+ --no-check-certificate \
+ --add-header "Referer:https://x.com/"
+10.6 Bilibili
+bash
+ --no-check-certificate \
+ --add-header "Referer:https://www.bilibili.com/"
+==================================================
+十一、Deno.js 解析下载（严格规则）
+==================================================
+
+11.1 使用时机
+只有当检测到以下错误时才使用 Deno.js：
+
+yt-dlp extractor 完全失败（无法提取视频信息）
+
+YouTube 签名加密（n-sig）问题
+
+无法获取视频格式列表
+
+11.2 工作流程
+text
+1. 通过 denojs.py 中的 DenoResolver 解析URL
+2. 执行TypeScript代码获取视频信息
+3. 返回解析结果：
+   - video_url: 视频直链（必须存在）
+   - audio_url: 音频直链（如果分离）
+   - title: 视频标题
+   - duration: 视频时长
+4. yt-dlp 下载返回的直链
+11.3 Deno.js 失败处理（严格规则）
+【Deno.js 解析失败默认视为终止条件，但允许在以下严格条件下进行一次受控重试：】
+
+11.3.1 允许重试的失败类型（仅限一次）
+text
+- timeout（网络超时）
+- connection reset（连接重置）
+- network unreachable（网络不可达）
+11.3.2 严禁重试，必须立即终止的情况
+text
+- 解析结果为空
+- 关键字段缺失（video_url / audio_url）
+- JavaScript 语法错误
+- 执行时结构性异常
+11.3.3 重试条件（必须全部满足）
+text
+1. 最多允许 1 次重试
+2. 延迟 1–2 秒后执行
+3. 更换 User-Agent 后执行
+11.3.4 重试失败处理
+text
+- 直接终止 Deno.js 解析流程
+- 不得回退 yt-dlp extractor
+- 不得切换平台降级方案
+- 输出明确失败原因
+11.4 Deno.js 失败后的流程
+text
+Deno.js 解析失败
+   ↓
+标记 context.deno_failed = true
+   ↓
+进入 STEP 5：平台专属下载（但禁止使用 yt-dlp extractor）
+   ↓ 如果 context.need_cookie = true → 带Cookie
+   ↓ 使用平台专属直连参数
+==================================================
+十二、状态继承规则（强制）
+==================================================
+
+12.1 Cookie 状态继承
+text
+一旦标记 need_cookie = true
+后续所有策略都必须包含Cookie参数
+禁止在 need_cookie = true 后使用无Cookie策略
+12.2 Deno.js 状态继承
+text
+一旦标记 need_deno = true
+后续策略中禁止使用 yt-dlp extractor
+如果 Deno.js 已使用并失败 → 使用平台直连参数
+12.3 网络限制状态
+text
+一旦标记 rate_limited = true
+立即终止下载，不再尝试任何策略
+==================================================
+十三、日志与失败输出（与 rizhi.py 集成）
+==================================================
+
+13.1 开始下载日志
+text
+[时间] 📋 平台: [平台名称]
+[时间] 📋 模式: [🎥视频/🎵音频]
+[时间] 📋 URL修改: [是/否]
+[时间] 📋 修改原因: [原因]
+13.2 策略执行日志
+text
+[时间] 🔄 策略[序号]: [策略名称]
+[时间] ✅ 策略[序号]: [策略名称]成功
+[时间] ❌ 策略[序号]: [策略名称]失败 - [错误摘要]
+13.3 错误分析日志
+text
+[时间] 🔍 检测到需要[Cookie/Deno.js]: [错误关键词]
+[时间] 💡 建议: [建议内容]
+13.4 最终失败日志格式
+text
+[时间] ❌ 下载失败（原因链路）:
+1. [策略1名称]: [错误原因]
+2. [策略2名称]: [错误原因]
+3. [策略3名称]: [错误原因]
+
+[时间] 📊 策略执行历史:
+- [时间] [策略名称] [成功/失败]
+- [时间] [策略名称] [成功/失败]
+
+[时间] 💡 综合建议: [整体建议]
+==================================================
+十四、Cookie 管理器（与 cookie.py 集成）
+==================================================
+
+14.1 Cookie 文件管理
+text
+1. cookie.py 负责管理Cookie文件
+2. 提供Cookie验证功能
+3. 支持多平台Cookie文件
+4. 自动检测Cookie有效性
+14.2 Cookie 使用规则
+text
+1. 根据平台选择正确的Cookie文件
+2. Cookie文件不存在时跳过Cookie策略
+3. Cookie验证失败时记录但继续尝试
+==================================================
+十五、性能与超时控制
+==================================================
+
+15.1 超时设置
+text
+- URL规范化: 5秒
+- 通用下载尝试: 30秒
+- Deno.js解析: 12秒（通过 denojs.py 配置）
+- 总尝试时间: 90秒（超时自动终止）
+15.2 重试限制
+text
+- 网络错误: 最多1次重试
+- Deno.js: 最多1次重试（仅限网络错误）
+- 其他错误: 不重试
+15.3 并发控制
+text
+- 同时下载线程数: 可配置（默认3）
+- Cookie文件锁: 防止并发写入
+- 磁盘IO限制: 避免过多并发写入
+==================================================
+十六、错误恢复与用户建议
+==================================================
+
+16.1 常见错误处理建议
+Cookie 相关错误
+text
+建议:
+1. 通过 cookie.py 界面更新Cookie文件
+2. 检查Cookie是否过期
+3. 重新登录获取新Cookie
+Deno.js 解析错误
+text
+建议:
+1. 通过 denojs.py 界面检查Deno.exe是否完整
+2. 更新Deno.js解析脚本
+3. 尝试手动解析测试
+网络限制错误
+text
+建议:
+1. 等待一段时间后重试
+2. 更换网络环境
+3. 使用代理服务器
+内容不可用错误
+text
+建议:
+1. 检查视频是否被删除
+2. 检查地区限制
+3. 确认有观看权限
+==================================================
+十七、禁止行为（红线）
+==================================================
+
+17.1 策略选择禁止
+text
+1. ❌ 禁止 need_cookie = true 后使用无Cookie策略
+2. ❌ 禁止 need_deno = true 后使用 yt-dlp extractor
+3. ❌ 禁止 rate_limited = true 后继续尝试
+4. ❌ 禁止模糊的错误描述和隐藏真实错误
+17.2 Deno.js 相关禁止
+text
+1. ❌ 禁止对解析逻辑错误进行重试
+2. ❌ 禁止在关键字段缺失时继续流程
+3. ❌ 禁止在 Deno.js 失败后回退 yt-dlp extractor
+4. ❌ 禁止无限制重试 Deno.js 解析
+17.3 用户体验禁止
+text
+1. ❌ 禁止长时间无响应的下载尝试
+2. ❌ 禁止不明确的进度指示
+3. ❌ 禁止在最终失败时不输出错误链
+4. ❌ 禁止重复尝试已知必然失败的方法
+==================================================
+十八、测试用例要求
+==================================================
+
+18.1 必须测试的场景
+text
+1. ✅ YouTube普通视频（公开）
+2. ✅ YouTube年龄限制视频（需Cookie）
+3. ✅ YouTube Shorts（带签名加密）
+4. ✅ TikTok公开视频
+5. ✅ Instagram Reels
+6. ✅ Twitter/X视频
+7. ✅ Bilibili视频
+18.2 错误场景测试
+text
+1. Cookie缺失时的年龄限制视频
+2. 网络超时重试机制
+3. 频率限制处理（429错误）
+4. Deno.js解析失败（各种类型）
+5. 不支持的URL格式
+18.3 性能测试
+text
+1. 并发下载压力测试
+2. 长时间运行稳定性
+3. 内存泄漏检测
+4. 磁盘IO性能
+==================================================
+十九、实现要求
+==================================================
+
+19.1 文件组织
+text
+videodown.py 必须包含：
+1. DownloadContext 类
+2. ErrorAnalyzer 类
+3. PlatformStrategyManager 类
+4. URLNormalizer 类（或整合到PlatformStrategyManager中）
+5. DownloadStrategyExecutor 类（更新版）
+6. VideoDownloadPage 类（保持兼容）
+7. VideoDownloaderCore 类（更新版）
+19.2 外部依赖
+text
+必须使用现有模块：
+1. cookie.py - CookieSettingsPage, CookieGuideDialog
+2. denojs.py - DenoSettingsPage, DenoResolver
+3. rizhi.py - LogHandler
+19.3 向后兼容
+text
+1. 保持现有UI界面不变
+2. 保持日志系统兼容
+3. 保持信号机制正常工作
+4. 保持配置文件向后兼容
+==================================================
+二十、版本与维护
+==================================================
+
+20.1 版本控制
+text
+- 主版本: 重大策略变更
+- 次版本: 功能增强和优化
+- 修订版: Bug修复和性能改进
+20.2 更新策略
+text
+- 每月检查yt-dlp更新
+- 每季度更新Deno.js脚本
+- 根据平台变化调整策略
+20.3 故障排除
+text
+- 提供详细的错误日志
+- 支持导出调试信息
+- 提供常见问题解决方案
+==================================================
+【文档结束】
+==================================================
+
+文档版本: 4.0 - 单文件集成版
+最后更新: 2024-01-19
+适用版本: VideoDown v3.8+
+策略类型: 失败反馈驱动 + 严格状态继承
+文件要求: 所有功能集成到 videodown.py，使用现有 cookie.py、denojs.py、rizhi.py
+
+关键实现要点:
+
+所有新类实现在 videodown.py 中
+
+充分利用现有 cookie.py、denojs.py、rizhi.py 模块
+
+保持向后兼容性
+
+实现严格的 Deno.js 失败处理规则
+
+提供完整的错误链输出

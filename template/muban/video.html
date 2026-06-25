@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{content:title} - {pboot:sitesubtitle}</title>
+    <meta name="description" content="{content:description}">
+    <meta name="keywords" content="{content:keywords}">
+    <meta name="robots" content="index, follow">
+    
+    <!-- 字体与图标库（全局引用） -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;family=Noto+Sans+SC:wght@300;400;500;700&amp;display=swap">
+    <link rel="stylesheet" href="/skin/vendor/tcplayer/tcplayer.min.css">
+    <script src="/skin/vendor/tcplayer/tcplayer.v5.3.3.min.js"></script>
+    
+    <!-- 模块化CSS -->
+    <link rel="stylesheet" href="/skin/css/base.css">
+    <link rel="stylesheet" href="/skin/css/topbar.css">
+    <link rel="stylesheet" href="/skin/css/sidebar.css">
+    <link rel="stylesheet" href="/skin/css/video.css?v=startup_mask_20260623a">
+    <link rel="stylesheet" href="/skin/css/footer.css">
+    <link rel="stylesheet" href="/skin/css/mobile-tabbar.css">
+    <link rel="stylesheet" href="/skin/css/back-to-top.css">
+</head>
+<body class="sidebar-embedded-page">
+    <!-- 顶部信息栏 -->
+<!-- TOPBAR_START -->
+{include file=topbar.html}
+<!-- TOPBAR_END -->
+    
+    <!-- 主导航栏 -->
+    
+    <!-- 侧边栏导航 -->
+<!-- 主内容包装器 -->
+<div class="main-content-wrapper">
+    <div class="sidebar-embedded-aside">
+<!-- SIDEBAR_START -->
+{include file=sidebar.html}
+<!-- SIDEBAR_END -->
+    </div>
+    <div class="main-container">
+        <div class="main-content">
+            <div class="content-layout">
+                <div class="video-detail-wrapper">
+                    <div class="video-detail-grid">
+                        <!-- 左侧主视频区 -->
+                        <div class="video-main">
+                            <div class="video-player-container" id="videoPlayerContainer">
+                                <video id="mainVideoPlayer" class="video-player" playsinline webkit-playsinline x5-playsinline controls preload="none" muted
+                                    data-content-id="{content:id}" 
+                                    data-file-id="{content:ext_tcplayer_file_id}" 
+                                    data-sign-api="/api/tencent-vod-psign.php">
+                                </video>
+                                <!-- 中央播放按钮（桌面端） -->
+                                <div class="center-play-btn" id="centerPlayBtn">
+                                    <i class="fas fa-play"></i>
+                                </div>
+                                <div class="video-startup-mask" id="videoStartupMask" aria-hidden="false">
+                                    <div class="video-startup-spinner"></div>
+                                    <span>视频加载中...</span>
+                                </div>
+                                {pboot:if('{content:prelink}'!='')}
+                                <a class="player-nav-btn player-nav-prev" id="prevVideoBtn" href="{content:prelink}" title="{content:pretitle}" aria-label="上一个视频"><i class="fas fa-step-backward"></i></a>
+                                {else}
+                                <button class="player-nav-btn player-nav-prev is-disabled" id="prevVideoBtn" type="button" disabled aria-disabled="true" title="没有上一个视频" aria-label="没有上一个视频"><i class="fas fa-step-backward"></i></button>
+                                {/pboot:if}
+                                {pboot:if('{content:nextlink}'!='')}
+                                <a class="player-nav-btn player-nav-next" id="nextVideoBtn" href="{content:nextlink}" title="{content:nexttitle}" aria-label="下一个视频"><i class="fas fa-step-forward"></i></a>
+                                {else}
+                                <button class="player-nav-btn player-nav-next is-disabled" id="nextVideoBtn" type="button" disabled aria-disabled="true" title="没有下一个视频" aria-label="没有下一个视频"><i class="fas fa-step-forward"></i></button>
+                                {/pboot:if}
+                            </div>
+                            <div class="video-info-section">
+                                <div class="video-info-header">
+                                    <div class="video-info-breadcrumb">
+                                        <ul class="breadcrumb-list">
+                                            <li class="breadcrumb-item"><a href="/" class="breadcrumb-link breadcrumb-home-link" aria-label="首页" title="首页"><i class="fas fa-home"></i></a></li>
+                                            <li class="breadcrumb-item"><a href="{content:sortlink}" class="breadcrumb-link"><i class="fas fa-video"></i>{content:sortname}</a></li>
+                                        </ul>
+                                    </div>
+                                    <div class="video-meta-stats">
+                                        <span><i class="fas fa-eye"></i> {content:visits} 次观看</span>
+                                        <span><i class="far fa-calendar"></i> {content:date style=Y-m-d}</span>
+                                    </div>
+                                </div>
+                                
+                                <div class="video-title-row">
+                                    <div class="video-avatar video-product-avatar" id="videoAvatarBtn"><i class="fas fa-shopping-cart"></i></div>
+                                    <h1 class="video-title">{content:title}</h1>
+                                </div>
+                                
+                                <div class="video-description-wrapper" id="videoDescriptionWrapper">
+                                    <div class="video-description" id="videoDescription">
+                                        {content:description}
+                                    </div>
+                                    <button class="video-description-toggle" id="videoDescriptionToggle" type="button" aria-expanded="false">
+                                        <i class="fas fa-chevron-down"></i><span>展开</span>
+                                    </button>
+                                </div>
+                                
+                                <div class="video-tags">
+                                    {pboot:tags id={content:id} target=tag}
+                                    <a href="[tags:link]" class="video-tag"><i class="fas fa-hashtag video-tag-mark"></i>[tags:text]</a>
+                                    {/pboot:tags}
+                                </div>
+                                
+                                <div class="video-interact-buttons">
+                                    <a class="interact-btn" id="likeBtn" href="{content:likeslink}"><i class="far fa-heart"></i> <span id="likeCount">{content:likes}</span></a>
+                                    <button class="interact-btn" id="commentIconBtn" type="button"><i class="far fa-comment"></i> <span id="commentCountIcon">0</span></button>
+                                    <button class="interact-btn" id="shareBtn" type="button"><i class="fas fa-share-alt"></i> <span id="shareCount">128</span> 分享</button>
+                                    <button class="interact-btn" id="saveBtn" type="button"><i class="far fa-star"></i> <span>收藏</span></button>
+                                </div>
+                                
+                            </div>
+                            
+                            <div class="comment-section" id="commentSection" data-server-comments="1" data-is-login="{pboot:islogin}" data-login-url="{pboot:login}">
+                                {pboot:if('{pboot:commentstatus}'=='1')}
+                                <form class="comment-input-area" action="{pboot:commentaction}" method="post">
+                                    <input type="text" class="comment-input" id="newCommentInput" name="comment" placeholder="写下你的评论..." required>
+                                    <span class="comment-captcha-fields" aria-hidden="true">
+                                        <input type="text" class="comment-checkcode" name="checkcode" placeholder="验证码">
+                                        <img class="comment-code-img" src="{pboot:checkcode}" alt="验证码" title="点击刷新" onclick="this.src='{pboot:checkcode}?'+Math.round(Math.random()*10);">
+                                    </span>
+                                    <button class="comment-submit" id="submitCommentBtn" type="submit">发布</button>
+                                </form>
+                                {/pboot:if}
+                                <div class="comment-list" id="commentList">
+                                    {pboot:comment contentid={content:id} num=100 order='a.id desc'}
+                                    <div class="comment-item" data-comment-id="[comment:id]">
+                                        <div class="comment-main">
+                                            <a class="comment-avatar" href="[comment:homepage]" title="[comment:nickname]"><img src="[comment:headpic]" alt="[comment:nickname]"></a>
+                                            <div class="comment-content">
+                                                <div class="comment-header">
+                                                    <span class="comment-name">[comment:nickname]</span>
+                                                    <span class="comment-time">[comment:date style=Y-m-d H:i]</span>
+                                                </div>
+                                                <div class="comment-text">[comment:comment]</div>
+                                                {pboot:if('{pboot:commentstatus}'=='1')}
+                                                <div class="reply-btn-wrapper">
+                                                    <button class="reply-btn" type="button">回复</button>
+                                                </div>
+                                                {/pboot:if}
+                                            </div>
+                                        </div>
+                                        {pboot:if('{pboot:commentstatus}'=='1')}
+                                        <form class="reply-input-area" action="[comment:replyaction]" method="post">
+                                            <div class="reply-avatar">W</div>
+                                            <input type="text" class="reply-input" name="comment" placeholder="写下你的回复..." required>
+                                            <span class="comment-captcha-fields" aria-hidden="true">
+                                                <input type="text" class="comment-checkcode" name="checkcode" placeholder="验证码">
+                                                <img class="comment-code-img" src="{pboot:checkcode}" alt="验证码" title="点击刷新" onclick="this.src='{pboot:checkcode}?'+Math.round(Math.random()*10);">
+                                            </span>
+                                            <button class="reply-submit" type="submit">发布</button>
+                                        </form>
+                                        {/pboot:if}
+                                        <div class="replies-list">
+                                            {pboot:commentsub}
+                                            <div class="reply-item">
+                                                <div class="reply-main">
+                                                    <a class="reply-avatar-small" href="[commentsub:homepage]" title="[commentsub:nickname]"><img src="[commentsub:headpic]" alt="[commentsub:nickname]"></a>
+                                                    <div class="reply-content">
+                                                        <div class="reply-name">[commentsub:nickname] <span class="reply-time">[commentsub:date style=Y-m-d H:i]</span></div>
+                                                        <div class="reply-text">[commentsub:comment]</div>
+                                                    </div>
+                                                </div>
+                                                {pboot:if('{pboot:commentstatus}'=='1')}
+                                                <div class="reply-actions">
+                                                    <button class="reply-reply-btn" type="button">回复</button>
+                                                </div>
+                                                <form class="nested-reply-input-area" action="[commentsub:replyaction]" method="post">
+                                                    <input type="text" class="nested-reply-input" name="comment" placeholder="写下你的回复..." required>
+                                                    <span class="comment-captcha-fields" aria-hidden="true">
+                                                        <input type="text" class="comment-checkcode" name="checkcode" placeholder="验证码">
+                                                        <img class="comment-code-img" src="{pboot:checkcode}" alt="验证码" title="点击刷新" onclick="this.src='{pboot:checkcode}?'+Math.round(Math.random()*10);">
+                                                    </span>
+                                                    <button class="nested-reply-submit" type="submit">发布</button>
+                                                </form>
+                                                {/pboot:if}
+                                            </div>
+                                            {/pboot:commentsub}
+                                        </div>
+                                    </div>
+                                    {/pboot:comment}
+                                </div>
+                                <div class="load-more-comments" id="loadMoreCommentsBtnContainer" style="display: none;">
+                                    <button class="load-more-btn-comment" id="loadMoreCommentsBtn" type="button">加载更多评论 (5条)</button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- 右侧栏 -->
+                        <div class="video-sidebar">
+                            <div class="author-card-outer">
+                                <div class="author-card">
+                                    <div class="author-avatar-wrapper" id="aiCustomerAvatar">
+                                        <i class="fas fa-headset"></i>
+                                    </div>
+                                    <div class="author-info">
+                                        <div class="author-name"><a href="/channel/wishpower" id="channelLink">WishPower 官方频道</a></div>
+                                        <div class="author-bio">专业绝缘子制造商 | 高压电气专家 | 20年经验</div>
+                                        <div class="author-stats">
+                                            <span><i class="fas fa-video"></i> 视频总数 128</span>
+                                            <span><i class="fas fa-eye"></i> 观看 12.5k</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            {pboot:if('{content:ext_product_id}'!='')}
+                            {pboot:content id={content:ext_product_id}}
+                            <div class="product-card-wrapper">
+                                <div class="shop-section-title">
+                                    <i class="fas fa-shopping-cart"></i>
+                                    <span>商品直通车</span>
+                                </div>
+                                <div class="product-card">
+                                    <div class="product-img-container">
+                                        <div class="product-carousel" id="productCarousel">
+                                            <div class="carousel-slides" id="carouselSlides">
+                                                {pboot:pics id=[content:id]}
+                                                <img class="carousel-slide" src="[pics:src]" alt="[pics:title]">
+                                                {/pboot:pics}
+                                            </div>
+                                            <button class="carousel-btn prev" id="carouselPrev" type="button" aria-label="上一张"><i class="fas fa-chevron-left"></i></button>
+                                            <button class="carousel-btn next" id="carouselNext" type="button" aria-label="下一张"><i class="fas fa-chevron-right"></i></button>
+                                            <div class="carousel-dots" id="carouselDots"></div>
+                                        </div>
+                                    </div>
+                                    <div class="product-info">
+                                        <div class="product-title">[content:title]</div>
+                                        <div class="product-price">¥[content:ext_price] <small>/ 支</small></div>
+                                        <a href="[content:link]" class="product-btn" id="buyProductBtn"><i class="fas fa-shopping-cart"></i> 立即购买/采购</a>
+                                    </div>
+                                </div>
+                            </div>
+                            {/pboot:content}
+                            {/pboot:if}
+                            
+                            {pboot:if('{content:ext_shop_recommend_scode}'!='')}
+                            <div class="shop-recommend">
+                                <div class="shop-recommend-title">
+                                    <div class="shop-recommend-title-left">
+                                        <i class="fas fa-store"></i>
+                                        <span>店铺推荐</span>
+                                    </div>
+                                    {pboot:sort scode={content:ext_shop_recommend_scode}}
+                                    <a href="[sort:link]" class="shop-recommend-more" id="shopMoreBtn">查看更多 &gt;</a>
+                                    {/pboot:sort}
+                                </div>
+                                <div class="rec-list">
+                                    {pboot:list scode={content:ext_shop_recommend_scode} num=3 order=sorting}
+                                    <a href="[list:link]" class="rec-item">
+                                        <img class="rec-img" src="[list:ico]" alt="[list:title]">
+                                        <div class="rec-info">
+                                            <div class="rec-title">[list:title]</div>
+                                            <div class="rec-price">¥[list:ext_price]</div>
+                                        </div>
+                                    </a>
+                                    {/pboot:list}
+                                </div>
+                            </div>
+                            {/pboot:if}
+                            
+                            <div class="related-videos">
+                                <div class="related-title"><i class="fas fa-list-ul"></i> 推荐视频</div>
+                                <div class="related-list" id="relatedList">
+                                    {pboot:list scode={content:scode} num=7 order=random}
+                                    <a href="[list:link]" class="related-item" data-content-id="[list:id]">
+                                        <div class="related-thumb-container">
+                                            <img class="related-thumb" src="[list:ico]" alt="[list:title]">
+                                            <div class="play-icon-overlay"><i class="fas fa-play-circle"></i></div>
+                                        </div>
+                                        <div class="related-info">
+                                            <h4>[list:title]</h4>
+                                            <div class="related-meta"><span><i class="fas fa-eye"></i> [list:visits]</span><span class="related-duration" data-video-duration data-content-id="[list:id]" data-sign-api="/api/tencent-vod-psign.php">--:--</span></div>
+                                        </div>
+                                    </a>
+                                    {/pboot:list}
+                                </div>
+                                <div class="load-more-btn" id="loadMoreBtn">显示更多</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{pboot:if('{content:ext_product_id}'!='')}
+{pboot:content id={content:ext_product_id}}
+<!-- 标题购物车商品弹窗 -->
+<div class="cart-product-popup-overlay" id="cartProductPopupOverlay"></div>
+<div class="cart-product-popup-modal" id="cartProductPopupModal" role="dialog" aria-modal="true" aria-label="商品详情">
+    <button class="cart-product-popup-close" id="cartProductPopupClose" type="button" aria-label="关闭"><i class="fas fa-times"></i></button>
+    <div class="cart-product-popup-wrapper">
+        <div class="cart-product-popup-title">
+            <i class="fas fa-shopping-cart"></i>
+            <span>商品直通车</span>
+        </div>
+        <div class="cart-product-popup-card">
+            <div class="cart-product-img-container">
+                <div class="cart-product-carousel" id="cartProductCarousel">
+                    <div class="cart-product-slides" id="cartProductSlides">
+                        {pboot:pics id=[content:id]}
+                        <img class="cart-product-slide" src="[pics:src]" alt="[pics:title]">
+                        {/pboot:pics}
+                    </div>
+                    <button class="cart-product-carousel-btn cart-product-prev" id="cartProductPrev" type="button" aria-label="上一张"><i class="fas fa-chevron-left"></i></button>
+                    <button class="cart-product-carousel-btn cart-product-next" id="cartProductNext" type="button" aria-label="下一张"><i class="fas fa-chevron-right"></i></button>
+                    <div class="cart-product-dots" id="cartProductDots"></div>
+                </div>
+            </div>
+            <div class="cart-product-info">
+                <div class="cart-product-title-text">[content:title]</div>
+                <div class="cart-product-price">¥[content:ext_price] <small>/ 支</small></div>
+                <a href="[content:link]" class="cart-product-buy-btn"><i class="fas fa-shopping-cart"></i> 立即购买/采购</a>
+            </div>
+        </div>
+    </div>
+</div>
+{/pboot:content}
+{/pboot:if}
+
+<!-- 移动端评论弹窗 -->
+<div class="modal-overlay" id="commentModalOverlay"></div>
+<div class="comment-modal" id="commentModal">
+    <div class="comment-modal-header">
+        <h3><i class="far fa-comment-dots"></i> 评论 (<span id="modalCommentTotal">0</span>)</h3>
+        <button class="comment-modal-close" id="commentModalClose" type="button" aria-label="关闭评论"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="comment-modal-content">
+        {pboot:if('{pboot:commentstatus}'=='1')}
+        <form class="comment-input-area" action="{pboot:commentaction}" method="post">
+            <input type="text" class="comment-input" id="modalCommentInput" name="comment" placeholder="写下你的评论..." required>
+            <span class="comment-captcha-fields" aria-hidden="true">
+                <input type="text" class="comment-checkcode" name="checkcode" placeholder="验证码">
+                <img class="comment-code-img" src="{pboot:checkcode}" alt="验证码" title="点击刷新" onclick="this.src='{pboot:checkcode}?'+Math.round(Math.random()*10);">
+            </span>
+            <button class="comment-submit" id="modalCommentSubmit" type="submit">发布</button>
+        </form>
+        {/pboot:if}
+        <div class="comment-list" id="modalCommentList"></div>
+        <div class="load-more-comments" id="modalLoadMoreCommentsBtnContainer" style="display: none;">
+            <button class="load-more-btn-comment" id="modalLoadMoreCommentsBtn" type="button">加载更多评论 (5条)</button>
+        </div>
+    </div>
+</div>
+
+<!-- 分享弹窗 -->
+<div id="sharePopup" class="share-popup">
+    <div class="share-popup-header">
+        <span>分享视频</span>
+        <button class="share-popup-close" id="sharePopupClose" type="button" aria-label="关闭分享"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="share-popup-scroll">
+        <div class="share-popup-grid">
+            <div class="share-popup-item whatsapp" data-platform="whatsapp"><div class="share-popup-icon"><i class="fab fa-whatsapp"></i></div><span>WhatsApp</span></div>
+            <div class="share-popup-item wechat" data-platform="wechat"><div class="share-popup-icon"><i class="fab fa-weixin"></i></div><span>微信</span></div>
+            <div class="share-popup-item pinterest" data-platform="pinterest"><div class="share-popup-icon"><i class="fab fa-pinterest"></i></div><span>Pinterest</span></div>
+            <div class="share-popup-item facebook" data-platform="facebook"><div class="share-popup-icon"><i class="fab fa-facebook-f"></i></div><span>Facebook</span></div>
+            <div class="share-popup-item linkedin" data-platform="linkedin"><div class="share-popup-icon"><i class="fab fa-linkedin-in"></i></div><span>LinkedIn</span></div>
+            <div class="share-popup-item email" data-platform="email"><div class="share-popup-icon"><i class="fas fa-envelope"></i></div><span>邮箱</span></div>
+        </div>
+    </div>
+    <div class="share-popup-link-row">
+        <div class="share-popup-link" id="sharePopupLink"></div>
+        <button class="share-popup-copy" id="sharePopupCopyBtn" type="button">复制链接</button>
+    </div>
+</div>
+
+<!-- 登录弹窗 -->
+<div class="modal-overlay" id="loginModalOverlay"></div>
+<div class="login-modal" id="loginModal">
+    <div class="login-modal-header">
+        <h3>登录后发表评论</h3>
+        <button class="login-modal-close" id="loginModalClose" type="button" aria-label="关闭登录"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="login-modal-content">
+        <p>请选择登录方式：</p>
+        <div class="login-buttons">
+            <div class="login-btn phone" id="loginPhoneBtn"><i class="fas fa-phone-alt"></i> 手机号验证码登录</div>
+            <div class="login-btn google" id="loginGoogleBtn"><i class="fab fa-google"></i> Google账号登录</div>
+            <div class="login-btn email" id="loginEmailBtn"><i class="fas fa-envelope"></i> 邮箱登录</div>
+        </div>
+    </div>
+</div>
+    
+<!--页脚 FOOTER_START -->
+{include file=footer.html}
+<!-- FOOTER_END -->
+    
+<!-- 移动端底部导航MOBILE_TABBAR_START -->
+{include file=mobile_tabbar.html}
+<!-- MOBILE_TABBAR_END -->
+    
+<!-- BACK_TO_TOP_START 返回顶部按钮 -->
+{include file=back-to-top.html}
+<!-- BACK_TO_TOP_END -->
+    
+    <!-- JS 模块（按依赖顺序） -->
+    <script src="/skin/js/topbar.js"></script>
+    <script src="/skin/js/sidebar.js"></script>
+    <script src="/skin/js/video.js?v=startup_mask_20260623a"></script>
+    <script src="/skin/js/footer.js"></script>
+    <script src="/skin/js/mobile-tabbar.js"></script>
+    <script src="/skin/js/back-to-top.js"></script>
+    <script src="/skin/js/main.js"></script>
+</body>
+</html>

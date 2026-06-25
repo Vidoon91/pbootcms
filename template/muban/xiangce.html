@@ -1,0 +1,2141 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>{sort:title} - {pboot:sitesubtitle}</title>
+    <meta name="description" content="{sort:description}WishPower">
+    <meta name="keywords" content="{sort:keywords}">
+    <meta name="robots" content="index, follow">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;family=Noto+Sans+SC:wght@300;400;500;700&amp;display=swap">
+    <link rel="stylesheet" href="/skin/css/base.css">
+    <link rel="stylesheet" href="/skin/css/topbar.css">
+    <link rel="stylesheet" href="/skin/css/sidebar.css">
+    <link rel="stylesheet" href="/skin/css/footer.css">
+    <link rel="stylesheet" href="/skin/css/mobile-tabbar.css">
+    <link rel="stylesheet" href="/skin/css/back-to-top.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            background: #f8f9fc;
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            overflow-x: hidden;
+        }
+        /* ========== 相册区域（不变） ========== */
+        .factory-gallery-wall {
+            position: relative;
+            padding: 60px 20px;
+            background: #f8f9fc;
+        }
+        .wall-decoration {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #2c3e50, #3498db, #e74c3c, #3498db, #2c3e50);
+            background-size: 200% auto;
+            animation: shimmer 3s linear infinite;
+        }
+        @keyframes shimmer {
+            0% { background-position: 0% 0; }
+            100% { background-position: 200% 0; }
+        }
+        .gallery-container {
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+        .filter-bar {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 48px;
+            background: rgba(255,255,255,0.7);
+            backdrop-filter: blur(12px);
+            padding: 8px 20px;
+            border-radius: 60px;
+            border: 1px solid rgba(255,255,255,0.6);
+        }
+        .filter-tabs {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        .filter-chip {
+            background: transparent;
+            border: none;
+            padding: 8px 24px;
+            font-size: 14px;
+            font-weight: 600;
+            color: #334155;
+            border-radius: 40px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .filter-chip:hover {
+            background: rgba(13,110,253,0.1);
+            color: #0d6efd;
+        }
+        .filter-chip.active {
+            background: #0d6efd;
+            color: white;
+            box-shadow: 0 4px 10px rgba(13,110,253,0.2);
+        }
+        .waterfall-grid {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 28px;
+            grid-auto-flow: dense;
+            margin-bottom: 48px;
+        }
+        @media (max-width: 1600px) { .waterfall-grid { grid-template-columns: repeat(5, 1fr); } }
+        @media (max-width: 1300px) { .waterfall-grid { grid-template-columns: repeat(4, 1fr); } }
+        @media (max-width: 1000px) { .waterfall-grid { grid-template-columns: repeat(3, 1fr); } }
+        @media (max-width: 700px) { .waterfall-grid { grid-template-columns: repeat(2, 1fr); gap: 18px; } }
+        .photo-card {
+            background: #fff;
+            border-radius: 24px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: transform 0.25s, box-shadow 0.25s;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+        }
+        .photo-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 30px -12px rgba(0,0,0,0.15);
+        }
+        .card-img {
+            width: 100%;
+            aspect-ratio: 3 / 4;
+            overflow: hidden;
+        }
+        .card-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.4s;
+        }
+        .photo-card:hover .card-img img {
+            transform: scale(1.05);
+        }
+        .card-info {
+            padding: 18px 16px 20px;
+        }
+        .card-title {
+            font-weight: 800;
+            font-size: 16px;
+            color: #0a0f1c;
+            margin-bottom: 12px;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        .card-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .card-category {
+            font-size: 12px;
+            font-weight: 600;
+            background: rgba(13,110,253,0.15);
+            color: #0d6efd;
+            padding: 5px 12px;
+            border-radius: 40px;
+        }
+        .card-likes {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 13px;
+            color: #475569;
+        }
+        .card-likes svg {
+            width: 16px;
+            height: 16px;
+        }
+        .load-more-btn {
+            background: white;
+            border: 1px solid #0d6efd;
+            color: #0d6efd;
+            padding: 12px 36px;
+            border-radius: 60px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .load-more-btn:hover {
+            background: #0d6efd;
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        /* ========== 弹窗基础样式（桌面端左右分栏） ========== */
+        .post-modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.8);
+            backdrop-filter: blur(8px);
+            z-index: 10000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            visibility: hidden;
+            opacity: 0;
+            transition: 0.2s;
+        }
+        .post-modal.active {
+            visibility: visible;
+            opacity: 1;
+        }
+        .modal-container {
+            background: #fff;
+            border-radius: 32px;
+            display: flex;
+            max-width: 98vw;
+            max-height: 98vh;
+            overflow: hidden;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+            position: relative;
+        }
+        /* 桌面端左列：高度固定，宽度将由 JS 动态设置（根据图片比例） */
+        .modal-left {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #0a0a0a;
+            height: 86.4vh;         /* 固定高度 */
+            width: auto;            /* 初始 auto，JS 会动态设置宽度 */
+            max-width: 86.4vw;      /* 防止过宽 */
+        }
+        .modal-left {
+            flex: 0 1 auto;
+            overflow: hidden;
+        }
+        .carousel-container {
+            position: relative;
+            height: 100%;
+            width: 100%;            /* 宽度继承父元素，由 JS 控制 */
+        }
+        .carousel-track {
+            display: flex;
+            transition: transform 0.3s;
+            height: 100%;
+            width: 100%;
+        }
+        .carousel-slide {
+            flex: 0 0 100%;         /* 每个 slide 占满父容器宽度 */
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .carousel-slide img {
+            height: 100%;           /* 高度填满容器 */
+            width: auto;            /* 宽度自适应，保持比例 */
+            max-width: 100%;        /* 确保不溢出 */
+            object-fit: contain;
+        }
+        .carousel-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 36px;
+            height: 36px;
+            background: rgba(0,0,0,0.5);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            cursor: pointer;
+            z-index: 10;
+        }
+        .carousel-prev { left: 12px; }
+        .carousel-next { right: 12px; }
+        .carousel-dots {
+            position: absolute;
+            bottom: 16px;
+            left: 0;
+            right: 0;
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+        }
+        .carousel-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.5);
+        }
+        .carousel-dot.active {
+            width: 18px;
+            border-radius: 3px;
+            background: white;
+        }
+        /* 桌面端右列 */
+        .modal-right {
+            width: 469px;
+            flex-shrink: 0;
+            background: white;
+            display: flex;
+            flex-direction: column;
+            height: 86.4vh;
+            max-height: 86.4vh;
+            overflow: hidden;
+        }
+        .fixed-header {
+            padding: 20px 20px 0 20px;
+            flex-shrink: 0;
+        }
+        .scrollable-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 0 20px;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+        .scrollable-content::-webkit-scrollbar {
+            display: none;
+        }
+        .divider-line {
+            margin: 16px 0 12px 0;
+            border-top: 1px solid #eef2f6;
+        }
+        .bottom-bar {
+            padding: 12px 20px 16px 20px;
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-top: 1px solid #eee;
+            flex-wrap: nowrap;
+            flex-shrink: 0;
+            gap: 12px;
+        }
+        .desktop-comment-box {
+            display: flex;
+            align-items: center;
+            flex: 0 0 170px;
+            width: 170px;
+            min-width: 170px;
+            height: 36px;
+            background: #f8f9fa;
+            border: 1px solid #e2e8f0;
+            border-radius: 24px;
+            overflow: hidden;
+        }
+        .comment-input {
+            width: 100%;
+            min-width: 0;
+            height: 100%;
+            padding: 0 12px;
+            border: none;
+            border-radius: 0;
+            font-size: 13px;
+            background: transparent;
+            outline: none;
+            flex: 1 1 auto;
+        }
+        .comment-submit-btn {
+            border: none;
+            background: transparent;
+            color: #0d6efd;
+            padding: 0 12px 0 8px;
+            height: 100%;
+            border-radius: 0;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            flex-shrink: 0;
+            white-space: nowrap;
+        }
+        .comment-submit-btn:hover {
+            color: #0b5ed7;
+        }
+        .action-icons {
+            display: flex;
+            gap: 8px;
+            flex: 0 0 auto;
+            align-items: center;
+        }
+        .action-item {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+            min-width: 40px;
+            height: 40px;
+            padding: 0 6px;
+            border-radius: 16px;
+            font-size: 15px;
+            font-weight: 600;
+            color: #5b6e8c;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: background 0.2s, color 0.2s, transform 0.2s;
+        }
+        .action-item:hover {
+            background: #f4f7fb;
+            color: #0d6efd;
+            transform: translateY(-1px);
+        }
+        .action-item i {
+            width: 22px;
+            height: 22px;
+            font-size: 22px;
+            line-height: 1;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .post-user {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            min-width: 0;
+        }
+        .user-avatar {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            background: #ddd;
+        }
+        .user-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+        }
+        .user-name {
+            font-weight: 700;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        .desktop-quick-actions {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 6px;
+            flex: 0 0 auto;
+        }
+        .desktop-header-actions {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 10px;
+            flex: 0 0 auto;
+            position: relative;
+        }
+        .desktop-quick-btn {
+            height: 30px;
+            padding: 0 10px;
+            border: 1px solid #dbeafe;
+            border-radius: 999px;
+            background: #f8fbff;
+            color: #0d6efd;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: background 0.2s, border-color 0.2s, transform 0.2s;
+        }
+        .desktop-quick-btn i {
+            font-size: 13px;
+            line-height: 1;
+        }
+        .desktop-quick-btn:hover {
+            background: #eaf3ff;
+            border-color: #93c5fd;
+            transform: translateY(-1px);
+        }
+        .desktop-quick-btn.inquiry {
+            background: #0d6efd;
+            border-color: #0d6efd;
+            color: #fff;
+        }
+        .desktop-close-btn {
+            width: 32px;
+            height: 32px;
+            border: none;
+            border-radius: 50%;
+            background: #f1f5f9;
+            color: #64748b;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 15px;
+            cursor: pointer;
+            flex: 0 0 32px;
+            transition: background 0.2s, color 0.2s, transform 0.2s;
+        }
+        .desktop-close-btn:hover {
+            background: #fee2e2;
+            color: #dc2626;
+            transform: translateY(-1px);
+        }
+        .intro-dropdown {
+            position: absolute;
+            top: 40px;
+            right: 42px;
+            width: min(360px, calc(100vw - 40px));
+            max-height: 320px;
+            display: none;
+            overflow-y: auto;
+            padding: 14px 16px;
+            border: 1px solid #e2e8f0;
+            border-radius: 14px;
+            background: #fff;
+            color: #334155;
+            box-shadow: 0 18px 38px rgba(15,23,42,0.16);
+            z-index: 50;
+        }
+        .intro-dropdown.show {
+            display: block;
+        }
+        .intro-dropdown-title {
+            font-size: 13px;
+            font-weight: 800;
+            color: #0f172a;
+            margin-bottom: 8px;
+        }
+        .intro-dropdown-content {
+            font-size: 13px;
+            line-height: 1.65;
+        }
+        .follow-btn {
+            background: transparent;
+            color: #fbbf24;
+            border: none;
+            width: 36px;
+            height: 36px;
+            padding: 0;
+            border-radius: 50%;
+            font-size: 12px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        .follow-btn i,
+        .follow-btn svg {
+            width: 20px;
+            height: 20px;
+        }
+        .post-title {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+        .post-desc {
+            font-size: 14px;
+            color: #333;
+            margin-bottom: 16px;
+            line-height: 1.5;
+        }
+        .topic-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+        .topic-tag {
+            display: inline-flex;
+            align-items: center;
+            background: #f0f2f5;
+            color: #0d6efd;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            text-decoration: none;
+        }
+        .publish-time {
+            font-size: 12px;
+            color: #999;
+            margin-bottom: 8px;
+        }
+        .mobile-view-header {
+            display: none;
+        }
+        .comment-item {
+            margin-bottom: 20px;
+        }
+        .comment-main {
+            display: flex;
+            gap: 12px;
+        }
+        .comment-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: #ddd;
+        }
+        .comment-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+        }
+        .comment-content {
+            flex: 1;
+        }
+        .comment-name {
+            font-weight: 600;
+            font-size: 13px;
+            margin-bottom: 4px;
+        }
+        .comment-text {
+            font-size: 13px;
+            color: #333;
+            margin-bottom: 4px;
+        }
+        .comment-meta {
+            font-size: 11px;
+            color: #999;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .reply-btn {
+            cursor: pointer;
+            color: #5b6e8c;
+        }
+        .reply-btn:hover {
+            color: #0d6efd;
+        }
+        .reply-input-container {
+            margin-top: 8px;
+            margin-left: 44px;
+            display: none;
+        }
+        .reply-input {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #e2e8f0;
+            border-radius: 20px;
+            font-size: 12px;
+            background: #f8f9fa;
+        }
+        .replies-list {
+            margin-left: 44px;
+            margin-top: 12px;
+        }
+        .reply-item {
+            margin-bottom: 12px;
+            padding-left: 0;
+        }
+        .reply-item .comment-main {
+            gap: 10px;
+        }
+        .reply-item .comment-avatar {
+            width: 28px;
+            height: 28px;
+        }
+        .reply-item .comment-name {
+            font-size: 12px;
+        }
+        .reply-item .comment-text {
+            font-size: 12px;
+        }
+        .reply-item .comment-meta {
+            font-size: 10px;
+        }
+        .empty-comments {
+            color: #999;
+            text-align: center;
+            padding: 20px 0;
+        }
+
+        /* 描述折叠 */
+        .desc-wrapper {
+            position: relative;
+        }
+        .desc-text {
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            transition: all 0.2s;
+        }
+        .desc-text.expanded {
+            display: block;
+            -webkit-line-clamp: unset;
+        }
+        .desc-toggle {
+            color: #0d6efd;
+            font-size: 12px;
+            cursor: pointer;
+            margin-top: 4px;
+            display: inline-block;
+        }
+
+        /* ========== 移动端全屏样式（宽度 < 768px） ========== */
+        @media (max-width: 767px) {
+            .post-modal.active {
+                background: #000;
+                backdrop-filter: none;
+                align-items: stretch;
+                justify-content: flex-start;
+            }
+            .factory-gallery-wall {
+                padding: 18px 12px 84px;
+            }
+            .filter-bar {
+                justify-content: flex-start;
+                width: 100%;
+                max-width: 100%;
+                margin-bottom: 18px;
+                padding: 8px;
+                border-radius: 16px;
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+                scrollbar-width: none;
+            }
+            .filter-bar::-webkit-scrollbar {
+                display: none;
+            }
+            .filter-tabs {
+                flex-wrap: nowrap;
+                width: max-content;
+                min-width: 100%;
+                gap: 6px;
+            }
+            .filter-chip {
+                flex: 0 0 auto;
+                padding: 8px 12px;
+                font-size: 13px;
+                line-height: 1.2;
+                white-space: nowrap;
+            }
+            .waterfall-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+                gap: 12px;
+                margin-bottom: 28px;
+            }
+            .photo-card {
+                min-width: 0;
+                border-radius: 14px;
+                box-shadow: 0 6px 16px rgba(15, 23, 42, 0.08);
+            }
+            .photo-card:hover {
+                transform: none;
+            }
+            .card-info {
+                padding: 10px 10px 12px;
+            }
+            .card-title {
+                font-size: 13px;
+                line-height: 1.35;
+                margin-bottom: 8px;
+            }
+            .card-meta {
+                gap: 6px;
+                align-items: flex-start;
+            }
+            .card-category {
+                max-width: 72px;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+                padding: 4px 8px;
+                font-size: 11px;
+            }
+            .card-likes {
+                flex-shrink: 0;
+                gap: 4px;
+                font-size: 11px;
+            }
+            .load-more-btn {
+                width: 100%;
+                max-width: 260px;
+            }
+            .modal-container {
+                max-width: 100vw;
+                max-height: 100vh;
+                width: 100%;
+                height: 100%;
+                border-radius: 0;
+                flex-direction: column;
+                overflow: hidden;
+                background: transparent;
+                box-shadow: none;
+            }
+            /* 移动端左列：高度固定，宽度由 JS 设置 */
+            .modal-left {
+                width: auto;
+                height: calc(100vh - 58px);
+                max-width: 100vw;
+                background: #000;
+                position: relative;
+            }
+            .modal-left {
+                width: 100vw !important;
+                flex: 0 0 calc(100vh - 58px);
+            }
+            .carousel-container {
+                height: 100%;
+                width: 100% !important;
+            }
+            .carousel-track {
+                min-width: 0;
+            }
+            .carousel-slide {
+                min-width: 100%;
+            }
+            .carousel-slide img {
+                height: 100%;
+                width: 100%;
+                max-width: 100%;
+                max-height: 100%;
+                object-fit: contain;
+            }
+            .carousel-slide img.mobile-fullscreen-fit {
+                object-fit: cover;
+            }
+            .carousel-prev { left: 10px; }
+            .carousel-next { right: 10px; }
+            .carousel-btn {
+                display: none;
+            }
+            .carousel-dots {
+                bottom: 2px;
+                z-index: 12;
+                pointer-events: none;
+            }
+            .mobile-view-header {
+                position: absolute;
+                top: max(12px, env(safe-area-inset-top));
+                left: 0;
+                right: 0;
+                z-index: 30;
+                display: flex;
+                align-items: center;
+                gap: 6px;
+                height: 42px;
+                padding: 0 12px;
+                color: #fff;
+                background: transparent;
+                pointer-events: auto;
+            }
+            .mobile-view-header::before {
+                display: none;
+            }
+            .mobile-header-btn {
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                width: 34px;
+                height: 34px;
+                border: none;
+                border-radius: 50%;
+                color: #fff;
+                background: transparent;
+                font-size: 19px;
+                cursor: pointer;
+                flex: 0 0 34px;
+                position: relative;
+                z-index: 2;
+            }
+            .mobile-header-btn + .mobile-header-btn {
+                margin-left: 6px;
+            }
+            .mobile-header-btn:active {
+                background: rgba(255,255,255,0.14);
+            }
+            .mobile-header-scroll {
+                display: flex;
+                align-items: center;
+                flex: 1 1 auto;
+                min-width: 0;
+                margin: 0 14px 0 6px;
+                padding: 0 8px 0 28px;
+                overflow-x: auto;
+                overflow-y: hidden;
+                -webkit-overflow-scrolling: touch;
+                scrollbar-width: none;
+                -webkit-mask-image: linear-gradient(90deg, transparent 0, rgba(0,0,0,0.18) 8px, rgba(0,0,0,0.72) 20px, #000 30px, #000 calc(100% - 32px), rgba(0,0,0,0.25) calc(100% - 10px), transparent 100%);
+                mask-image: linear-gradient(90deg, transparent 0, rgba(0,0,0,0.18) 8px, rgba(0,0,0,0.72) 20px, #000 30px, #000 calc(100% - 32px), rgba(0,0,0,0.25) calc(100% - 10px), transparent 100%);
+                position: relative;
+                z-index: 0;
+            }
+            .mobile-header-scroll::-webkit-scrollbar {
+                display: none;
+            }
+            .mobile-header-tabs {
+                display: flex;
+                align-items: center;
+                gap: 6px;
+                width: max-content;
+                min-width: 100%;
+            }
+            .mobile-header-chip {
+                flex: 0 0 auto;
+                display: inline-flex;
+                align-items: center;
+                height: 26px;
+                padding: 0 8px;
+                border: 1px solid rgba(255,255,255,0.18);
+                border-radius: 999px;
+                color: rgba(255,255,255,0.86);
+                background: rgba(255,255,255,0.1);
+                backdrop-filter: blur(10px);
+                font-size: 12px;
+                font-weight: 600;
+                line-height: 1;
+                white-space: nowrap;
+                cursor: pointer;
+                text-decoration: none;
+            }
+            .mobile-header-chip.active {
+                color: #fff;
+                background: rgba(255,255,255,0.22);
+                border-color: rgba(255,255,255,0.34);
+            }
+            /* 隐藏桌面端右列 */
+            .modal-right {
+                display: none !important;
+            }
+            /* 移动端内容悬浮层（头像、标题、描述、标签等） */
+            .mobile-top-overlay {
+                position: absolute;
+                top: 0;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                background: linear-gradient(to bottom, rgba(0,0,0,0.62), transparent 22%, transparent 58%, rgba(0,0,0,0.62));
+                padding: 0;
+                color: white;
+                pointer-events: none;
+                z-index: 5;
+            }
+            .mobile-post-details .user-info {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                margin-bottom: 8px;
+            }
+            .mobile-top-overlay .user-avatar {
+                width: 38px;
+                height: 38px;
+                border-radius: 50%;
+                overflow: hidden;
+                border: 2px solid rgba(255,255,255,0.72);
+            }
+            .mobile-top-overlay .user-name {
+                font-weight: 600;
+                font-size: 15px;
+                color: white;
+            }
+            .mobile-post-details {
+                position: absolute;
+                left: 14px;
+                right: 78px;
+                bottom: 74px;
+                pointer-events: auto;
+                text-shadow: 0 1px 8px rgba(0,0,0,0.42);
+            }
+            .mobile-post-details.intro-focus {
+                animation: introPulse 0.7s ease;
+            }
+            @keyframes introPulse {
+                0% { transform: translateY(0); }
+                45% { transform: translateY(-5px); }
+                100% { transform: translateY(0); }
+            }
+            .mobile-author-panel {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                margin-bottom: 9px;
+            }
+            .mobile-author-meta {
+                min-width: 0;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                gap: 3px;
+            }
+            .mobile-title-line {
+                display: flex;
+                flex-wrap: wrap;
+                align-items: baseline;
+                gap: 7px;
+                margin-bottom: 6px;
+            }
+            .mobile-post-details .post-title {
+                font-size: 18px;
+                font-weight: 700;
+                margin-bottom: 0;
+                color: white;
+                line-height: 1.25;
+            }
+            .mobile-post-details .mobile-category-name {
+                display: inline-flex;
+                align-items: center;
+                width: fit-content;
+                max-width: 180px;
+                min-height: 18px;
+                padding: 0 8px;
+                border-radius: 999px;
+                background: rgba(255,255,255,0.16);
+                border: 1px solid rgba(255,255,255,0.2);
+                color: rgba(255,255,255,0.84);
+                font-size: 11px;
+                font-weight: 500;
+                line-height: 18px;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+                backdrop-filter: blur(8px);
+            }
+            .mobile-post-details .desc-wrapper .desc-text {
+                color: rgba(255,255,255,0.9);
+                font-size: 14px;
+                line-height: 1.4;
+            }
+            .mobile-desc-meta {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                margin-top: 4px;
+            }
+            .mobile-post-details .desc-toggle {
+                color: #fff;
+                opacity: 0.8;
+            }
+            .mobile-post-details .topic-tags {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 6px;
+                margin-top: 8px;
+                margin-bottom: 0;
+            }
+            .mobile-post-details .topic-tag {
+                background: rgba(255,255,255,0.16);
+                border: 1px solid rgba(255,255,255,0.14);
+                color: white;
+                padding: 3px 9px;
+                backdrop-filter: blur(8px);
+            }
+            .mobile-post-details .publish-time {
+                font-size: 12px;
+                color: rgba(255,255,255,0.7);
+                margin: 0;
+                white-space: nowrap;
+            }
+            .mobile-side-actions {
+                position: fixed;
+                right: 8px;
+                bottom: calc(112px + env(safe-area-inset-bottom));
+                z-index: 18;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                gap: 12px;
+                width: 58px;
+                pointer-events: auto;
+            }
+            .mobile-side-action {
+                width: 58px;
+                border: none;
+                background: transparent;
+                color: #fff;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                gap: 4px;
+                padding: 0;
+                cursor: pointer;
+                text-shadow: 0 1px 8px rgba(0,0,0,0.55);
+            }
+            .mobile-side-action i {
+                width: 44px;
+                height: 44px;
+                border-radius: 50%;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                background: rgba(16, 24, 40, 0.34);
+                border: 1px solid rgba(255,255,255,0.22);
+                backdrop-filter: blur(12px);
+                box-shadow: 0 8px 18px rgba(0,0,0,0.24);
+                font-size: 21px;
+                line-height: 1;
+            }
+            .mobile-side-action span {
+                display: block;
+                max-width: 100%;
+                min-height: 13px;
+                font-size: 11px;
+                font-weight: 600;
+                line-height: 1.15;
+                white-space: nowrap;
+            }
+            .mobile-side-action:active i {
+                transform: scale(0.94);
+                background: rgba(255,255,255,0.2);
+            }
+            .mobile-side-action.inquiry i {
+                background: #0d6efd;
+                border-color: rgba(255,255,255,0.28);
+                color: #fff;
+            }
+            .mobile-intro-dropdown {
+                position: fixed;
+                left: 16px;
+                right: 72px;
+                bottom: calc(168px + env(safe-area-inset-bottom));
+                max-height: 34vh;
+                display: none;
+                overflow-y: auto;
+                padding: 14px 16px;
+                border: 1px solid rgba(255,255,255,0.18);
+                border-radius: 16px;
+                background: rgba(16,24,40,0.82);
+                color: #fff;
+                box-shadow: 0 16px 34px rgba(0,0,0,0.28);
+                backdrop-filter: blur(16px);
+                z-index: 19;
+                pointer-events: auto;
+                text-shadow: none;
+            }
+            .mobile-intro-dropdown.show {
+                display: block;
+            }
+            .mobile-intro-dropdown .intro-dropdown-title {
+                color: #fff;
+            }
+            .mobile-intro-dropdown .intro-dropdown-content {
+                color: rgba(255,255,255,0.9);
+            }
+            /* 底部固定栏（输入框 + 点赞/收藏/分享 + 评论按钮） */
+            .mobile-bottom-bar {
+                position: fixed;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                background: rgba(30,30,30,0.95);
+                backdrop-filter: blur(20px);
+                min-height: 58px;
+                padding: 5px 10px;
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                z-index: 20;
+                border: none;
+                box-sizing: border-box;
+                padding-bottom: max(8px, env(safe-area-inset-bottom));
+            }
+            .mobile-input {
+                flex: 0 0 clamp(134px, 42vw, 176px);
+                width: clamp(134px, 42vw, 176px);
+                min-width: 134px;
+                height: 36px;
+                background: rgba(255,255,255,0.15);
+                border: none;
+                border-radius: 24px;
+                padding: 0 12px;
+                font-size: 13px;
+                color: white;
+                outline: none;
+            }
+            .mobile-input::placeholder {
+                color: rgba(255,255,255,0.5);
+            }
+            .mobile-actions {
+                display: grid;
+                flex: 1 1 auto;
+                min-width: 0;
+                grid-template-columns: repeat(4, minmax(46px, 1fr));
+                gap: 4px;
+                align-items: center;
+            }
+            .mobile-action-icon {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                gap: 4px;
+                min-width: 46px;
+                min-height: 46px;
+                padding: 2px 0;
+                font-size: 12px;
+                line-height: 1;
+                color: rgba(255,255,255,0.88);
+                cursor: pointer;
+                white-space: nowrap;
+                border-radius: 12px;
+            }
+            .mobile-action-icon i,
+            .mobile-action-icon svg {
+                width: 24px;
+                height: 24px;
+                font-size: 24px;
+                flex: 0 0 24px;
+                display: block;
+            }
+            .mobile-action-icon span {
+                display: block;
+                max-width: 100%;
+                min-height: 12px;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+            .comment-badge {
+                position: static;
+            }
+            .comment-count {
+                position: absolute;
+                top: -6px;
+                right: -8px;
+                background: #ff5a5f;
+                color: white;
+                font-size: 10px;
+                padding: 0 4px;
+                border-radius: 10px;
+                min-width: 16px;
+                text-align: center;
+            }
+            /* 评论面板（从底部弹出） */
+            .comment-panel {
+                position: fixed;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                background: white;
+                border-radius: 20px 20px 0 0;
+                display: flex;
+                flex-direction: column;
+                max-height: 70vh;
+                overflow: hidden;
+                z-index: 30;
+                transform: translateY(100%);
+                transition: transform 0.3s;
+                box-shadow: 0 -4px 20px rgba(0,0,0,0.2);
+                scrollbar-width: none;
+                -ms-overflow-style: none;
+            }
+            .comment-panel::-webkit-scrollbar {
+                display: none;
+            }
+            .comment-panel.show {
+                transform: translateY(0);
+            }
+            .comment-panel-header {
+                padding: 16px;
+                font-weight: 600;
+                border-bottom: 1px solid #eee;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                flex-shrink: 0;
+            }
+            .comment-panel-close {
+                cursor: pointer;
+                font-size: 20px;
+            }
+            .comment-panel-list {
+                padding: 16px;
+                flex: 1 1 auto;
+                min-height: 0;
+                overflow-y: auto;
+                scrollbar-width: none;
+                -ms-overflow-style: none;
+            }
+            .comment-panel-list::-webkit-scrollbar {
+                display: none;
+            }
+            .comment-panel .comment-item {
+                margin-bottom: 20px;
+            }
+            .comment-panel .comment-avatar {
+                width: 36px;
+                height: 36px;
+            }
+            .comment-panel .comment-name {
+                font-size: 14px;
+            }
+            .comment-panel .comment-text {
+                font-size: 14px;
+            }
+            .comment-panel-input {
+                padding: 12px 16px;
+                border-top: 1px solid #eee;
+                background: white;
+                display: flex;
+                gap: 12px;
+                align-items: center;
+                flex-shrink: 0;
+            }
+            .comment-panel-input input {
+                flex: 1;
+                border: 1px solid #e2e8f0;
+                border-radius: 24px;
+                padding: 10px 16px;
+                font-size: 14px;
+                outline: none;
+            }
+            .comment-panel-input button {
+                background: #0d6efd;
+                color: white;
+                border: none;
+                padding: 8px 20px;
+                border-radius: 24px;
+                font-weight: 600;
+            }
+        }
+
+        /* 桌面端隐藏移动端元素 */
+        @media (min-width: 768px) {
+            .mobile-view-header, .mobile-top-overlay, .mobile-side-actions, .mobile-intro-dropdown, .mobile-bottom-bar, .comment-panel {
+                display: none;
+            }
+        }
+
+        @media (max-width: 380px) {
+            .factory-gallery-wall {
+                padding-left: 10px;
+                padding-right: 10px;
+            }
+            .waterfall-grid {
+                gap: 10px;
+            }
+            .card-info {
+                padding: 9px 8px 10px;
+            }
+            .card-title {
+                font-size: 12px;
+            }
+            .card-category {
+                max-width: 58px;
+                padding: 3px 6px;
+            }
+            .mobile-bottom-bar {
+                gap: 6px;
+                padding-left: 10px;
+                padding-right: 10px;
+            }
+            .mobile-input {
+                flex-basis: 124px;
+                width: 124px;
+                min-width: 124px;
+                padding-left: 10px;
+                padding-right: 10px;
+            }
+            .mobile-actions {
+                grid-template-columns: repeat(4, minmax(42px, 1fr));
+                gap: 3px;
+            }
+            .mobile-action-icon {
+                font-size: 11px;
+                min-width: 42px;
+                min-height: 44px;
+            }
+            .mobile-action-icon i,
+            .mobile-action-icon svg {
+                width: 23px;
+                height: 23px;
+                font-size: 23px;
+                flex-basis: 23px;
+            }
+            .mobile-post-details {
+                right: 68px;
+            }
+            .mobile-side-actions {
+                right: 4px;
+                width: 54px;
+                gap: 10px;
+            }
+            .mobile-side-action {
+                width: 54px;
+            }
+            .mobile-side-action i {
+                width: 40px;
+                height: 40px;
+                font-size: 19px;
+            }
+        }
+
+        .load-more-wrap {
+            text-align: center;
+        }
+    </style>
+</head>
+<body class="sidebar-embedded-page">
+    <!-- TOPBAR_START -->
+    {include file=topbar.html}
+    <!-- TOPBAR_END -->
+
+
+<div class="main-content-wrapper">
+    <div class="sidebar-embedded-aside">
+<!-- SIDEBAR_START -->
+{include file=sidebar.html}
+<!-- SIDEBAR_END -->
+    </div>
+        <div class="main-container">
+            <div class="main-content">
+                <div class="content-layout">
+                    <div class="factory-gallery-wall">
+                        <div class="wall-decoration"></div>
+                        <div class="gallery-container">
+                            <div class="filter-bar">
+                                <div class="filter-tabs" id="filterTabs">
+                                    <button class="filter-chip active" data-cat="all">🏭 全部</button>
+                                    <button class="filter-chip" data-cat="生产线">⚙️ 生产线</button>
+                                    <button class="filter-chip" data-cat="测试质检">🔬 测试/质检</button>
+                                    <button class="filter-chip" data-cat="车间环境">🏗️ 车间环境</button>
+                                    <button class="filter-chip" data-cat="先进设备">🔧 先进设备</button>
+                                </div>
+                            </div>
+                            <div class="waterfall-grid" id="waterfallGrid">
+                                {pboot:list num=12 page=1 order='date desc,id desc'}
+                                <div class="photo-card" data-category="[list:sortname]" data-likes="[list:likes]" data-collects="0" data-shares="0">
+                                    <div class="card-img"><img src="[list:ico]" alt="[list:title]" loading="lazy"></div>
+                                    <div class="card-info">
+                                        <div class="card-title">[list:title]</div>
+                                        <div class="card-meta"><span class="card-category">[list:sortname]</span><div class="card-likes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/></svg><span>[list:likes]</span></div></div>
+                                    </div>
+                                    <div class="card-detail" hidden>
+                                        <div class="detail-desc">[list:description]</div>
+                                        <div class="detail-intro">[list:content]</div>
+                                        <div class="detail-publish-time">[list:date]</div>
+                                        <div class="detail-user" data-name="WishPower工厂" data-avatar="https://randomuser.me/api/portraits/men/1.jpg"></div>
+                                        <div class="detail-tags">
+                                            {pboot:tags id=[list:id] target=tag}
+                                            <a href="[tags:link]">[tags:text]</a>
+                                            {/pboot:tags}
+                                        </div>
+                                        <div class="detail-images">
+                                            {pboot:pics id=[list:id]}
+                                            <img src="[pics:src]" alt="[pics:title]">
+                                            {/pboot:pics}
+                                        </div>
+                                        <div class="detail-comments">
+                                            <div class="detail-comment" data-user="技术控" data-time="2小时前"><p>这条线效率真高！</p><div class="detail-replies"><div class="detail-reply" data-user="WishPower官方" data-time="1小时前">感谢支持！</div></div></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                {/pboot:list}
+                            </div>
+                            <div class="load-more-wrap" id="loadMoreBtn">
+                                <button class="load-more-btn">✨ 加载更多图片</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 弹窗 -->
+    <div class="post-modal" id="postModal">
+        <div class="modal-container">
+            <div class="modal-left" id="modalLeft">
+                <div class="mobile-view-header">
+                    <button type="button" class="mobile-header-btn" id="mobileBackBtn" aria-label="返回">
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+                    <div class="mobile-header-scroll" aria-label="栏目导航">
+                        <div class="mobile-header-tabs">
+                            <a href="/" class="mobile-header-chip {pboot:if(0=='{sort:scode}')}active{/pboot:if}">Home</a>
+                            {pboot:nav}
+                            <a href="[nav:link]" class="mobile-header-chip{pboot:if('[nav:scode]'=='{sort:tcode}')} active{/pboot:if}{pboot:if('[nav:scode]'=='{sort:scode}')} active{/pboot:if}">[nav:subname]</a>
+                            {/pboot:nav}
+                        </div>
+                    </div>
+                    <button type="button" class="mobile-header-btn" aria-label="搜索">
+                        <i class="fas fa-search"></i>
+                    </button>
+                    <button type="button" class="mobile-header-btn" aria-label="更多">
+                        <i class="fas fa-ellipsis-v"></i>
+                    </button>
+                </div>
+                <div class="carousel-container">
+                    <div class="carousel-track" id="carouselTrack"></div>
+                    <div class="carousel-btn carousel-prev" id="carouselPrev"><i class="fas fa-chevron-left"></i></div>
+                    <div class="carousel-btn carousel-next" id="carouselNext"><i class="fas fa-chevron-right"></i></div>
+                    <div class="carousel-dots" id="carouselDots"></div>
+                </div>
+            </div>
+            <!-- 桌面端右侧内容 -->
+            <div class="modal-right" id="desktopRight"></div>
+        </div>
+        <!-- 移动端顶部悬浮层 -->
+        <div class="mobile-top-overlay" id="mobileTopOverlay"></div>
+        <!-- 移动端右侧快捷按钮 -->
+        <div class="mobile-side-actions" id="mobileSideActions">
+            <button type="button" class="mobile-side-action" id="mobileIntroAction" aria-label="简介">
+                <i class="fas fa-info"></i>
+                <span>简介</span>
+            </button>
+            <button type="button" class="mobile-side-action" id="mobileCartAction" aria-label="购物车">
+                <i class="fas fa-shopping-cart"></i>
+                <span>购物车</span>
+            </button>
+            <button type="button" class="mobile-side-action" id="mobileAiAction" aria-label="AI客服">
+                <i class="fas fa-headset"></i>
+                <span>AI客服</span>
+            </button>
+            <button type="button" class="mobile-side-action inquiry" id="mobileInquiryAction" aria-label="询价">
+                <i class="fas fa-file-signature"></i>
+                <span>询价</span>
+            </button>
+        </div>
+        <div class="mobile-intro-dropdown" id="mobileIntroDropdown"></div>
+        <!-- 移动端底部固定栏 -->
+        <div class="mobile-bottom-bar" id="mobileBottomBar">
+            <input type="text" class="mobile-input" id="mobileCommentInput" placeholder="说点什么...">
+            <div class="mobile-actions">
+                <div class="mobile-action-icon" id="mobileCommentIcon">
+                    <i class="far fa-comment-dots"></i>
+                    <span class="comment-badge"><span id="commentCountBadge">0</span></span>
+                </div>
+                <div class="mobile-action-icon" id="mobileLikeIcon"><i class="far fa-heart"></i><span id="mobileLikeCount">0</span></div>
+                <div class="mobile-action-icon" id="mobileCollectIcon"><i class="far fa-star"></i><span id="mobileCollectCount">0</span></div>
+                <div class="mobile-action-icon" id="mobileShareIcon"><i class="far fa-share-square"></i><span>分享</span></div>
+            </div>
+        </div>
+        <!-- 移动端评论面板 -->
+        <div class="comment-panel" id="commentPanel">
+            <div class="comment-panel-header">
+                <span>评论列表</span>
+                <span class="comment-panel-close" id="closeCommentPanel">✕</span>
+            </div>
+            <div class="comment-panel-list" id="commentPanelList"></div>
+            <div class="comment-panel-input">
+                <input type="text" id="panelCommentInput" placeholder="写下你的评论...">
+                <button id="panelSubmitBtn">发布</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- FOOTER_START -->
+    {include file=footer.html}
+    <!-- FOOTER_END -->
+
+    <!-- MOBILE_TABBAR_START -->
+    {include file=mobile_tabbar.html}
+    <!-- MOBILE_TABBAR_END -->
+
+    <!-- BACK_TO_TOP_START -->
+    {include file=back-to-top.html}
+    <!-- BACK_TO_TOP_END -->
+
+    <script>
+        function getCategoryName(category) {
+            return category === 'production' ? '生产线' :
+                   category === 'testing' ? '测试质检' :
+                   category === 'workshop' ? '车间环境' : '先进设备';
+        }
+
+        function getText(root, selector, fallback = '') {
+            const el = root.querySelector(selector);
+            return el ? el.textContent.trim() : fallback;
+        }
+
+        function parseCardData(card) {
+            const detail = card.querySelector('.card-detail');
+            const userEl = detail?.querySelector('.detail-user');
+            const fallbackImage = card.querySelector('.card-img img')?.getAttribute('src') || '';
+            const tags = Array.from(detail?.querySelectorAll('.detail-tags a') || []).map(tag => ({
+                text: tag.textContent.trim(),
+                link: tag.getAttribute('href') || '#'
+            })).filter(tag => tag.text);
+            const comments = Array.from(detail?.querySelectorAll('.detail-comment') || []).map(comment => ({
+                user: comment.dataset.user || '访客',
+                text: getText(comment, 'p'),
+                time: comment.dataset.time || '',
+                replies: Array.from(comment.querySelectorAll('.detail-reply')).map(reply => ({
+                    user: reply.dataset.user || '访客',
+                    text: reply.textContent.trim(),
+                    time: reply.dataset.time || ''
+                }))
+            }));
+
+            return {
+                category: card.dataset.category || '',
+                categoryName: getText(card, '.card-category', getCategoryName(card.dataset.category)),
+                title: getText(card, '.card-title'),
+                desc: detail ? getText(detail, '.detail-desc') : '',
+                intro: detail ? getText(detail, '.detail-intro') : '',
+                tags,
+                likes: parseInt(card.dataset.likes || getText(card, '.card-likes span', '0'), 10) || 0,
+                collects: parseInt(card.dataset.collects || '0', 10) || 0,
+                shares: parseInt(card.dataset.shares || '0', 10) || 0,
+                publishTime: detail ? getText(detail, '.detail-publish-time') : '',
+                images: Array.from(detail?.querySelectorAll('.detail-images img') || []).map(img => img.dataset.src || img.getAttribute('src')).filter(Boolean).concat(fallbackImage).filter(Boolean).filter((img, idx, arr) => arr.indexOf(img) === idx),
+                user: {
+                    name: userEl?.dataset.name || 'WishPower官方',
+                    avatar: userEl?.dataset.avatar || 'https://randomuser.me/api/portraits/lego/1.jpg',
+                    followed: false
+                },
+                comments
+            };
+        }
+
+        function bindCardClick() {
+            document.querySelectorAll('.photo-card').forEach(card => {
+                card.addEventListener('click', () => {
+                    openModal(parseCardData(card));
+                });
+            });
+        }
+
+        // 弹窗共享元素
+        const modal = document.getElementById('postModal');
+        const carouselTrack = document.getElementById('carouselTrack');
+        const carouselPrev = document.getElementById('carouselPrev');
+        const carouselNext = document.getElementById('carouselNext');
+        const carouselDots = document.getElementById('carouselDots');
+        const desktopRight = document.getElementById('desktopRight');
+        const modalLeft = document.getElementById('modalLeft');
+        let currentData = null, currentImageIndex = 0, currentImages = [];
+        let touchStartX = 0, touchStartY = 0, touchDeltaX = 0, touchDeltaY = 0, isTouchingCarousel = false;
+
+        // 根据当前图片 URL 调整左列宽度（使图片完美贴合，无黑边）
+        function adjustLeftWidth() {
+            const carouselContainer = modalLeft.querySelector('.carousel-container');
+
+            if (window.innerWidth < 768) {
+                modalLeft.style.width = '100vw';
+                if (carouselContainer) carouselContainer.style.width = '100%';
+                return;
+            }
+
+            const currentImg = carouselTrack.querySelectorAll('.carousel-slide img')[currentImageIndex];
+            if (!currentImg) return;
+
+            if (currentImg.complete && currentImg.naturalHeight) {
+                doAdjust();
+            } else {
+                currentImg.addEventListener('load', doAdjust, { once: true });
+            }
+
+            function doAdjust() {
+                const containerHeight = modalLeft.clientHeight || Math.round(window.innerHeight * 0.864);
+                const imgNaturalWidth = currentImg.naturalWidth;
+                const imgNaturalHeight = currentImg.naturalHeight;
+                if (!imgNaturalWidth || !imgNaturalHeight) return;
+
+                const rightWidth = desktopRight && desktopRight.style.display !== 'none' ? desktopRight.offsetWidth : 0;
+                const modalGap = 32;
+                const maxModalWidth = window.innerWidth * 0.98;
+                const maxLeftWidth = Math.max(280, Math.min(window.innerWidth * 0.864, maxModalWidth - rightWidth - modalGap));
+                const targetWidth = (imgNaturalWidth / imgNaturalHeight) * containerHeight;
+                const finalWidth = Math.max(280, Math.min(targetWidth, maxLeftWidth));
+
+                modalLeft.style.width = finalWidth + 'px';
+                if (carouselContainer) carouselContainer.style.width = finalWidth + 'px';
+            }
+        }
+
+        function openModal(data) {
+            currentData = data;
+            currentImages = data.images;
+            currentImageIndex = 0;
+            updateCarousel();
+            if (window.innerWidth >= 768) {
+                updateDesktopRight();
+                desktopRight.style.display = 'flex';
+            } else {
+                desktopRight.style.display = 'none';
+                updateMobileTopOverlay();
+                updateMobileBottomBar();
+            }
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+            // 调整宽度
+            setTimeout(() => adjustLeftWidth(), 10);
+        }
+        function closeModal() {
+            modal.classList.remove('active');
+            document.body.style.overflow = '';
+            document.getElementById('commentPanel').classList.remove('show');
+            closeIntroDropdowns();
+        }
+        function updateMobileImageFit(img) {
+            if (!img) return;
+            const applyFit = () => {
+                if (window.innerWidth >= 768 || !img.naturalWidth || !img.naturalHeight) {
+                    img.classList.remove('mobile-fullscreen-fit');
+                    return;
+                }
+                const ratio = img.naturalWidth / img.naturalHeight;
+                img.classList.toggle('mobile-fullscreen-fit', ratio <= 0.65);
+            };
+            if (img.complete && img.naturalHeight) {
+                applyFit();
+            } else {
+                img.addEventListener('load', applyFit, { once: true });
+            }
+        }
+        function updateCarousel() {
+            let slidesHtml = '', dotsHtml = '';
+            currentImages.forEach(img => {
+                slidesHtml += `<div class="carousel-slide"><img src="${img}" alt=""></div>`;
+            });
+            carouselTrack.innerHTML = slidesHtml;
+            carouselTrack.style.transform = `translateX(0px)`;
+            currentImages.forEach((_, i) => {
+                dotsHtml += `<div class="carousel-dot ${i===0?'active':''}"></div>`;
+            });
+            carouselDots.innerHTML = dotsHtml;
+            // 绑定新图片的 load 事件
+            document.querySelectorAll('.carousel-slide img').forEach(img => updateMobileImageFit(img));
+            const newImg = document.querySelector('.carousel-slide img');
+            if (newImg && !newImg.complete) {
+                newImg.addEventListener('load', () => adjustLeftWidth());
+            } else {
+                adjustLeftWidth();
+            }
+        }
+        function navigateCarousel(delta) {
+            let newIdx = currentImageIndex + delta;
+            if(newIdx < 0) newIdx = currentImages.length-1;
+            if(newIdx >= currentImages.length) newIdx = 0;
+            currentImageIndex = newIdx;
+            carouselTrack.style.transform = `translateX(-${currentImageIndex * 100}%)`;
+            document.querySelectorAll('.carousel-dot').forEach((dot,i)=>dot.classList.toggle('active', i===currentImageIndex));
+            updateMobileImageFit(carouselTrack.querySelectorAll('.carousel-slide img')[currentImageIndex]);
+            // 切换后重新调整宽度
+            setTimeout(() => adjustLeftWidth(), 50);
+        }
+        function bindMobileCarouselSwipe() {
+            const swipeArea = modalLeft.querySelector('.carousel-container');
+            if (!swipeArea) return;
+            swipeArea.addEventListener('touchstart', (e) => {
+                if (window.innerWidth >= 768 || !e.touches.length) return;
+                touchStartX = e.touches[0].clientX;
+                touchStartY = e.touches[0].clientY;
+                touchDeltaX = 0;
+                touchDeltaY = 0;
+                isTouchingCarousel = true;
+            }, { passive: true });
+            swipeArea.addEventListener('touchmove', (e) => {
+                if (!isTouchingCarousel || window.innerWidth >= 768 || !e.touches.length) return;
+                touchDeltaX = e.touches[0].clientX - touchStartX;
+                touchDeltaY = e.touches[0].clientY - touchStartY;
+            }, { passive: true });
+            swipeArea.addEventListener('touchend', () => {
+                if (!isTouchingCarousel || window.innerWidth >= 768) return;
+                isTouchingCarousel = false;
+                if (Math.abs(touchDeltaX) < 45 || Math.abs(touchDeltaX) < Math.abs(touchDeltaY) * 1.2) return;
+                navigateCarousel(touchDeltaX < 0 ? 1 : -1);
+            });
+            swipeArea.addEventListener('touchcancel', () => {
+                isTouchingCarousel = false;
+            });
+        }
+
+        // 桌面端渲染（原逻辑）
+        function updateDesktopRight() {
+            const d = currentData;
+            let commentsHtml = '';
+            if (d.comments.length === 0) {
+                commentsHtml = '<div class="empty-comments">暂无评论，快来抢沙发～</div>';
+            } else {
+                d.comments.forEach((comment, idx) => {
+                    let repliesHtml = '';
+                    if (comment.replies && comment.replies.length > 0) {
+                        comment.replies.forEach(reply => {
+                            repliesHtml += `<div class="reply-item"><div class="comment-main"><div class="comment-avatar"><img src="https://randomuser.me/api/portraits/thumb/lego/1.jpg"></div><div class="comment-content"><div class="comment-name">${escapeHtml(reply.user)}</div><div class="comment-text">${escapeHtml(reply.text)}</div><div class="comment-meta">${reply.time}</div></div></div></div>`;
+                        });
+                    }
+                    commentsHtml += `<div class="comment-item" data-comment-idx="${idx}"><div class="comment-main"><div class="comment-avatar"><img src="https://randomuser.me/api/portraits/thumb/lego/1.jpg"></div><div class="comment-content"><div class="comment-name">${escapeHtml(comment.user)}</div><div class="comment-text">${escapeHtml(comment.text)}</div><div class="comment-meta"><span>${comment.time}</span><span class="reply-btn" data-comment-idx="${idx}">回复</span></div></div></div><div class="replies-list" id="replies-${idx}">${repliesHtml}</div><div class="reply-input-container" id="reply-input-${idx}" style="display:none;"><input type="text" class="reply-input" placeholder="写下你的回复..." data-comment-idx="${idx}"></div></div>`;
+                });
+            }
+            const rightHtml = `
+                <div class="fixed-header">
+                    <div class="post-user">
+                        <div class="user-info"><div class="user-avatar"><img src="${d.user.avatar}"></div><div class="user-name">${escapeHtml(d.user.name)}</div></div>
+                        <div class="desktop-header-actions">
+                            <div class="desktop-quick-actions">
+                                <button type="button" class="desktop-quick-btn" id="desktopIntroAction"><i class="fas fa-info-circle"></i><span>简介</span></button>
+                                <button type="button" class="desktop-quick-btn" id="desktopAiAction"><i class="fas fa-headset"></i><span>AI客服</span></button>
+                                <button type="button" class="desktop-quick-btn inquiry" id="desktopInquiryAction"><i class="fas fa-file-signature"></i><span>询价</span></button>
+                            </div>
+                            <button type="button" class="desktop-close-btn" id="desktopCloseAction" aria-label="关闭"><i class="fas fa-times"></i></button>
+                            <div class="intro-dropdown" id="desktopIntroDropdown">
+                                <div class="intro-dropdown-title">简介</div>
+                                <div class="intro-dropdown-content">${escapeHtml(d.intro || d.desc)}</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="post-title">${escapeHtml(d.title)}</div>
+                </div>
+                <div class="scrollable-content">
+                    <div class="post-desc">${escapeHtml(d.desc)}</div>
+                    <div class="topic-tags">${d.tags.map(t=>`<a class="topic-tag" href="${escapeAttr(t.link)}">#${escapeHtml(t.text)}</a>`).join('')}</div>
+                    <div class="publish-time">${d.publishTime}</div>
+                    <div class="divider-line"></div>
+                    <div class="comments-list">${commentsHtml}</div>
+                </div>
+                <div class="bottom-bar">
+                    <div class="desktop-comment-box">
+                        <input type="text" class="comment-input" id="commentInput" placeholder="说点什么...">
+                        <button type="button" class="comment-submit-btn" id="commentSubmitBtn">发布</button>
+                    </div>
+                    <div class="action-icons"><div class="action-item" id="cartAction"><i class="fas fa-shopping-cart"></i></div><div class="action-item" id="likeAction"><i class="far fa-heart"></i> <span id="likeCount">${d.likes}</span></div><div class="action-item" id="collectAction"><i class="far fa-star"></i> <span id="collectCount">${d.collects}</span></div><div class="action-item" id="shareAction"><i class="far fa-share-square"></i> <span id="shareCount">${d.shares}</span></div></div>
+                </div>
+            `;
+            desktopRight.innerHTML = rightHtml;
+            bindDesktopEvents();
+        }
+        function bindDesktopEvents() {
+            let liked = false;
+            document.getElementById('likeAction')?.addEventListener('click',()=>{ if(!liked){ currentData.likes++; document.getElementById('likeCount').innerText = currentData.likes; document.getElementById('likeAction').innerHTML = '<i class="fas fa-heart" style="color:#f43f5e;"></i> <span>'+currentData.likes+'</span>'; liked=true; } else { currentData.likes--; document.getElementById('likeCount').innerText = currentData.likes; document.getElementById('likeAction').innerHTML = '<i class="far fa-heart"></i> <span>'+currentData.likes+'</span>'; liked=false; } });
+            let collected = false;
+            document.getElementById('collectAction')?.addEventListener('click',()=>{ if(!collected){ currentData.collects++; document.getElementById('collectCount').innerText = currentData.collects; document.getElementById('collectAction').innerHTML = '<i class="fas fa-star" style="color:#fbbf24;"></i> <span>'+currentData.collects+'</span>'; collected=true; } else { currentData.collects--; document.getElementById('collectCount').innerText = currentData.collects; document.getElementById('collectAction').innerHTML = '<i class="far fa-star"></i> <span>'+currentData.collects+'</span>'; collected=false; } });
+            document.getElementById('cartAction')?.addEventListener('click',()=>alert('已加入购物车'));
+            document.getElementById('shareAction')?.addEventListener('click',()=>alert('分享功能'));
+            document.getElementById('desktopIntroAction')?.addEventListener('click',(e)=>{
+                e.stopPropagation();
+                closeIntroDropdowns('desktop');
+                document.getElementById('desktopIntroDropdown')?.classList.toggle('show');
+            });
+            document.getElementById('desktopAiAction')?.addEventListener('click',()=>alert('AI客服功能开发中'));
+            document.getElementById('desktopInquiryAction')?.addEventListener('click',()=>alert('询价功能开发中'));
+            document.getElementById('desktopCloseAction')?.addEventListener('click', closeModal);
+            const commentInput = document.getElementById('commentInput');
+            const submitDesktopComment = () => {
+                if (!commentInput || !commentInput.value.trim()) return;
+                const newComment = { user:"当前用户", text:commentInput.value.trim(), time:"刚刚", replies:[] };
+                currentData.comments.push(newComment);
+                updateDesktopRight();
+                commentInput.value='';
+                const scrollDiv = document.querySelector('.scrollable-content');
+                if(scrollDiv) scrollDiv.scrollTop = scrollDiv.scrollHeight;
+            };
+            commentInput?.addEventListener('keypress',(e)=>{ if(e.key==='Enter') submitDesktopComment(); });
+            document.getElementById('commentSubmitBtn')?.addEventListener('click', submitDesktopComment);
+            document.querySelectorAll('.reply-btn').forEach(btn=>{ btn.addEventListener('click',(e)=>{ const idx = btn.dataset.commentIdx; const inputContainer = document.getElementById(`reply-input-${idx}`); if(inputContainer) inputContainer.style.display = inputContainer.style.display==='none'?'block':'none'; }); });
+            document.querySelectorAll('.reply-input').forEach(input=>{ input.addEventListener('keypress',(e)=>{ if(e.key==='Enter' && input.value.trim()){ const commentIdx = input.dataset.commentIdx; const newReply = { user:"当前用户", text:input.value.trim(), time:"刚刚" }; if(!currentData.comments[commentIdx].replies) currentData.comments[commentIdx].replies = []; currentData.comments[commentIdx].replies.push(newReply); updateDesktopRight(); } }); });
+        }
+
+        // 移动端顶部悬浮层
+        function updateMobileTopOverlay() {
+            const d = currentData;
+            const overlay = document.getElementById('mobileTopOverlay');
+            const descId = 'mobile_desc_' + Date.now();
+            const isLong = d.desc.length > 60;
+            const categoryName = d.categoryName || getCategoryName(d.category);
+            const html = `
+                <div class="mobile-post-details">
+                    <div class="mobile-author-panel">
+                        <div class="user-avatar"><img src="${d.user.avatar}"></div>
+                        <div class="mobile-author-meta">
+                            <div class="user-name">${escapeHtml(d.user.name)}</div>
+                            <div class="mobile-category-name">${escapeHtml(categoryName)}</div>
+                        </div>
+                    </div>
+                    <div class="mobile-title-line">
+                        <span class="post-title">${escapeHtml(d.title)}</span>
+                    </div>
+                    <div class="desc-wrapper">
+                        <div id="${descId}" class="desc-text expanded">${escapeHtml(d.desc)}</div>
+                        <div class="mobile-desc-meta">
+                            <span class="publish-time">${d.publishTime}</span>
+                            ${isLong ? `<span class="desc-toggle" data-target="${descId}">收起</span>` : ''}
+                        </div>
+                    </div>
+                    <div class="topic-tags">${d.tags.map(t=>`<a class="topic-tag" href="${escapeAttr(t.link)}">#${escapeHtml(t.text)}</a>`).join('')}</div>
+                </div>
+            `;
+            overlay.innerHTML = html;
+            const mobileIntroDropdown = document.getElementById('mobileIntroDropdown');
+            if (mobileIntroDropdown) {
+                mobileIntroDropdown.innerHTML = `<div class="intro-dropdown-title">简介</div><div class="intro-dropdown-content">${escapeHtml(d.intro || d.desc)}</div>`;
+            }
+            if (isLong) {
+                const toggle = overlay.querySelector('.desc-toggle');
+                const descEl = document.getElementById(descId);
+                toggle.addEventListener('click', () => {
+                    const expanded = descEl.classList.contains('expanded');
+                    if (expanded) {
+                        descEl.classList.remove('expanded');
+                        toggle.innerText = '展开全文';
+                    } else {
+                        descEl.classList.add('expanded');
+                        toggle.innerText = '收起';
+                    }
+                });
+            }
+        }
+        
+        function updateMobileBottomBar() {
+            const d = currentData;
+            document.getElementById('mobileLikeCount').innerText = d.likes;
+            document.getElementById('mobileCollectCount').innerText = d.collects;
+            document.getElementById('commentCountBadge').innerText = d.comments.length;
+            
+            const likeIcon = document.getElementById('mobileLikeIcon');
+            const collectIcon = document.getElementById('mobileCollectIcon');
+            const shareIcon = document.getElementById('mobileShareIcon');
+            const commentIcon = document.getElementById('mobileCommentIcon');
+            const mobileInput = document.getElementById('mobileCommentInput');
+            
+            const newLike = likeIcon.cloneNode(true);
+            likeIcon.parentNode.replaceChild(newLike, likeIcon);
+            let liked = false;
+            newLike.addEventListener('click', () => {
+                if (!liked) {
+                    currentData.likes++;
+                    document.getElementById('mobileLikeCount').innerText = currentData.likes;
+                    newLike.querySelector('i').className = 'fas fa-heart';
+                    newLike.querySelector('i').style.color = '#f43f5e';
+                    liked = true;
+                } else {
+                    currentData.likes--;
+                    document.getElementById('mobileLikeCount').innerText = currentData.likes;
+                    newLike.querySelector('i').className = 'far fa-heart';
+                    newLike.querySelector('i').style.color = '';
+                    liked = false;
+                }
+            });
+            
+            const newCollect = collectIcon.cloneNode(true);
+            collectIcon.parentNode.replaceChild(newCollect, collectIcon);
+            let collected = false;
+            newCollect.addEventListener('click', () => {
+                if (!collected) {
+                    currentData.collects++;
+                    document.getElementById('mobileCollectCount').innerText = currentData.collects;
+                    newCollect.querySelector('i').className = 'fas fa-star';
+                    newCollect.querySelector('i').style.color = '#fbbf24';
+                    collected = true;
+                } else {
+                    currentData.collects--;
+                    document.getElementById('mobileCollectCount').innerText = currentData.collects;
+                    newCollect.querySelector('i').className = 'far fa-star';
+                    newCollect.querySelector('i').style.color = '';
+                    collected = false;
+                }
+            });
+            
+            const newShare = shareIcon.cloneNode(true);
+            shareIcon.parentNode.replaceChild(newShare, shareIcon);
+            newShare.addEventListener('click', () => alert('分享功能开发中'));
+            
+            const newCommentIcon = commentIcon.cloneNode(true);
+            commentIcon.parentNode.replaceChild(newCommentIcon, commentIcon);
+            newCommentIcon.addEventListener('click', () => {
+                showCommentPanel();
+            });
+            
+            const newMobileInput = mobileInput.cloneNode(true);
+            mobileInput.parentNode.replaceChild(newMobileInput, mobileInput);
+            newMobileInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    const text = newMobileInput.value.trim();
+                    if (text) {
+                        const newComment = { user: "当前用户", text: text, time: "刚刚", replies: [] };
+                        currentData.comments.push(newComment);
+                        updateMobileBottomBar();
+                        newMobileInput.value = '';
+                        if (document.getElementById('commentPanel').classList.contains('show')) {
+                            refreshCommentPanel();
+                        }
+                    }
+                }
+            });
+        }
+
+        function bindMobileSideActions() {
+            document.getElementById('mobileIntroAction')?.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const dropdown = document.getElementById('mobileIntroDropdown');
+                const details = document.querySelector('.mobile-post-details');
+                closeIntroDropdowns('mobile');
+                dropdown?.classList.toggle('show');
+                if (details) {
+                    details.classList.remove('intro-focus');
+                    void details.offsetWidth;
+                    details.classList.add('intro-focus');
+                }
+            });
+            document.getElementById('mobileCartAction')?.addEventListener('click', () => alert('已加入购物车'));
+            document.getElementById('mobileAiAction')?.addEventListener('click', () => alert('AI客服功能开发中'));
+            document.getElementById('mobileInquiryAction')?.addEventListener('click', () => alert('询价功能开发中'));
+        }
+
+        function closeIntroDropdowns(keep) {
+            if (keep !== 'desktop') document.getElementById('desktopIntroDropdown')?.classList.remove('show');
+            if (keep !== 'mobile') document.getElementById('mobileIntroDropdown')?.classList.remove('show');
+        }
+        
+        function showCommentPanel() {
+            const panel = document.getElementById('commentPanel');
+            refreshCommentPanel();
+            panel.classList.add('show');
+        }
+        
+        function refreshCommentPanel() {
+            const listDiv = document.getElementById('commentPanelList');
+            if (!listDiv) return;
+            const comments = currentData.comments;
+            let html = '';
+            if (comments.length === 0) {
+                html = '<div style="padding:20px;text-align:center;color:#999;">暂无评论</div>';
+            } else {
+                comments.forEach((c, idx) => {
+                    let repliesHtml = '';
+                    if (c.replies && c.replies.length) {
+                        repliesHtml = `<div class="replies-list" style="margin-left:44px;margin-top:8px;">` +
+                            c.replies.map(r => `<div class="reply-item"><div class="comment-main"><div class="comment-avatar"><img src="https://randomuser.me/api/portraits/thumb/lego/1.jpg"></div><div class="comment-content"><div class="comment-name">${escapeHtml(r.user)}</div><div class="comment-text">${escapeHtml(r.text)}</div><div class="comment-meta">${r.time}</div></div></div></div>`).join('') +
+                            `</div>`;
+                    }
+                    html += `
+                        <div class="comment-item" data-comment-idx="${idx}">
+                            <div class="comment-main">
+                                <div class="comment-avatar"><img src="https://randomuser.me/api/portraits/thumb/lego/1.jpg"></div>
+                                <div class="comment-content">
+                                    <div class="comment-name">${escapeHtml(c.user)}</div>
+                                    <div class="comment-text">${escapeHtml(c.text)}</div>
+                                    <div class="comment-meta">
+                                        <span>${c.time}</span>
+                                        <span class="reply-btn-panel" data-idx="${idx}">回复</span>
+                                    </div>
+                                </div>
+                            </div>
+                            ${repliesHtml}
+                            <div class="reply-input-container" id="panelReplyInput-${idx}" style="display:none; margin-top:8px; margin-left:44px;">
+                                <input type="text" class="reply-input" placeholder="写下你的回复..." data-idx="${idx}">
+                            </div>
+                        </div>
+                    `;
+                });
+            }
+            listDiv.innerHTML = html;
+            document.querySelectorAll('.reply-btn-panel').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const idx = btn.dataset.idx;
+                    const container = document.getElementById(`panelReplyInput-${idx}`);
+                    if (container) container.style.display = container.style.display === 'none' ? 'block' : 'none';
+                });
+            });
+            document.querySelectorAll('#commentPanelList .reply-input').forEach(input => {
+                input.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') {
+                        const idx = input.dataset.idx;
+                        const text = input.value.trim();
+                        if (text) {
+                            const newReply = { user: "当前用户", text: text, time: "刚刚" };
+                            if (!currentData.comments[idx].replies) currentData.comments[idx].replies = [];
+                            currentData.comments[idx].replies.push(newReply);
+                            refreshCommentPanel();
+                        }
+                    }
+                });
+            });
+        }
+        
+        const panelSubmit = document.getElementById('panelSubmitBtn');
+        const panelInput = document.getElementById('panelCommentInput');
+        panelSubmit.addEventListener('click', () => {
+            const text = panelInput.value.trim();
+            if (text) {
+                const newComment = { user: "当前用户", text: text, time: "刚刚", replies: [] };
+                currentData.comments.push(newComment);
+                refreshCommentPanel();
+                panelInput.value = '';
+                updateMobileBottomBar();
+            }
+        });
+        document.getElementById('closeCommentPanel').addEventListener('click', () => {
+            document.getElementById('commentPanel').classList.remove('show');
+        });
+        
+        function escapeHtml(str) {
+            return String(str).replace(/[&<>]/g, function(m) {
+                if (m === '&') return '&amp;';
+                if (m === '<') return '&lt;';
+                if (m === '>') return '&gt;';
+                return m;
+            });
+        }
+
+        function escapeAttr(str) {
+            return escapeHtml(str).replace(/"/g, '&quot;');
+        }
+        
+        carouselPrev.addEventListener('click',()=>navigateCarousel(-1));
+        carouselNext.addEventListener('click',()=>navigateCarousel(1));
+        document.getElementById('mobileBackBtn')?.addEventListener('click', closeModal);
+        bindMobileCarouselSwipe();
+        bindMobileSideActions();
+        modal.addEventListener('click',(e)=>{
+            const desktopIntroDropdown = document.getElementById('desktopIntroDropdown');
+            const mobileIntroDropdown = document.getElementById('mobileIntroDropdown');
+            if (!e.target.closest('#desktopIntroAction') && !desktopIntroDropdown?.contains(e.target) && !e.target.closest('#mobileIntroAction') && !mobileIntroDropdown?.contains(e.target)) {
+                closeIntroDropdowns();
+            }
+            const commentPanel = document.getElementById('commentPanel');
+            if (commentPanel.classList.contains('show')) {
+                if (!commentPanel.contains(e.target) && !e.target.closest('#mobileCommentIcon')) {
+                    commentPanel.classList.remove('show');
+                    return;
+                }
+            }
+            if(e.target === modal) closeModal();
+        });
+        window.addEventListener('keydown',(e)=>{ if(e.key === 'Escape' && modal.classList.contains('active')) closeModal(); });
+        window.addEventListener('resize',()=>{
+            if(modal.classList.contains('active')) {
+                updateMobileImageFit(carouselTrack.querySelectorAll('.carousel-slide img')[currentImageIndex]);
+                adjustLeftWidth();
+            }
+        });
+        
+        const filterChips = document.querySelectorAll('.filter-chip');
+        let currentFilter = 'all';
+        function normalizeCategoryName(value) {
+            return String(value || '').replace(/[\/\s]/g, '');
+        }
+        function filterCardsUI() {
+            document.querySelectorAll('.photo-card').forEach(card=>{
+                const cat = card.dataset.category;
+                card.style.display = (currentFilter === 'all' || normalizeCategoryName(cat) === normalizeCategoryName(currentFilter)) ? '' : 'none';
+            });
+        }
+        filterChips.forEach(chip=>{
+            chip.addEventListener('click',()=>{
+                filterChips.forEach(c=>c.classList.remove('active'));
+                chip.classList.add('active');
+                currentFilter = chip.dataset.cat;
+                filterCardsUI();
+            });
+        });
+        bindCardClick();
+        filterCardsUI();
+    </script>
+    <script src="/skin/js/topbar.js"></script>
+    <script src="/skin/js/sidebar.js"></script>
+    <script src="/skin/js/footer.js"></script>
+    <script src="/skin/js/mobile-tabbar.js"></script>
+    <script src="/skin/js/back-to-top.js"></script>
+    <script src="/skin/js/main.js"></script>
+</body>
+</html>
+

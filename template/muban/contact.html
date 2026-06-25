@@ -1,0 +1,344 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{sort:title} - {pboot:sitesubtitle}</title>
+    <meta name="description" content="{sort:description}">
+    <meta name="keywords" content="{sort:keywords}">
+    <meta name="robots" content="index, follow">
+    <link rel="icon" href="/favicon.ico">
+    
+    <!-- 字体与图标库（全局引用） -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;family=Noto+Sans+SC:wght@300;400;500;700&amp;display=swap">
+    
+    <!-- 模块化CSS -->
+    <link rel="stylesheet" href="/skin/css/base.css">
+    <link rel="stylesheet" href="/skin/css/topbar.css">
+    <link rel="stylesheet" href="/skin/css/sidebar.css">
+    <link rel="stylesheet" href="/skin/css/contact.css">
+    <link rel="stylesheet" href="/skin/css/footer.css">
+    <link rel="stylesheet" href="/skin/css/mobile-tabbar.css">
+    <link rel="stylesheet" href="/skin/css/back-to-top.css">
+</head>
+<body class="sidebar-embedded-page">
+<!-- 顶部信息栏 -->
+<!-- TOPBAR_START -->
+{include file=topbar.html}
+<!-- TOPBAR_END -->
+    
+<!-- 主导航栏 -->
+    
+<!-- 侧边栏导航 -->
+<!-- 主内容包装器 -->
+    <div class="main-content-wrapper">
+    <div class="sidebar-embedded-aside">
+<!-- SIDEBAR_START -->
+{include file=sidebar.html}
+<!-- SIDEBAR_END -->
+    </div>
+        <div class="main-container">
+            <div class="main-content">
+                
+                <!-- 主内容区：单列布局 -->
+                <div class="about-page-content">
+                    <!-- Schema微数据（对SEO友好） -->
+                    <div class="schema-organization" itemscope itemtype="https://schema.org/Organization">
+                        <meta itemprop="name" content="WishPower绝缘子制造有限公司">
+                        <meta itemprop="description" content="专业高压绝缘子制造商，20年电力设备制造经验，ISO9001认证企业">
+                        <meta itemprop="url" content="https://www.wishpower.com">
+                        <meta itemprop="logo" content="https://www.wishpower.com/logo.png">
+                        <div itemprop="address" itemscope itemtype="https://schema.org/PostalAddress">
+                            <meta itemprop="streetAddress" content="江宁区科技园">
+                            <meta itemprop="addressLocality" content="南京">
+                            <meta itemprop="addressRegion" content="江苏">
+                            <meta itemprop="postalCode" content="211100">
+                            <meta itemprop="addressCountry" content="中国">
+                        </div>
+                        <meta itemprop="telephone" content="+86 123 4567 890">
+                        <meta itemprop="email" content="sales@wishpower.com">
+                        <meta itemprop="foundingDate" content="2004">
+                    </div>
+                    
+                    <!-- 单列布局：左列全宽 -->
+                    <div class="about-layout">
+                        <div class="about-main-column" style="flex: 1; width: 100%;">
+                            <!-- 联系信息与表单网格 -->
+                            <div class="contact-grid">
+                                <!-- 右侧表单卡片 - pbootcms留言板表单 -->
+                                <div class="contact-form-card">
+                                    <h2 class="form-title">发送咨询</h2>
+                                    
+                                    <!-- 留言表单 - 使用pbootcms留言板标签 {pboot:msgaction} -->
+                                    <form class="contact-form" action="{pboot:msgaction}" method="post" onsubmit="return submitContactForm(this);">
+                                        <!-- 第一行：姓名 + 邮箱 -->
+                                        <div class="form-row">
+                                            <div class="form-group-col">
+                                                <label class="form-label">姓名 <span class="form-required-mark">*</span></label>
+                                                <input type="text" class="form-control" name="contacts" placeholder="您的姓名" required>
+                                            </div>
+                                            <div class="form-group-col">
+                                                <label class="form-label">邮箱 <span class="form-required-mark">*</span></label>
+                                                <input type="email" class="form-control" name="email" placeholder="your@email.com" required>
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- 第二行：手机 + 公司名称 -->
+                                        <div class="form-row">
+                                            <div class="form-group-col">
+                                                <label class="form-label">手机 <span class="form-required-mark">*</span></label>
+                                                <input type="tel" class="form-control" name="mobile" placeholder="您的手机号码" required>
+                                            </div>
+                                            <div class="form-group-col">
+                                                <label class="form-label">公司名称</label>
+                                                <input type="text" class="form-control" name="company" placeholder="您的公司名称">
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- 第三行：咨询类型 + 感兴趣产品 -->
+                                        <div class="form-row">
+                                            <div class="form-group-col">
+                                                <label class="form-label">咨询类型</label>
+                                                <select class="form-control" name="inquiry_type">
+                                                    <option value="">请选择咨询类型</option>
+                                                    <option value="产品咨询">产品咨询</option>
+                                                    <option value="技术支持">技术支持</option>
+                                                    <option value="合作代理">合作代理</option>
+                                                    <option value="其他">其他</option>
+                                                </select>
+                                            </div>
+                                            <div class="form-group-col">
+                                                <label class="form-label">感兴趣的产品</label>
+                                                <select class="form-control" name="product">
+                                                    <option value="">请选择感兴趣的产品</option>
+                                                    <option value="复合绝缘子">复合绝缘子</option>
+                                                    <option value="高压避雷器">高压避雷器</option>
+                                                    <option value="高压熔断器">高压熔断器</option>
+                                                    <option value="绝缘套管">绝缘套管</option>
+                                                    <option value="柱式绝缘子">柱式绝缘子</option>
+                                                    <option value="悬式绝缘子">悬式绝缘子</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- 留言内容 -->
+                                        <div class="form-group full-width">
+                                            <label for="content" class="form-label">留言内容 <span class="form-required-mark">*</span></label>
+                                            <textarea class="form-control" id="content" name="content" rows="3" placeholder="请告诉我们您的需求或询盘..." required></textarea>
+                                        </div>
+                                        
+                                        <!-- 提交按钮 - 居中 -->
+                                        <div class="submit-btn-container">
+                                            <button type="submit" class="submit-btn" id="submitBtn">
+                                                <i class="fas fa-paper-plane"></i> 提交咨询
+                                            </button>
+                                        </div>
+                                        
+                                        <!-- 验证码模块 - 右下对齐，更紧凑 -->
+                                        <div class="captcha-container">
+                                            <div class="captcha-wrapper">
+                                                <input type="text" class="form-control" id="checkcode" name="checkcode" placeholder="验证码" required>
+                                                <img src="{pboot:checkcode}" onclick="this.src='{pboot:checkcode}?'+Math.round(Math.random()*10);" alt="验证码" title="点击刷新">
+                                            </div>
+                                            <div class="captcha-tip">点击图片刷新验证码</div>
+                                        </div>
+                                    </form>
+                                </div>
+                                                                
+                                <!-- 左侧联系信息卡片 -->
+                                <div class="contact-info-card">
+                                    <h2 class="contact-info-title">联系信息</h2>
+                                    
+                                    <div class="contact-detail-list">
+                                        <!-- 公司名称 -->
+                                        <div class="contact-detail-item">
+                                            <div class="contact-detail-icon">
+                                                <i class="fas fa-building"></i>
+                                            </div>
+                                            <div class="contact-detail-content">
+                                                <div class="contact-detail-label">公司名称</div>
+                                                <div class="contact-detail-value">{pboot:companyname}</div>
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- 地址 -->
+                                        <div class="contact-detail-item">
+                                            <div class="contact-detail-icon">
+                                                <i class="fas fa-map-marker-alt"></i>
+                                            </div>
+                                            <div class="contact-detail-content">
+                                                <div class="contact-detail-label">公司地址</div>
+                                                <div class="contact-detail-value">{pboot:companyaddress}</div>
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- 电话 -->
+                                        <div class="contact-detail-item">
+                                            <div class="contact-detail-icon">
+                                                <i class="fas fa-phone-alt"></i>
+                                            </div>
+                                            <div class="contact-detail-content">
+                                                <div class="contact-detail-label">联系电话</div>
+                                                <div class="contact-detail-value"><a href="tel:{pboot:companymobile}">+86 {pboot:companymobile}（WhatsApp）</a></div>
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- 邮箱 -->
+                                        <div class="contact-detail-item">
+                                            <div class="contact-detail-icon">
+                                                <i class="fas fa-envelope"></i>
+                                            </div>
+                                            <div class="contact-detail-content">
+                                                <div class="contact-detail-label">电子邮箱</div>
+                                                <div class="contact-detail-value"><a href="mailto:{pboot:companyemail}">{pboot:companyemail}</a></div>
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- 网址 -->
+                                        <div class="contact-detail-item">
+                                            <div class="contact-detail-icon">
+                                                <i class="fas fa-globe"></i>
+                                            </div>
+                                            <div class="contact-detail-content">
+                                                <div class="contact-detail-label">官方网站</div>
+                                                <div class="contact-detail-value"><a href="https://www.wishpower.net" target="_blank">www.wishpower.net</a></div>
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- 社交媒体二维码 (微信 & WhatsApp) -->
+                                        <div class="contact-detail-item">
+                                            <div class="contact-detail-icon">
+                                                <i class="fas fa-qrcode"></i>
+                                            </div>
+                                            <div class="contact-detail-content">
+                                                <div class="contact-detail-label">扫码添加</div>
+                                                <div class="qr-row">
+                                                    <!-- 微信二维码 -->
+                                                    <div class="qr-item">
+                                                        <div class="qr-code">
+                                                            <img src="/erweima.jpg" 
+                                                                 alt="WishPower官方微信二维码" 
+                                                                 class="qr-image"
+                                                                 loading="lazy">
+                                                        </div>
+                                                        <p>官方微信</p>
+                                                        <small>微信号: wishpower123</small>
+                                                    </div>
+                                                    
+                                                    <!-- WhatsApp二维码 -->
+                                                    <div class="qr-item">
+                                                        <div class="qr-code">
+                                                            <img src="/erweima.jpg" 
+                                                                 alt="WishPower WhatsApp二维码" 
+                                                                 class="qr-image"
+                                                                 loading="lazy">
+                                                        </div>
+                                                        <p>WhatsApp</p>
+                                                        <small><a href="https://wa.me/86{pboot:companymobile}">+86 {pboot:companymobile}</a></small>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- 社媒图标 (外贸风格) -->
+                                    <div class="contact-social-links">
+                                        <a href="https://wa.me/{pboot:companymobile}" class="contact-social-link" target="_blank" aria-label="WhatsApp"><i class="fab fa-whatsapp"></i></a>
+                                        <a href="https://www.youtube.com/@wishpower-videos" target="_blank" class="contact-social-link" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+                                        <a href="https://www.tiktok.com/@wishpower1" target="_blank" class="contact-social-link" aria-label="TikTok"><i class="fab fa-tiktok"></i></a>
+                                        <a href="https://www.instagram.com/wishpower66/" target="_blank" class="contact-social-link" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                                        <a href="#" class="contact-social-link" target="_blank" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+                                        <a href="#" class="contact-social-link" target="_blank" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                                    </div>
+                                </div>
+                                
+                            </div>
+                            
+                            <!-- 高级地图模块 - 泰国工厂 (Google) & 中国工厂 (百度) -->
+                            <section class="contact-map-section">
+                                <div class="map-title-wrapper">
+                                    <h2 class="about-title">公司位置</h2>
+                                    <div class="map-glass-tabs">
+                                        <button class="map-glass-tab" data-map="baidu">中国工厂 (百度)</button>
+                                        <button class="map-glass-tab active" data-map="google">泰国工厂 (Google)</button>
+                                    </div>
+                                </div>
+                                <div class="map-container">
+                                    <!-- 地图悬浮信息卡片 - 显示地址信息 (动态切换) -->
+                                    <div class="map-info-card" id="mapInfoCard">
+                                        <div class="address-line" id="google-address">
+                                            <i class="fas fa-map-pin"></i>
+                                            <span class="address-text">
+                                                <strong>泰国工厂</strong><br>
+                                                123 Moo 5, Bangna-Trad Road, Bang Sao Thong, Samutprakarn 10540, Thailand
+                                            </span>
+                                        </div>
+                                        <div class="address-line" id="china-address" style="display: none;">
+                                            <i class="fas fa-map-pin"></i>
+                                            <span class="address-text">
+                                                <strong>中国工厂</strong><br>
+                                                西安唯实输配电技术有限公司<br>
+                                                西安市高陵区渭阳三路与泾渭中路交叉口东南侧
+                                            </span>
+                                        </div>
+                                        <a href="#" id="mapDirectionBtn" class="btn-direction" target="_blank">
+                                            <i class="fas fa-directions"></i> 获取路线
+                                        </a>
+                                    </div>
+                                    
+                                    <!-- 装饰性地图图钉 -->
+                                    <div class="map-pin" aria-hidden="true">
+                                        <i class="fas fa-map-marker-alt"></i>
+                                    </div>
+                                    
+                                    <!-- 百度地图 - 中国工厂 (基于您提供的最新链接生成) -->
+                                    <iframe class="map-iframe"
+                                            id="baidu-map"
+                                            src="https://map.baidu.com/poi/西安唯实输配电技术有限公司/@12133239.91,4072291.62,17z?uid=c444214d22d017db2ce67b3a&ugc_type=3&ugc_ver=1&output=embed"
+                                            style="display:none;"
+                                            allowfullscreen=""
+                                            loading="lazy"
+                                            title="西安唯实输配电技术有限公司 - 百度地图">
+                                    </iframe>
+                                    
+                                    <!-- Google地图 - 泰国工厂 -->
+                                    <iframe class="map-iframe active" 
+                                            id="google-map"
+                                            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3877.123456789012!2d100.678901!3d13.654321!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMTPCsDM5JzE1LjYiTiAxMDDCsDQwJzQ0LjAiRQ!5e0!3m2!1sen!2sth!4v1621234567890!5m2!1sen!2sth" 
+                                            allowfullscreen="" 
+                                            loading="lazy" 
+                                            title="WishPower泰国工厂 - Google地图 - 北榄府">
+                                    </iframe>
+                                    
+                                </div>
+                            </section>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+<!--页脚 FOOTER_START -->
+{include file=footer.html}
+<!-- FOOTER_END -->
+    
+<!-- 移动端底部导航MOBILE_TABBAR_START -->
+{include file=mobile_tabbar.html}
+<!-- MOBILE_TABBAR_END -->
+    
+<!-- BACK_TO_TOP_START 返回顶部按钮 -->
+{include file=back-to-top.html}
+<!-- BACK_TO_TOP_END -->
+    
+    <!-- JS 模块（按依赖顺序） -->
+    <script src="/skin/js/topbar.js"></script>
+    <script src="/skin/js/sidebar.js"></script>
+    <script src="/skin/js/contact.js"></script>
+    <script src="/skin/js/footer.js"></script>
+    <script src="/skin/js/mobile-tabbar.js"></script>
+    <script src="/skin/js/back-to-top.js"></script>
+    <script src="/skin/js/main.js"></script>
+</body>
+</html>

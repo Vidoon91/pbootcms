@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{sort:title} - {pboot:sitesubtitle}</title>
+    <meta name="description" content="{sort:description}">
+    <meta name="keywords" content="{sort:keywords}">
+    <meta name="robots" content="index, follow">
+    
+    <!-- 字体与图标库（全局引用） -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;family=Noto+Sans+SC:wght@300;400;500;700&amp;display=swap">
+    
+    <!-- 模块化CSS -->
+    <link rel="stylesheet" href="/skin/css/base.css">
+    <link rel="stylesheet" href="/skin/css/topbar.css">
+    <link rel="stylesheet" href="/skin/css/sidebar.css">
+    <link rel="stylesheet" href="/skin/css/productlist2.css">
+    <link rel="stylesheet" href="/skin/css/footer.css">
+    <link rel="stylesheet" href="/skin/css/mobile-tabbar.css">
+    <link rel="stylesheet" href="/skin/css/back-to-top.css">
+</head>
+<body class="sidebar-embedded-page">
+    <!-- 顶部信息栏 -->
+<!-- TOPBAR_START -->
+{include file=topbar.html}
+<!-- TOPBAR_END -->
+    
+    <!-- 主导航栏 -->
+    
+    <!-- 侧边栏导航 -->
+<!-- 主内容包装器 -->
+<div class="main-content-wrapper">
+    <div class="sidebar-embedded-aside">
+<!-- SIDEBAR_START -->
+{include file=sidebar.html}
+<!-- SIDEBAR_END -->
+    </div>
+    <div class="main-container">
+        <div class="main-content">
+            <div class="content-layout">
+                <!-- 产品列表页主内容 -->
+                <section class="product-list-page">
+                <!-- 优化横幅模块 -->
+                <section class="product-banner">
+                    <nav class="breadcrumb np-product-breadcrumb" aria-label="Breadcrumb navigation">
+                        <a href="/"><i class="fas fa-home" aria-hidden="true"></i></a>
+                        <span class="breadcrumb-separator" aria-hidden="true"><i class="fas fa-chevron-right"></i></span>
+                        {pboot:if('{sort:pcode}'!='0')}
+                        {pboot:sort scode={sort:pcode}}
+                        <a href="[sort:link]">
+                            <span>[sort:subname]</span>
+                        </a>
+                        {/pboot:sort}
+                        <span class="breadcrumb-separator" aria-hidden="true"><i class="fas fa-chevron-right"></i></span>
+                        {/pboot:if}
+                        <a href="{sort:link}" class="breadcrumb-current">
+                            <span>{sort:subname}</span>
+                        </a>
+                    </nav>
+
+                    <div class="banner-content">
+                        <h1 class="banner-title">{sort:subname}</h1>
+                        <div class="banner-stats">
+                            <div class="stat-item">
+                                <div class="stat-number">8+</div>
+                                <div class="stat-label">Product Categories</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-number">200+</div>
+                                <div class="stat-label">Product Models</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-number">60+</div>
+                                <div class="stat-label">Export Countries</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-number">20+</div>
+                                <div class="stat-label">Industry Experience</div>
+                            </div>
+                        </div>
+                        <div class="banner-categories">
+                            {pboot:nav parent={sort:scode} num=5}
+                                <a href="[nav:link]" class="category-tag">[nav:subname]</a>
+                            {/pboot:nav}
+                        </div>
+                    </div>
+                </section>
+                    
+                    <!-- 产品列表页面布局 -->
+                    <div class="product-page-layout">
+                        <!-- 筛选侧边栏 - PbootCMS官方多条件筛选标签版（含“全部”按钮） -->
+                        <div class="filter-sidebar" id="filterSidebar">
+                            <div class="filter-panel product-filter-panel">
+                                <div class="filter-panel-header">
+                                    <div class="filter-panel-title">
+                                        <i class="fas fa-filter"></i>
+                                        Product Filters
+                                    </div>
+                                    <div class="filter-panel-toggle">
+                                        <i class="fas fa-chevron-down"></i>
+                                    </div>
+                                </div>
+                                
+                                 <!--  城市筛选  -->
+                                {pboot:selectgroup field='ext_citys'}
+                                <div class="filter-group">
+                                    <div class="filter-group-title" data-toggle="standard">
+                                        <div class="filter-group-name">
+                                            <i class="fas fa-certificate"></i>
+                                            Product Citys
+                                        </div>
+                                        <button class="filter-group-toggle">
+                                            <i class="fas fa-chevron-down"></i>
+                                        </button>
+                                    </div>
+                                    <div class="filter-options" id="standardFilter">
+                                        {pboot:selectall field='ext_citys' text='All' class='filter-option' active='filter-option active'}
+                                        {pboot:select field='ext_citys'}
+                                        <a href="[select:link]" class="filter-option[select:active class=' active']">[select:value]</a>
+                                        {/pboot:select}
+                                    </div>
+                                </div>
+                                {/pboot:selectgroup}
+                                
+                                <!-- 电压等级筛选 -->
+                                {pboot:selectgroup field='ext_voltages'}
+                                <div class="filter-group">
+                                    <div class="filter-group-title" data-toggle="voltage">
+                                        <div class="filter-group-name">
+                                            <i class="fas fa-bolt"></i>
+                                            Voltage Rating
+                                        </div>
+                                        <button class="filter-group-toggle">
+                                            <i class="fas fa-chevron-down"></i>
+                                        </button>
+                                    </div>
+                                    <div class="filter-options" id="voltageFilter">
+                                        <!-- 全部按钮：class为基础样式，active为选中时追加的类 -->
+                                        {pboot:selectall field='ext_voltages' text='All' class='filter-option' active='filter-option active'}
+                                        <!-- 具体选项循环 -->
+                                        {pboot:select field='ext_voltages'}
+                                        <a href="[select:link]" class="filter-option[select:active class=' active']">[select:value]</a>
+                                        {/pboot:select}
+                                    </div>
+                                </div>
+                                {/pboot:selectgroup}
+                                
+                                 <!-- 产品类型筛选 -->
+                                {pboot:selectgroup field='ext_types'}
+                                <div class="filter-group">
+                                    <div class="filter-group-title" data-toggle="standard">
+                                        <div class="filter-group-name">
+                                            <i class="fas fa-certificate"></i>
+                                            Product Type
+                                        </div>
+                                        <button class="filter-group-toggle">
+                                            <i class="fas fa-chevron-down"></i>
+                                        </button>
+                                    </div>
+                                    <div class="filter-options" id="standardFilter">
+                                        {pboot:selectall field='ext_types' text='All' class='filter-option' active='filter-option active'}
+                                        {pboot:select field='ext_types'}
+                                        <a href="[select:link]" class="filter-option[select:active class=' active']">[select:value]</a>
+                                        {/pboot:select}
+                                    </div>
+                                </div>
+                                {/pboot:selectgroup}
+                                
+                                <!-- 应用场景筛选 -->
+                                {pboot:selectgroup field='ext_applications'}
+                                <div class="filter-group">
+                                    <div class="filter-group-title" data-toggle="application">
+                                        <div class="filter-group-name">
+                                            <i class="fas fa-industry"></i>
+                                            Application
+                                        </div>
+                                        <button class="filter-group-toggle">
+                                            <i class="fas fa-chevron-down"></i>
+                                        </button>
+                                    </div>
+                                    <div class="filter-options" id="applicationFilter">
+                                        {pboot:selectall field='ext_applications' text='All' class='filter-option' active='filter-option active'}
+                                        {pboot:select field='ext_applications'}
+                                        <a href="[select:link]" class="filter-option[select:active class=' active']">[select:value]</a>
+                                        {/pboot:select}
+                                    </div>
+                                </div>
+                                {/pboot:selectgroup}
+                                
+                                <!-- 底部控制按钮：仅保留“清除筛选”按钮（占满宽度） -->
+                                <div class="filter-controls">
+                                    <button class="filter-clear" id="clearFilters" style="flex: 1;">Clear Filters</button>
+                                    <div class="filter-stats">Selected <strong id="selectedFiltersCount">0</strong> filters</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- 产品列表区域 -->
+                        <div class="product-list-area">
+                            <!-- 产品列表 -->
+                            <section class="products-grid" id="productsGrid">
+                                {pboot:list num=15 order=date page=1}
+                                <article class="product-item" 
+                                    data-category="[list:sortname]" 
+                                    data-voltage="[list:ext_voltage]" 
+                                    data-application="[list:ext_application]" 
+                                    data-feature="[list:ext_feature]" 
+                                    data-standard="[list:ext_standard]" 
+                                    data-publish-date="[list:date style=Y-m-d]" 
+                                    data-views="[list:visits]">
+                                    <div class="product-link" itemscope itemtype="https://schema.org/Product">
+                                        <div class="product-thumb">
+                                            <!-- 判断是否置顶，是则显示 Hot 徽章 -->
+                                            {pboot:if('[list:istop]' == '1')}
+                                            <span class="product-badge">Featured</span>
+                                            {/pboot:if}
+                                            <img src="[list:ico]" alt="[list:title]" loading="lazy" itemprop="image">
+                                            <div class="product-thumb-overlay">
+                                                <div class="product-thumb-content">
+                                                    <h2 class="product-title" itemprop="name">[list:title]</h2>
+                                                    <p class="product-excerpt" itemprop="description">[list:description]</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="product-info">
+                                            <div class="product-specs">{pboot:tags id=[list:id] target=tag}<a href="[tags:link]" class="product-spec" rel="tag"><i class="fas fa-tag"></i> [tags:text]</a>{/pboot:tags}</div>
+                                            
+                                            <div class="product-footer">
+                                                <div class="product-publish-date">
+                                                    <i class="far fa-calendar-alt"></i>
+                                                    <span>[list:date style=Y-m-d]</span>
+                                                </div>
+                                                <a href="[list:link]" class="product-action">
+                                                    <i class="fas fa-eye"></i>
+                                                    View Details
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </article>
+                                {/pboot:list}
+                            </section>
+                            
+                            {pboot:if({page:rows}>0)}
+                            <!-- 分页容器 -->
+                            <div class="pagination-container">
+                                <nav class="pagination" aria-label="Product pagination">
+                                    <!-- 上一页 -->
+                                    {pboot:2if({page:current}>1)}
+                                    <a href="{page:pre}" class="pagination-item prev" title="Previous page">
+                                        <i class="fas fa-chevron-left"></i>
+                                    </a>
+                                    {2else}
+                                    <span class="pagination-item prev disabled" title="Previous page">
+                                        <i class="fas fa-chevron-left"></i>
+                                    </span>
+                                    {/pboot:2if}
+                            
+                                    <!-- 数字页码 -->
+                                    {page:numbar}
+                            
+                                    <!-- 下一页 -->
+                                    {pboot:2if({page:current}<{page:count})}
+                                    <a href="{page:next}" class="pagination-item next" title="Next page">
+                                        <i class="fas fa-chevron-right"></i>
+                                    </a>
+                                    {2else}
+                                    <span class="pagination-item next disabled" title="Next page">
+                                        <i class="fas fa-chevron-right"></i>
+                                    </span>
+                                    {/pboot:2if}
+                                </nav>
+                            
+                                <div class="pagination-info">
+                                    <span class="pagination-total">{page:rows} products / {page:count} pages</span>
+                                </div>
+                            </div>
+                            {/pboot:if}
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </div>
+</div>
+    
+<!-- FOOTER_START 页脚-->
+{include file=footer.html}
+<!-- FOOTER_END -->
+    
+<!-- MOBILE_TABBAR_START 移动端底部导航-->
+{include file=mobile_tabbar.html}
+<!-- MOBILE_TABBAR_END -->
+    
+<!-- BACK_TO_TOP_START 返回顶部按钮-->
+{include file=back-to-top.html}
+<!-- BACK_TO_TOP_END -->
+    
+    <!-- JS 模块（按依赖顺序） -->
+    <script src="/skin/js/topbar.js"></script>
+    <script src="/skin/js/sidebar.js"></script>
+    <script src="/skin/js/footer.js"></script>
+    <script src="/skin/js/mobile-tabbar.js"></script>
+    <script src="/skin/js/back-to-top.js"></script>
+    <script src="/skin/js/main.js"></script>
+    <script src="/skin/js/productlist2.js"></script>
+</body>
+</html>

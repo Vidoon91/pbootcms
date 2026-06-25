@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{pboot:tag} Products - {pboot:sitesubtitle}</title>
+    <meta name="description" content="Browse WishPower products related to {pboot:tag}.">
+    <meta name="keywords" content="{pboot:tag}, WishPower products">
+    <meta name="robots" content="index, follow">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;family=Noto+Sans+SC:wght@300;400;500;700&amp;display=swap">
+
+    <link rel="stylesheet" href="/skin/css/base.css">
+    <link rel="stylesheet" href="/skin/css/topbar.css">
+    <link rel="stylesheet" href="/skin/css/sidebar.css">
+    <link rel="stylesheet" href="/skin/css/productlist.css">
+    <link rel="stylesheet" href="/skin/css/footer.css">
+    <link rel="stylesheet" href="/skin/css/mobile-tabbar.css">
+    <link rel="stylesheet" href="/skin/css/back-to-top.css">
+</head>
+<body class="sidebar-embedded-page">
+<!-- TOPBAR_START -->
+{include file=topbar.html}
+<!-- TOPBAR_END -->
+
+
+<div class="main-content-wrapper">
+    <div class="sidebar-embedded-aside">
+<!-- SIDEBAR_START -->
+{include file=sidebar.html}
+<!-- SIDEBAR_END -->
+    </div>
+    <div class="main-container">
+        <div class="main-content">
+            <div class="content-layout">
+                <section class="product-list-page">
+                    <section class="product-banner">
+                        <nav class="breadcrumb" aria-label="Breadcrumb navigation">
+                            <a href="/"><i class="fas fa-home" aria-hidden="true"></i></a>
+                            <span class="breadcrumb-separator" aria-hidden="true"><i class="fas fa-chevron-right"></i></span>
+                            <a href="/tag/" class="breadcrumb-current">
+                                <i class="fas fa-tags breadcrumb-sort-icon" aria-hidden="true"></i>
+                                <span>Tags</span>
+                            </a>
+                            <span class="breadcrumb-separator" aria-hidden="true"><i class="fas fa-chevron-right"></i></span>
+                            <span class="breadcrumb-current">
+                                <i class="fas fa-tag breadcrumb-sort-icon" aria-hidden="true"></i>
+                                <span>{pboot:tag}</span>
+                            </span>
+                        </nav>
+
+                        <div class="banner-content">
+                            <h1 class="banner-title">{pboot:tag}</h1>
+
+                            <div class="banner-stats">
+                                <div class="stat-item">
+                                    <div class="stat-number">8+</div>
+                                    <div class="stat-label">Product Categories</div>
+                                </div>
+                                <div class="stat-item">
+                                    <div class="stat-number">200+</div>
+                                    <div class="stat-label">Product Models</div>
+                                </div>
+                                <div class="stat-item">
+                                    <div class="stat-number">60+</div>
+                                    <div class="stat-label">Export Countries</div>
+                                </div>
+                                <div class="stat-item">
+                                    <div class="stat-number">20+</div>
+                                    <div class="stat-label">Industry Experience</div>
+                                </div>
+                            </div>
+
+                            <div class="banner-categories">
+                                {pboot:nav parent=2 num=5}
+                                    <a href="[nav:link]" class="category-tag">[nav:subname]</a>
+                                {/pboot:nav}
+                            </div>
+                        </div>
+                    </section>
+
+                    <div class="product-page-layout">
+                        <div class="product-list-area">
+                            <section class="products-grid" id="productsGrid">
+                                {pboot:list scode=* num=12 order=date desc page=1}
+                                <article class="product-item">
+                                    <div class="product-link" itemscope itemtype="https://schema.org/Product">
+                                        <div class="product-thumb">
+                                            {pboot:if([list:istop]==1)}
+                                            <span class="product-badge">Featured</span>
+                                            {/pboot:if}
+
+                                            <img src="[list:ico]" alt="[list:title]" loading="lazy" itemprop="image">
+                                            <div class="product-thumb-overlay">
+                                                <div class="product-thumb-content">
+                                                    <h2 class="product-title" itemprop="name">[list:title]</h2>
+                                                    <p class="product-excerpt" itemprop="description">[list:description len=60]</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="product-info">
+                                            <div class="product-specs">{pboot:tags id=[list:id] target=tag}<a href="[tags:link]" class="product-spec" rel="tag"><i class="fas fa-tag"></i> [tags:text]</a>{/pboot:tags}</div>
+
+                                            <div class="product-footer">
+                                                <div class="product-publish-date">
+                                                    <i class="far fa-calendar-alt"></i>
+                                                    <span>[list:date style=Y-m-d]</span>
+                                                </div>
+                                                <a href="[list:link]" class="product-action">
+                                                    <i class="fas fa-eye"></i> View Details
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </article>
+                                {/pboot:list}
+                            </section>
+
+                            <div class="pagination-container">
+                                <nav class="pagination" aria-label="Tag product pagination">
+                                    {pboot:if('{page:pre}' != '')}
+                                    <a href="{page:pre}" class="pagination-item prev" title="Previous page">
+                                        <i class="fas fa-chevron-left"></i>
+                                    </a>
+                                    {else}
+                                    <span class="pagination-item prev disabled" title="Previous page">
+                                        <i class="fas fa-chevron-left"></i>
+                                    </span>
+                                    {/pboot:if}
+
+                                    {page:numbar}
+
+                                    {pboot:if('{page:next}' != '')}
+                                    <a href="{page:next}" class="pagination-item next" title="Next page">
+                                        <i class="fas fa-chevron-right"></i>
+                                    </a>
+                                    {else}
+                                    <span class="pagination-item next disabled" title="Next page">
+                                        <i class="fas fa-chevron-right"></i>
+                                    </span>
+                                    {/pboot:if}
+                                </nav>
+                                <div class="pagination-info">
+                                    <span class="pagination-total">{page:rows} products / {page:count} pages</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="filter-sidebar">
+                            <div class="np-sidebar-widget np-company-info-card">
+                                <div class="np-widget-header">
+                                    <h3 class="np-widget-title">About Company</h3>
+                                </div>
+                                <div class="np-widget-content">
+                                    <div class="np-company-logo-section">
+                                        <div class="np-company-logo">
+                                            <img src="{pboot:sitelogo}" alt="WishPower" loading="lazy">
+                                        </div>
+                                        <div class="np-company-basic-info">
+                                            <h4 class="np-company-name">WishPower</h4>
+                                            <p class="np-company-tagline">Leading Power Insulation Equipment Factory</p>
+                                            <div class="np-company-rating">
+                                                <span class="np-stars">
+                                                    <i class="fas fa-star"></i>
+                                                    <i class="fas fa-star"></i>
+                                                    <i class="fas fa-star"></i>
+                                                    <i class="fas fa-star"></i>
+                                                    <i class="fas fa-star-half-alt"></i>
+                                                </span>
+                                                <span class="np-rating-text">4.8/5 Customer Rating</span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="np-company-expertise">
+                                        <h5 class="np-section-title">Business Scope</h5>
+                                        <div class="np-expertise-tags">
+                                            <span class="np-expertise-tag">Insulators</span>
+                                            <span class="np-expertise-tag">Surge Arresters</span>
+                                            <span class="np-expertise-tag">Fuse Cutouts</span>
+                                            <span class="np-expertise-tag">Insulation Bushings</span>
+                                            <span class="np-expertise-tag">OEM Solutions</span>
+                                            <span class="np-expertise-tag">FRP</span>
+                                        </div>
+                                    </div>
+
+                                    <div class="np-company-links">
+                                        <a href="/about-us/" class="np-company-link">
+                                            <i class="fas fa-info-circle"></i>
+                                            <span>Company</span>
+                                        </a>
+                                        <a href="/certificates/" class="np-company-link">
+                                            <i class="fas fa-certificate"></i>
+                                            <span>Certificates</span>
+                                        </a>
+                                        <a href="/factory-gallery/" class="np-company-link">
+                                            <i class="fas fa-industry"></i>
+                                            <span>Environment</span>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="np-sidebar-widget np-contact-team">
+                                <div class="np-widget-header">
+                                    <h3 class="np-widget-title">Business Inquiry</h3>
+                                </div>
+                                <div class="np-widget-content">
+                                    <div class="np-team-intro">
+                                        <p>WishPower business consultants provide product selection, quotation communication, and technical support.</p>
+                                    </div>
+
+                                    <div class="np-team-contact-options">
+                                        <div class="np-contact-option">
+                                            <div class="np-option-icon">
+                                                <i class="fas fa-headset"></i>
+                                            </div>
+                                            <div class="np-option-info">
+                                                <h5>Technical Support Hotline</h5>
+                                                <a href="tel:+86{pboot:companymobile}" class="np-option-link">+86 {pboot:companymobile}</a>
+                                            </div>
+                                        </div>
+
+                                        <div class="np-contact-option">
+                                            <div class="np-option-icon">
+                                                <i class="fas fa-envelope-open-text"></i>
+                                            </div>
+                                            <div class="np-option-info">
+                                                <h5>Technical Support Email</h5>
+                                                <a href="mailto:{pboot:companyemail}" class="np-option-link">{pboot:companyemail}</a>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="np-global-contact">
+                                        <a href="https://wa.me/8612345678900" class="np-global-whatsapp-btn" target="_blank">
+                                            <i class="fab fa-whatsapp"></i>
+                                            <span>Official WhatsApp</span>
+                                        </a>
+                                        <p class="np-contact-note">Reply within 24 hours with multilingual support.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- FOOTER_START Footer-->
+{include file=footer.html}
+<!-- FOOTER_END -->
+
+<!-- MOBILE_TABBAR_START Mobile bottom navigation-->
+{include file=mobile_tabbar.html}
+<!-- MOBILE_TABBAR_END -->
+
+<!-- BACK_TO_TOP_START Back-to-top button-->
+{include file=back-to-top.html}
+<!-- BACK_TO_TOP_END -->
+
+<script src="/skin/js/topbar.js"></script>
+<script src="/skin/js/sidebar.js"></script>
+<script src="/skin/js/footer.js"></script>
+<script src="/skin/js/mobile-tabbar.js"></script>
+<script src="/skin/js/back-to-top.js"></script>
+<script src="/skin/js/main.js"></script>
+<script src="/skin/js/productlist.js"></script>
+</body>
+</html>

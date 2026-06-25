@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{sort:title} - {pboot:sitesubtitle}</title>
+    <meta name="description" content="{sort:description}">
+    <meta name="keywords" content="{sort:keywords}">
+    <meta name="robots" content="index, follow">
+    
+    <!-- Fonts and icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;family=Noto+Sans+SC:wght@300;400;500;700&amp;display=swap">
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="/skin/css/base.css">
+    <link rel="stylesheet" href="/skin/css/topbar.css">
+    <link rel="stylesheet" href="/skin/css/sidebar.css">
+    <link rel="stylesheet" href="/skin/css/solutions.css">
+    <link rel="stylesheet" href="/skin/css/footer.css">
+    <link rel="stylesheet" href="/skin/css/mobile-tabbar.css">
+    <link rel="stylesheet" href="/skin/css/back-to-top.css">
+</head>
+<body class="sidebar-embedded-page">
+    <!-- Topbar -->
+<!-- TOPBAR_START -->
+{include file=topbar.html}
+<!-- TOPBAR_END -->
+    
+    <!-- Header -->
+    
+    <!-- Sidebar -->
+<!-- Main Content -->
+<div class="main-content-wrapper">
+    <div class="sidebar-embedded-aside">
+<!-- SIDEBAR_START -->
+{include file=sidebar.html}
+<!-- SIDEBAR_END -->
+    </div>
+    <div class="main-container">
+        <div class="main-content">
+            <div class="content-layout">
+                <!-- Page Header -->
+                <header class="page-header">
+                    <nav class="breadcrumb page-header-breadcrumb" aria-label="Breadcrumb">
+                        <div class="breadcrumb-container">
+                            <div class="breadcrumb-path">
+                                <a href="/" aria-label="Home">
+                                    <i class="fas fa-home" aria-hidden="true"></i>
+                                    <span>Home</span>
+                                </a>
+                                <i class="fas fa-chevron-right" aria-hidden="true"></i>
+                                <span>{sort:subname}</span>
+                            </div>
+                        </div>
+                    </nav>
+
+                    <div class="page-title-container">
+                        <h1 class="page-title">{sort:subname}</h1>
+                        <div class="title-underline">
+                            <div class="underline-bar"></div>
+                            <div class="underline-dot"></div>
+                        </div>
+                    </div>
+                    
+                    <!-- Category Navigation -->
+                    <nav class="solution-category-nav" aria-label="Solution category navigation">
+                        <ul class="category-nav-list">
+                            <li class="category-nav-item">
+                                <a href="javascript:;" class="category-nav-link" data-category="transmission">
+                                    <span class="category-icon" data-icon="fas fa-bolt" aria-hidden="true">
+                                        <i class="fas fa-bolt"></i>
+                                    </span>
+                                    <span class="category-name">Transmission Line</span>
+                                </a>
+                            </li>
+                            <li class="category-nav-item">
+                                <a href="javascript:;" class="category-nav-link" data-category="distribution">
+                                    <span class="category-icon" data-icon="fas fa-network-wired" aria-hidden="true">
+                                        <i class="fas fa-network-wired"></i>
+                                    </span>
+                                    <span class="category-name">Distribution Network</span>
+                                </a>
+                            </li>
+                            <li class="category-nav-item">
+                                <a href="javascript:;" class="category-nav-link" data-category="substation">
+                                    <span class="category-icon" data-icon="fas fa-industry" aria-hidden="true">
+                                        <i class="fas fa-industry"></i>
+                                    </span>
+                                    <span class="category-name">Substation</span>
+                                </a>
+                            </li>
+                            <li class="category-nav-item">
+                                <a href="javascript:;" class="category-nav-link" data-category="transformer">
+                                    <span class="category-icon" data-icon="fas fa-plug-circle-bolt" aria-hidden="true">
+                                        <i class="fas fa-plug-circle-bolt"></i>
+                                    </span>
+                                    <span class="category-name">Transformer Connection</span>
+                                </a>
+                            </li>
+                            <li class="category-nav-item">
+                                <a href="javascript:;" class="category-nav-link" data-category="railway">
+                                    <span class="category-icon" data-icon="fas fa-train-subway" aria-hidden="true">
+                                        <i class="fas fa-train-subway"></i>
+                                    </span>
+                                    <span class="category-name">Railway Power</span>
+                                </a>
+                            </li>
+                            <li class="category-nav-item">
+                                <a href="javascript:;" class="category-nav-link" data-category="renewable">
+                                    <span class="category-icon" data-icon="fas fa-solar-panel" aria-hidden="true">
+                                        <i class="fas fa-solar-panel"></i>
+                                    </span>
+                                    <span class="category-name">Renewable Energy</span>
+                                </a>
+                            </li>
+                            <li class="category-nav-item">
+                                <a href="javascript:;" class="category-nav-link" data-category="polluted-area">
+                                    <span class="category-icon" data-icon="fas fa-cloud-sun-rain" aria-hidden="true">
+                                        <i class="fas fa-cloud-sun-rain"></i>
+                                    </span>
+                                    <span class="category-name">Polluted Area</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </nav>
+                    
+                    <!-- Statistics -->
+                    <div class="solution-stats">
+                        <div class="stat-item">
+                            <div class="stat-number">50+</div>
+                            <div class="stat-label">Solution Types</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number">20</div>
+                            <div class="stat-label">Years of Experience</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number">60+</div>
+                            <div class="stat-label">Countries Served</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number">5000+</div>
+                            <div class="stat-label">Successful Projects</div>
+                        </div>
+                    </div>
+                </header>
+                
+                <!-- Solution List -->
+                <main class="solutions-container">
+                    <div class="solutions-grid">
+                        {pboot:list scode={sort:scode} num=12 order='istop desc,sorting desc,id desc'}
+                        <article class="solution-card" itemscope itemtype="https://schema.org/Product">
+                            <div class="solution-image">
+                                <img src="[list:ico]" 
+                                     alt="[list:title]" 
+                                     itemprop="image">
+                                <a href="[list:sortlink]" class="solution-category" itemprop="category">[list:sortname]</a>
+                                {pboot:if('[list:istop]'=='1')}
+                                <span class="solution-sticky"><i class="fas fa-thumbtack"></i> Featured</span>
+                                {/pboot:if}
+                            </div>
+                            <div class="solution-content">
+                                <h2 class="solution-title" itemprop="name">
+                                    <a href="[list:link]" itemprop="url">[list:title]</a>
+                                </h2>
+                                <p class="solution-description" itemprop="description">
+                                    [list:description]
+                                </p>
+                                <div class="solution-cta">
+                                    <a href="[list:link]" class="cta-button" aria-label="View details of [list:title]">
+                                        View Solution <i class="fas fa-arrow-right"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </article>
+                        {/pboot:list}
+                    </div>
+                </main>
+            </div>
+        </div>
+    </div>
+    
+</div>
+    
+<!-- FOOTER_START -->
+{include file=footer.html}
+<!-- FOOTER_END -->
+    
+<!-- MOBILE_TABBAR_START -->
+{include file=mobile_tabbar.html}
+<!-- MOBILE_TABBAR_END -->
+    
+<!-- BACK_TO_TOP_START -->
+{include file=back-to-top.html}
+<!-- BACK_TO_TOP_END -->
+    
+    <!-- JS -->
+    <script src="/skin/js/topbar.js"></script>
+    <script src="/skin/js/sidebar.js"></script>
+    <script src="/skin/js/solutions.js"></script>
+    <script src="/skin/js/footer.js"></script>
+    <script src="/skin/js/mobile-tabbar.js"></script>
+    <script src="/skin/js/back-to-top.js"></script>
+    <script src="/skin/js/main.js"></script>
+</body>
+</html>

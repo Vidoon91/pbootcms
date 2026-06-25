@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{sort:title} - {pboot:sitesubtitle}</title>
+    <meta name="description" content="{sort:description}">
+    <meta name="keywords" content="{sort:keywords}">
+    <meta name="robots" content="index, follow">
+    
+    <!-- 字体与图标库 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;family=Noto+Sans+SC:wght@300;400;500;700&amp;display=swap">
+    
+    <!-- 页面样式文件 -->
+    <link rel="stylesheet" href="/skin/css/base.css">
+    <link rel="stylesheet" href="/skin/css/topbar.css">
+    <link rel="stylesheet" href="/skin/css/sidebar.css">
+    <link rel="stylesheet" href="/skin/css/downloadlist.css">
+    <link rel="stylesheet" href="/skin/css/footer.css">
+    <link rel="stylesheet" href="/skin/css/mobile-tabbar.css">
+    <link rel="stylesheet" href="/skin/css/back-to-top.css">
+</head>
+<body class="sidebar-embedded-page">
+<!-- 顶部信息栏模块 START -->
+{include file=topbar.html}
+<!-- 顶部信息栏模块 END -->
+    
+<!-- 主导航模块 START -->
+<!-- 主导航模块 END -->
+    
+<!-- 侧边栏导航模块 START -->
+<!-- 侧边栏导航模块 END -->
+
+<!-- 页面主体模块 START -->
+<div class="main-content-wrapper">
+    <div class="sidebar-embedded-aside">
+<!-- SIDEBAR_START -->
+{include file=sidebar.html}
+<!-- SIDEBAR_END -->
+    </div>
+    <div class="main-container">
+        <!-- 页面横幅模块 START -->
+        <div class="page-banner">
+            <!-- 横幅面包屑导航模块 -->
+            <nav class="breadcrumb-nav" aria-label="Breadcrumb">
+                <div class="breadcrumb">
+                    <a href="/" aria-label="Home">
+                        <i class="fa fa-home" aria-hidden="true"></i>
+                        <span>Home</span>
+                    </a>
+                    <i class="fa fa-angle-double-right breadcrumb-separator" aria-hidden="true"></i>
+                    <span class="breadcrumb-current">{sort:subname}</span>
+                </div>
+            </nav>
+
+            <div class="banner-content">
+                <div class="banner-badge">
+                    <i class="fas fa-download"></i>
+                    <span>Technical Downloads</span>
+                </div>
+                <h1 class="banner-title">{sort:subname}</h1>
+                
+                <p class="banner-description">
+                    Product datasheets, certificates, application manuals and technical standards for power insulation projects.
+                </p>
+            </div>
+            
+            <div class="banner-decoration">
+                <i class="fas fa-file-pdf"></i>
+                <i class="fas fa-file-word"></i>
+                <i class="fas fa-file-excel"></i>
+            </div>
+        </div>
+        <!-- 页面横幅模块 END -->
+
+        <!-- 下载页面内容布局 START -->
+        <div class="main-content-container">
+            <!-- 左侧下载列表内容 START -->
+            <div class="content-left">
+                <!-- 下载分类筛选模块 START -->
+                <div class="download-filters">
+                    <div class="filter-categories">
+                        <a href="{sort:toplink}" class="filter-btn {pboot:if('{sort:scode}'=='{sort:tcode}')}active{/pboot:if}">All Downloads</a>
+                        
+                        {pboot:nav num=6 parent={sort:tcode}}
+                            <a href="[nav:link]" class="filter-btn {pboot:if('[nav:scode]'=='{sort:scode}')}active{/pboot:if}">[nav:subname]</a>
+                        {/pboot:nav}
+                    </div>
+                </div>
+                <!-- 下载分类筛选模块 END -->
+            
+                <!-- 技术资料下载列表模块 START -->
+                <section class="downloads-section">
+                    <h2>Technical Document Library</h2>
+                    <div class="downloads-list" id="downloadsList">
+                        {pboot:list scode={sort:scode} num=10 order='istop desc,date desc,id desc' page=1}
+                        <article class="download-item">
+                            <div class="download-header">
+                                <h3 class="download-title">
+                                    <a href="[list:link]">[list:title]</a>
+                                </h3>
+                            </div>
+                            <p class="download-description">
+                                [list:description]
+                            </p>
+                            <div class="download-meta">
+                                <div class="meta-info">
+                                    <div class="meta-item">
+                                        <i class="fas fa-file-[list:enclosureicon]"></i>
+                                        <span>Type: <span class="file-type-text">[list:enclosuretype]</span></span>
+                                    </div>
+                                    <div class="meta-item">
+                                        <i class="fas fa-weight-hanging"></i>
+                                        <span>File Size: [list:enclosuresize]</span>
+                                    </div>
+                                    <div class="meta-item">
+                                        <i class="fas fa-calendar-alt"></i>
+                                        <span>Updated: [list:date style=Y-m-d]</span>
+                                    </div>
+                                </div>
+                                <div class="download-action">
+                                    <a href="[list:link]" class="btn-download btn-download-preview">
+                                        <i class="fas fa-eye"></i>
+                                        Preview
+                                    </a>
+                                </div>
+                            </div>
+                        </article>
+                        {/pboot:list}
+                    </div>
+                </section>
+                <!-- 技术资料下载列表模块 END -->
+            
+                <!-- 分页模块 START -->
+                <div class="pagination">
+                    {page:bar}
+                </div>
+                <!-- 分页模块 END -->
+            </div>
+            <!-- 左侧下载列表内容 END -->
+
+            <!-- 右侧信息栏模块 START -->
+            <div class="content-right">
+                <!-- 产品推荐模块 START -->
+                <div class="sidebar-card dl-product-recommend-card" data-dl-product-carousel>
+                    <div class="dl-product-recommend-head">
+                        <h3>
+                            <i class="fas fa-shopping-cart"></i>
+                            Product Express
+                        </h3>
+                    </div>
+                    <div class="dl-product-carousel">
+                        <button type="button" class="dl-product-nav dl-product-prev" aria-label="Previous product">
+                            <i class="fas fa-chevron-left"></i>
+                        </button>
+                        <div class="dl-product-viewport">
+                            <div class="dl-product-track">
+                                {pboot:list scode=2 num=5 order='istop desc,sorting desc,id desc'}
+                                <article class="dl-product-slide">
+                                    <a href="[list:link]" class="dl-product-image">
+                                        <img src="[list:ico]" alt="[list:title]" loading="lazy">
+                                    </a>
+                                    <div class="dl-product-info">
+                                        <h4 class="dl-product-title">
+                                            <a href="[list:link]">[list:title]</a>
+                                        </h4>
+                                        <a href="[list:link]" class="dl-product-quote">
+                                            <i class="fas fa-shopping-cart"></i>
+                                            Request a Quote
+                                        </a>
+                                    </div>
+                                </article>
+                                {/pboot:list}
+                            </div>
+                        </div>
+                        <button type="button" class="dl-product-nav dl-product-next" aria-label="Next product">
+                            <i class="fas fa-chevron-right"></i>
+                        </button>
+                    </div>
+                </div>
+                <!-- 产品推荐模块 END -->
+
+                <!-- 公司简介卡片模块 START -->
+                <div class="sidebar-card company-card">
+                    <h3>
+                        <i class="fas fa-bolt"></i>
+                        WishPower
+                    </h3>
+                    <p class="company-description">
+                        WishPower has 20 years of manufacturing experience in composite power insulation products, serving customers in more than 60 countries and regions.
+                    </p>
+                    <ul class="company-features">
+                        <li>
+                            <i class="fas fa-check-circle"></i>
+                            ISO 9001 quality management system
+                        </li>
+                        <li>
+                            <i class="fas fa-check-circle"></i>
+                            20 years of professional manufacturing experience
+                        </li>
+                        <li>
+                            <i class="fas fa-check-circle"></i>
+                            Products exported to 60+ countries
+                        </li>
+                    </ul>
+                    <div class="company-links">
+                        <a href="/about-us/" class="company-link">
+                            <i class="fas fa-info-circle"></i>
+                            About Us
+                        </a>
+                        <a href="/contact-us/" class="company-link">
+                            <i class="fas fa-envelope"></i>
+                            Contact Us
+                        </a>
+                    </div>
+                </div>
+                <!-- 公司简介卡片模块 END -->
+
+                <!-- 销售支持卡片模块 START -->
+                <div class="sidebar-card sales-card">
+                    <h3>
+                        <i class="fas fa-headset"></i>
+                        Sales Support
+                    </h3>
+                    <p class="sales-description">
+                        Need more technical documents or project-specific support? Our sales team is ready to help.
+                    </p>
+                    <div class="contact-info-list">
+                        <div class="contact-info-item">
+                            <i class="fas fa-envelope"></i>
+                            <span>{pboot:companyemail}</span>
+                        </div>
+                        <div class="contact-info-item">
+                            <i class="fab fa-whatsapp"></i>
+                            <span>+86 {pboot:companymobile}</span>
+                        </div>
+                        <div class="contact-info-item">
+                            <i class="fas fa-phone"></i>
+                            <span>{pboot:companyphone}</span>
+                        </div>
+                    </div>
+                    <a href="https://wa.me/8613800138000" class="btn-contact" target="_blank">
+                        <i class="fab fa-whatsapp"></i>
+                        WhatsApp Inquiry
+                    </a>
+                </div>
+                <!-- 销售支持卡片模块 END -->
+
+            </div>
+            <!-- 右侧信息栏模块 END -->
+        </div>
+        <!-- 下载页面内容布局 END -->
+    </div>
+</div>
+<!-- 页面主体模块 END -->
+    
+<!-- 页脚模块 START -->
+{include file=footer.html}
+<!-- 页脚模块 END -->
+    
+<!-- 移动端底部导航模块 START -->
+{include file=mobile_tabbar.html}
+<!-- 移动端底部导航模块 END -->
+    
+<!-- 返回顶部模块 START -->
+{include file=back-to-top.html}
+<!-- 返回顶部模块 END -->
+    
+<!-- 页面脚本文件 -->
+<script src="/skin/js/topbar.js"></script>
+<script src="/skin/js/sidebar.js"></script>
+<script src="/skin/js/downloadlist.js"></script>
+<script src="/skin/js/footer.js"></script>
+<script src="/skin/js/mobile-tabbar.js"></script>
+<script src="/skin/js/back-to-top.js"></script>
+<script src="/skin/js/main.js"></script>
+
+</body>
+</html>

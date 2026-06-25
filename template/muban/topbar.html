@@ -1,0 +1,248 @@
+<script>
+(function () {
+    var theme = '';
+    try {
+        theme = window.localStorage.getItem('theme') || '';
+    } catch (error) {
+        theme = '';
+    }
+    if (theme !== 'dark' && theme !== 'light') {
+        theme = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    }
+    document.documentElement.setAttribute('data-theme', theme);
+    document.documentElement.style.colorScheme = theme;
+}());
+</script>
+    <!-- 顶部信息栏 -->
+<!-- TOPBAR_START -->
+<div class="top-bar">
+    <div class="top-bar-content">
+        <div class="top-bar-city">
+            <div class="topbar-city-picker" id="topbarCityPicker">
+                <button type="button" class="topbar-city-trigger" id="topbarCityTrigger">
+                    <i class="fas fa-map-marker-alt location-icon" aria-hidden="true"></i>
+                    <span id="topbarCurrentCity">&#35199;&#23433;</span>
+                    <i class="fas fa-chevron-down topbar-city-arrow" aria-hidden="true"></i>
+                </button>
+                <div class="topbar-city-dropdown" id="topbarCityDropdown">
+                    <div class="topbar-city-section">
+                        <div class="topbar-city-title">&#28909;&#38376;&#22478;&#24066;</div>
+                        <div class="topbar-city-grid">
+                            <a href="/city/beijing/" class="topbar-city-item topbar-hot-city">&#21271;&#20140;</a>
+                            <a href="/city/shanghai/" class="topbar-city-item topbar-hot-city">&#19978;&#28023;</a>
+                            <a href="/city/guangzhou/" class="topbar-city-item topbar-hot-city">&#24191;&#24030;</a>
+                            <a href="/city/shenzhen/" class="topbar-city-item topbar-hot-city">&#28145;&#22323;</a>
+                            <a href="/city/hangzhou/" class="topbar-city-item topbar-hot-city">&#26477;&#24030;</a>
+                            <a href="/city/nanjing/" class="topbar-city-item topbar-hot-city">&#21335;&#20140;</a>
+                            <a href="/city/suzhou/" class="topbar-city-item topbar-hot-city">&#33487;&#24030;</a>
+                            <a href="/city/tianjin/" class="topbar-city-item topbar-hot-city">&#22825;&#27941;</a>
+                            <a href="/city/chongqing/" class="topbar-city-item topbar-hot-city">&#37325;&#24198;</a>
+                            <a href="/city/chengdu/" class="topbar-city-item topbar-hot-city">&#25104;&#37117;</a>
+                            <a href="/city/wuhan/" class="topbar-city-item topbar-hot-city">&#27494;&#27721;</a>
+                            <a href="/city/xian/" class="topbar-city-item topbar-hot-city">&#35199;&#23433;</a>
+                        </div>
+                    </div>
+                    <div class="topbar-city-section">
+                        <div class="topbar-city-title">&#20840;&#37096;&#22478;&#24066;</div>
+                        <div class="topbar-city-grid">
+                            <a href="/city/beijing/" class="topbar-city-item">&#21271;&#20140;</a>
+                            <a href="/city/shanghai/" class="topbar-city-item">&#19978;&#28023;</a>
+                            <a href="/city/guangzhou/" class="topbar-city-item">&#24191;&#24030;</a>
+                            <a href="/city/shenzhen/" class="topbar-city-item">&#28145;&#22323;</a>
+                            <a href="/city/tianjin/" class="topbar-city-item">&#22825;&#27941;</a>
+                            <a href="/city/chongqing/" class="topbar-city-item">&#37325;&#24198;</a>
+                            <a href="/city/hangzhou/" class="topbar-city-item">&#26477;&#24030;</a>
+                            <a href="/city/nanjing/" class="topbar-city-item">&#21335;&#20140;</a>
+                            <a href="/city/suzhou/" class="topbar-city-item">&#33487;&#24030;</a>
+                            <a href="/city/wuhan/" class="topbar-city-item">&#27494;&#27721;</a>
+                            <a href="/city/xian/" class="topbar-city-item active">&#35199;&#23433;</a>
+                            <a href="/city/hefei/" class="topbar-city-item">&#21512;&#32933;</a>
+                            <a href="/city/fuzhou/" class="topbar-city-item">&#31119;&#24030;</a>
+                            <a href="/city/changsha/" class="topbar-city-item">&#38271;&#27801;</a>
+                            <a href="/city/chengdu/" class="topbar-city-item">&#25104;&#37117;</a>
+                            <a href="/city/zhengzhou/" class="topbar-city-item">&#37073;&#24030;</a>
+                            <a href="/city/jinan/" class="topbar-city-item">&#27982;&#21335;</a>
+                            <a href="/city/qingdao/" class="topbar-city-item">&#38738;&#23707;</a>
+                            <a href="/city/shenyang/" class="topbar-city-item">&#27784;&#38451;</a>
+                            <a href="/city/dalian/" class="topbar-city-item">&#22823;&#36830;</a>
+                            <a href="/city/harbin/" class="topbar-city-item">&#21704;&#23572;&#28392;</a>
+                            <a href="/city/changchun/" class="topbar-city-item">&#38271;&#26149;</a>
+                            <a href="/city/shijiazhuang/" class="topbar-city-item">&#30707;&#23478;&#24196;</a>
+                            <a href="/city/taiyuan/" class="topbar-city-item">&#22826;&#21407;</a>
+                            <a href="/city/huhehaote/" class="topbar-city-item">&#21628;&#21644;&#28009;&#29305;</a>
+                            <a href="/city/nanchang/" class="topbar-city-item">&#21335;&#26124;</a>
+                            <a href="/city/xiamen/" class="topbar-city-item">&#21414;&#38376;</a>
+                            <a href="/city/ningbo/" class="topbar-city-item">&#23425;&#27874;</a>
+                            <a href="/city/wuxi/" class="topbar-city-item">&#26080;&#38177;</a>
+                            <a href="/city/dongguan/" class="topbar-city-item">&#19996;&#33694;</a>
+                            <a href="/city/foshan/" class="topbar-city-item">&#20315;&#23665;</a>
+                            <a href="/city/nanning/" class="topbar-city-item">&#21335;&#23425;</a>
+                            <a href="/city/kunming/" class="topbar-city-item">&#26118;&#26126;</a>
+                            <a href="/city/guiyang/" class="topbar-city-item">&#36149;&#38451;</a>
+                            <a href="/city/lanzhou/" class="topbar-city-item">&#20848;&#24030;</a>
+                            <a href="/city/yinchuan/" class="topbar-city-item">&#38134;&#24029;</a>
+                            <a href="/city/xining/" class="topbar-city-item">&#35199;&#23425;</a>
+                            <a href="/city/urumqi/" class="topbar-city-item">&#20044;&#40065;&#26408;&#40784;</a>
+                            <a href="/city/haikou/" class="topbar-city-item">&#28023;&#21475;</a>
+                            <a href="/city/sanya/" class="topbar-city-item">&#19977;&#20122;</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="welcome-text">
+            <i class="fas fa-handshake"></i>
+            <span>Welcome To WishPower</span>
+            <!--<span>Welcome To WishPower - Source Factory for Power Insulation Solutions & OEM</span>-->
+        </div>
+
+        <nav class="topbar-main-nav" id="topbarMainNav" aria-label="Topbar navigation">
+            <a href="/" class="topbar-nav-link {pboot:if(0=='{sort:scode}')}active{/pboot:if}">Home</a>
+            {pboot:nav}
+            <div class="topbar-nav-item" data-topbar-nav-item data-soncount="[nav:soncount]">
+                <a href="[nav:link]" class="topbar-nav-link{pboot:if('[nav:scode]'=='{sort:tcode}')} active{/pboot:if}{pboot:if('[nav:scode]'=='{sort:scode}')} active{/pboot:if}">
+                    <span>[nav:subname]</span>
+                    <i class="fas fa-chevron-down topbar-nav-arrow" aria-hidden="true"></i>
+                </a>
+                <div class="topbar-nav-dropdown">
+                    <div class="topbar-nav-dropdown-inner">
+                        <div class="topbar-nav-categories">
+                            {pboot:2nav parent=[nav:scode]}
+                            <a href="[2nav:link]" class="topbar-nav-category {pboot:if([2nav:i]==1)}active{/pboot:if}" data-topbar-category="[2nav:scode]">
+                                <span class="topbar-nav-category-icon" data-icon="[2nav:ico]" aria-hidden="true"><i class="fas fa-circle"></i></span>
+                                <span class="topbar-nav-category-name">[2nav:subname]</span>
+                            </a>
+                            {/pboot:2nav}
+                        </div>
+                        <div class="topbar-nav-preview">
+                            {pboot:2nav parent=[nav:scode]}
+                            <div class="topbar-nav-panel {pboot:if([2nav:i]==1)}active{/pboot:if}" data-topbar-panel="[2nav:scode]">
+                                {pboot:list scode=[2nav:scode] num=6 recommend=1}
+                                <a href="[list:link]" class="topbar-nav-product">
+                                    <span class="topbar-nav-product-tag">Top</span>
+                                    <span class="topbar-nav-product-image">
+                                        <img src="[list:ico]" alt="[list:title]" onerror="this.style.display='none'">
+                                    </span>
+                                    <span class="topbar-nav-product-info">
+                                        <span class="topbar-nav-product-title">[list:title]</span>
+                                        <span class="topbar-nav-product-desc">[list:subtitle]</span>
+                                    </span>
+                                </a>
+                                {/pboot:list}
+                            </div>
+                            {/pboot:2nav}
+                        </div>
+                    </div>
+                    <div class="topbar-nav-footer">
+                        <a href="[nav:link]">View All [nav:subname] <i class="fas fa-arrow-right" aria-hidden="true"></i></a>
+                        <div class="topbar-nav-contact">
+                            <a href="tel:+86{pboot:companyphone}" class="topbar-nav-contact-link">
+                                <i class="fas fa-phone-alt" aria-hidden="true"></i>
+                                <span>Hotline: {pboot:companyphone}</span>
+                            </a>
+                            <a href="https://wa.me/86{pboot:companymobile}" target="_blank" class="topbar-nav-contact-link whatsapp">
+                                <i class="fab fa-whatsapp" aria-hidden="true"></i>
+                                <span>WhatsApp: +86 {pboot:companymobile}</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {/pboot:nav}
+        </nav>
+        
+        <div class="top-bar-links">
+            <div class="topbar-social-menu" id="topbarSocialMenu">
+                <button type="button" class="topbar-social-trigger" id="topbarSocialTrigger" aria-label="Social media" aria-expanded="false">
+                    <i class="fas fa-share-alt" aria-hidden="true"></i>
+                    <i class="fas fa-chevron-down topbar-social-arrow" aria-hidden="true"></i>
+                </button>
+                <div class="topbar-social-dropdown" id="topbarSocialDropdown">
+                    <a href="https://www.youtube.com/@wishpower-videos" target="_blank" class="topbar-social-item youtube" aria-label="YouTube">
+                        <i class="fab fa-youtube" aria-hidden="true"></i>
+                        <span>YouTube</span>
+                    </a>
+                    <a href="https://www.tiktok.com/@wishpower1" target="_blank" class="topbar-social-item tiktok" aria-label="TikTok">
+                        <i class="fab fa-tiktok" aria-hidden="true"></i>
+                        <span>TikTok</span>
+                    </a>
+                    <a href="https://www.instagram.com/wishpower66/" target="_blank" class="topbar-social-item instagram" aria-label="Instagram">
+                        <i class="fab fa-instagram" aria-hidden="true"></i>
+                        <span>Instagram</span>
+                    </a>
+                    <a href="https://twitter.com/" target="_blank" class="topbar-social-item twitter" aria-label="Twitter X">
+                        <i class="fab fa-twitter" aria-hidden="true"></i>
+                        <span>Twitter/X</span>
+                    </a>
+                </div>
+            </div>
+            
+            <button type="button" class="company-email" id="topEmailCopy" data-email="{pboot:companyemail}" aria-label="Copy email">
+                <i class="fas fa-envelope"></i>
+                <span class="email-copy-tip" id="topEmailCopyTip">&#24050;&#22797;&#21046;</span>
+            </button>
+            
+            <div class="top-contact-buttons">
+                <div class="top-contact-link quote" id="topQuoteBtn">Get a Quote</div>
+
+                <button class="top-bar-theme-toggle" id="topThemeToggle" aria-label="切换主题">
+                    <i class="fas fa-moon" id="topThemeIcon" aria-hidden="true"></i>
+                </button>
+
+                <div class="language-selector dropdown-container" id="languageSelector">
+                    <button class="language-btn dropdown-trigger">
+                        <i class="fas fa-globe" aria-hidden="true"></i>
+                        <span class="language-text">EN</span>
+                        <i class="fas fa-chevron-down arrow dropdown-arrow" aria-hidden="true"></i>
+                    </button>
+                    <div class="language-dropdown dropdown-panel">
+                        <a href="/zh/" class="language-item active">
+                            <div class="flag-icon flag-cn"></div>
+                            <span class="language-name">中文</span>
+                        </a>
+                        <a href="/en/" class="language-item">
+                            <div class="flag-icon flag-us"></div>
+                            <span class="language-name">English</span>
+                        </a>
+                        <a href="/es/" class="language-item">
+                            <div class="flag-icon flag-es"></div>
+                            <span class="language-name">Español</span>
+                        </a>
+                        <a href="/ru/" class="language-item">
+                            <div class="flag-icon flag-ru"></div>
+                            <span class="language-name">Русский</span>
+                        </a>
+                        <a href="/de/" class="language-item">
+                            <div class="flag-icon flag-de"></div>
+                            <span class="language-name">Deutsch</span>
+                        </a>
+                        <a href="/fr/" class="language-item">
+                            <div class="flag-icon flag-fr"></div>
+                            <span class="language-name">Français</span>
+                        </a>
+                        <a href="/ja/" class="language-item">
+                            <div class="flag-icon flag-jp"></div>
+                            <span class="language-name">&#26085;&#26412;&#35486;</span>
+                        </a>
+                        <a href="/ko/" class="language-item">
+                            <div class="flag-icon flag-kr"></div>
+                            <span class="language-name">&#54620;&#44397;&#50612;</span>
+                        </a>
+                    </div>
+                </div>
+                <div class="topbar-search" id="topbarSearch">
+                    <button type="button" class="topbar-search-trigger" id="topbarSearchTrigger" aria-label="Search" aria-expanded="false">
+                        <i class="fas fa-search" aria-hidden="true"></i>
+                    </button>
+                    <div class="topbar-search-panel" id="topbarSearchPanel">
+                        <input type="text" class="topbar-search-input" id="topbarSearchInput" placeholder="Search products...">
+                        <button type="button" class="topbar-search-submit" id="topbarSearchSubmit" aria-label="Search">
+                            <i class="fas fa-search" aria-hidden="true"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- TOPBAR_END -->

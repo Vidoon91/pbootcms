@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{sort:title} - WishPower</title>
+    <meta name="keywords" content="{sort:keywords}">
+    <meta name="description" content="{sort:description}">
+    <meta name="robots" content="index, follow">
+    
+    <!-- 字体与图标库（全局引用） -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;family=Noto+Sans+SC:wght@300;400;500;700&amp;display=swap">
+    
+    <!-- 模块化CSS -->
+    <link rel="stylesheet" href="/skin/css/base.css">
+    <link rel="stylesheet" href="/skin/css/topbar.css">
+    <link rel="stylesheet" href="/skin/css/sidebar.css">
+    <link rel="stylesheet" href="/skin/css/newslist.css">
+    <link rel="stylesheet" href="/skin/css/footer.css">
+    <link rel="stylesheet" href="/skin/css/mobile-tabbar.css">
+    <link rel="stylesheet" href="/skin/css/back-to-top.css">
+    
+</head>
+<body class="sidebar-embedded-page">
+    <!-- 顶部信息栏 -->
+<!-- TOPBAR_START -->
+{include file=topbar.html}
+<!-- TOPBAR_END -->
+    
+    <!-- 主导航栏 -->
+    
+    <!-- 侧边栏导航 -->
+<!-- 主内容包装器 -->
+<div class="main-content-wrapper">
+    <div class="sidebar-embedded-aside">
+<!-- SIDEBAR_START -->
+{include file=sidebar.html}
+<!-- SIDEBAR_END -->
+    </div>
+    <div class="main-container">
+        <div class="main-content">
+            <div class="content-layout">
+                <!-- 页面横幅和面包屑导航 - 移动端优化版 -->
+                <section class="page-header-section enhanced">
+                    <!-- 横幅区域（无面包屑） -->
+                    <div class="page-banner enhanced">
+                    <div class="breadcrumb-nav enhanced">
+                        <nav aria-label="面包屑导航" class="breadcrumb-container">
+                            <div class="breadcrumb-path">
+                                <a href="/" aria-label="Home">
+                                    <i class="fas fa-home" aria-hidden="true"></i>
+                                </a>
+                                <i class="fas fa-chevron-right" aria-hidden="true"></i>
+                                <span>{sort:subname}</span>
+                            </div>
+                            <div class="breadcrumb-action">
+                                {pboot:list scode={sort:scode} num=1 order='date'}
+                                    <span class="breadcrumb-date">Latest：[list:date style=Y/m/d]</span>
+                                {/pboot:list}
+                            </div>
+                        </nav>
+                    </div>
+                        <div class="banner-content">
+                            <!-- 标题区域 -->
+                            <div class="title-container">
+                                <div class="title-badge">
+                                    <span class="badge-icon"><i class="fas fa-newspaper"></i></span>
+                                    <span class="badge-text">新闻中心</span>
+                                </div>
+                                <h1 class="page-title">{sort:subname}</h1>
+                                <p class="page-subtitle">
+                                    <span class="subtitle-accent">WishPower</span> News · Industry Insights · Technical Updates
+                                </p>
+                            </div>
+                            <!-- 快捷导航按钮 -->
+                            <div class="banner-actions">
+                                {pboot:nav parent={sort:scode} num=3}
+                                <a href="[nav:link]" class="action-btn {pboot:if([nav:i]==1)}primary{else}outline{/pboot:if}">
+                                    <i class="[nav:ico]" aria-hidden="true"></i><span>[nav:subname]</span>
+                                </a>
+                                {/pboot:nav}
+                            </div>
+                        </div>
+                        <!-- 装饰元素 -->
+                        <div class="banner-decoration">
+                            <div class="decoration-grid"></div>
+                            <div class="decoration-circle circle-1"></div>
+                            <div class="decoration-circle circle-2"></div>
+                            <div class="decoration-line"></div>
+                            <div class="industry-icons">
+                                <div class="icon-item"><i class="fas fa-bolt"></i><div class="icon-pulse"></div></div>
+                                <div class="icon-item"><i class="fas fa-industry"></i><div class="icon-pulse"></div></div>
+                                <div class="icon-item"><i class="fas fa-cogs"></i><div class="icon-pulse"></div></div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                
+                <!-- 2. 两列布局容器 -->
+                <div class="news-layout-container">
+                    <!-- 左侧：新闻列表 -->
+                    <main class="news-list-main">
+                    
+                        <!-- 新闻列表 -->
+                        <div class="news-list-container">
+                    
+                            {pboot:list scode={sort:scode} order='date desc,istop,isrecommend' num=8  page=1}
+                    
+                            <article class="news-item">
+                                <a href="[list:link]" class="news-link">
+                                    <div class="news-thumb">
+                                        <img src="[list:ico]" 
+                                             alt="[list:title]" 
+                                             loading="lazy">
+                                    </div>
+                                    <div class="news-content">
+                                        <h2 class="news-title">[list:title]</h2>
+                                        <p class="news-excerpt">
+                                            [list:description len=120]
+                                        </p>
+                                        <div class="news-meta">
+                                            <time datetime="[list:date style=Y-m-d]">
+                                                [list:date style=Y年m月d日]
+                                            </time>
+                                            <span class="news-category">
+                                                [list:sortname]
+                                            </span>
+                                        </div>
+                                    </div>
+                                </a>
+                            </article>
+                    
+                            {/pboot:list}
+                    
+                        </div>
+                    
+                    <!-- 分页容器 -->
+                    <div class="pagination-container">
+                        <div class="pagebar">
+                            <nav class="pagination" aria-label="分页导航">
+                                {pboot:if('{page:pre}' != '')}
+                                <a href="{page:pre}" class="page-btn page-pre" aria-label="上一页"><i class="fas fa-chevron-left" aria-hidden="true"></i></a>
+                                {else}
+                                <span class="page-btn page-pre disabled" aria-disabled="true"><i class="fas fa-chevron-left" aria-hidden="true"></i></span>
+                                {/pboot:if}
+                                {page:numbar}
+                                {pboot:if('{page:next}' != '')}
+                                <a href="{page:next}" class="page-btn page-next" aria-label="下一页"><i class="fas fa-chevron-right" aria-hidden="true"></i></a>
+                                {else}
+                                <span class="page-btn page-next disabled" aria-disabled="true"><i class="fas fa-chevron-right" aria-hidden="true"></i></span>
+                                {/pboot:if}
+                            </nav>
+                            <div class="page-status">{page:status}</div>
+                        </div>
+                    </div>
+                    </main>
+
+                    
+                    <!-- 右侧：侧边栏模块（窄列） -->
+                    <aside class="news-sidebar">
+                        <!-- 商品直通车 -->
+                        <div class="sidebar-widget card product-shuttle-widget">
+                            <div class="widget-header product-shuttle-header">
+                                <h3 class="widget-title"><i class="fas fa-shopping-cart" aria-hidden="true"></i> 商品直通车</h3>
+                            </div>
+                            <div class="product-shuttle">
+                                <button type="button" class="product-shuttle-nav product-shuttle-prev" aria-label="上一个产品"><i class="fas fa-chevron-left" aria-hidden="true"></i></button>
+                                <div class="product-shuttle-viewport">
+                                    <div class="product-shuttle-track">
+                                        {pboot:list scode=2 num=5 order='isrecommend'}
+                                        <article class="product-shuttle-card">
+                                            <a href="[list:link]" class="product-shuttle-image">
+                                                <img src="[list:ico]" alt="[list:title]" loading="lazy">
+                                            </a>
+                                            <div class="product-shuttle-info">
+                                                <h4 class="product-shuttle-title"><a href="[list:link]">[list:title]</a></h4>
+                                                {pboot:if('[list:ext_price]' != '')}
+                                                <div class="product-shuttle-price">&yen;[list:ext_price] <span>/ 支</span></div>
+                                                {/pboot:if}
+                                                <a href="[list:link]" class="product-shuttle-buy"><i class="fas fa-shopping-cart" aria-hidden="true"></i> 立即购买/采购</a>
+                                            </div>
+                                        </article>
+                                        {/pboot:list}
+                                    </div>
+                                </div>
+                                <button type="button" class="product-shuttle-nav product-shuttle-next" aria-label="下一个产品"><i class="fas fa-chevron-right" aria-hidden="true"></i></button>
+                            </div>
+                        </div>
+                        <!-- 标签云 -->
+                        <div class="sidebar-widget card">
+                            <div class="widget-header">
+                                <h3 class="widget-title">Tag-标签云</h3>
+                            </div>
+                            <div class="widget-content">
+                                <div class="tag-cloud">
+                                    
+                                    {pboot:tags scode={sort:scode} num=18 target=tag}
+                                    <a href="[tags:link]" class="tag">[tags:text]</a>
+                                    {/pboot:tags}
+                        
+                                </div>
+                            </div>
+                        </div>
+                        
+                    </aside>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+</div> 
+    <!-- 主内容区结束 -->
+    
+    <!-- 页脚FOOTER_START -->
+    {include file=footer.html}
+    <!-- FOOTER_END -->
+    <!-- 移动端底部导航  MOBILE_TABBAR_START -->
+    {include file=mobile_tabbar.html}
+    <!-- MOBILE_TABBAR_END -->
+    
+    <!-- 返回顶部按钮  BACK_TO_TOP_START -->
+    {include file=back-to-top.html}
+    <!-- BACK_TO_TOP_END -->
+    
+    <!-- JS 模块（按依赖顺序） -->
+    <script src="/skin/js/topbar.js"></script>
+    <script src="/skin/js/sidebar.js"></script>
+    <script src="/skin/js/newslist.js"></script>
+    <script src="/skin/js/footer.js"></script>
+    <script src="/skin/js/mobile-tabbar.js"></script>
+    <script src="/skin/js/back-to-top.js"></script>
+    <script src="/skin/js/main.js"></script>
+</body>
+</html>

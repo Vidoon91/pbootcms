@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{sort:title} - {pboot:sitesubtitle}</title>
+    <meta name="description" content="{sort:description}WishPower">
+    <meta name="keywords" content="{sort:keywords}">
+    <meta name="robots" content="index, follow">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;family=Noto+Sans+SC:wght@300;400;500;700&amp;display=swap">
+    
+    <link rel="stylesheet" href="/skin/css/base.css">
+    <link rel="stylesheet" href="/skin/css/topbar.css">
+    <link rel="stylesheet" href="/skin/css/sidebar.css">
+    <link rel="stylesheet" href="/skin/css/factory.css">
+    <link rel="stylesheet" href="/skin/css/footer.css">
+    <link rel="stylesheet" href="/skin/css/mobile-tabbar.css">
+    <link rel="stylesheet" href="/skin/css/back-to-top.css">
+    <link rel="stylesheet" href="/skin/css/video-modal.css">
+</head>
+<body class="sidebar-embedded-page">
+    {include file=topbar.html}
+    
+    <div class="main-content-wrapper">
+    <div class="sidebar-embedded-aside">
+<!-- SIDEBAR_START -->
+{include file=sidebar.html}
+<!-- SIDEBAR_END -->
+    </div>
+        <div class="main-container">
+            <div class="main-content">
+                <div class="content-layout">
+                    <!-- 首屏引导区 -->
+                    <section class="factory-hero">
+                        <nav class="factory-breadcrumb" aria-label="面包屑导航">
+                            <div class="breadcrumb-list">
+                                <a href="/" aria-label="首页"><i class="fa fa-home"></i></a>
+                                <i class="fa fa-angle-right"></i>
+                                <span>{sort:subname}</span>
+                            </div>
+                        </nav>
+                        
+                        <div class="factory-hero-content">
+                            <!-- 已删除 h1 标题 -->
+                            <div class="hero-subtitle-wrapper">
+                                 <span class="factory-hero-subtitle">{sort:description}</span>
+                            </div>
+                        </div>
+                        
+                        <!-- 工厂分区按钮组 -->
+                        <div class="factory-category-buttons">
+                            <a href="#" class="category-btn">
+                                <i class="fas fa-industry btn-icon"></i>
+                                <span class="btn-title">生产车间</span>
+                                <span class="btn-desc">现代化生产线</span>
+                            </a>
+                            <a href="#" class="category-btn">
+                                <i class="fas fa-flask btn-icon"></i>
+                                <span class="btn-title">检测实验室</span>
+                                <span class="btn-desc">严格质量控制</span>
+                            </a>
+                            <a href="#" class="category-btn">
+                                <i class="fas fa-warehouse btn-icon"></i>
+                                <span class="btn-title">仓储物流</span>
+                                <span class="btn-desc">智能管理系统</span>
+                            </a>
+                            <a href="#" class="category-btn">
+                                <i class="fas fa-users btn-icon"></i>
+                                <span class="btn-title">员工生活区</span>
+                                <span class="btn-desc">舒适工作环境</span>
+                            </a>
+                            <a href="#" class="category-btn">
+                                <i class="fas fa-cogs btn-icon"></i>
+                                <span class="btn-title">研发中心</span>
+                                <span class="btn-desc">技术创新研发</span>
+                            </a>
+                            <a href="#" class="category-btn">
+                                <i class="fas fa-shield-alt btn-icon"></i>
+                                <span class="btn-title">安全管理</span>
+                                <span class="btn-desc">安全生产保障</span>
+                            </a>
+                        </div>
+                    </section>
+                    
+                    <!-- 轮播相册区（指示点已移到外部） -->
+                    <section class="factory-gallery-wall">
+                        <div class="gallery-container">
+                            <div class="carousel-wrapper">
+                                <div class="carousel-container" id="carouselContainer">
+                                    <div class="carousel-slides" id="carouselSlides">
+                                        {pboot:pics id={content:id} num=30}
+                                        <div class="carousel-slide fade-slide">
+                                            <div class="slide-inner">
+                                                <img src="[pics:src]" alt="[pics:title]" loading="lazy">
+                                                <div class="carousel-caption">[pics:title]</div>
+                                            </div>
+                                        </div>
+                                        {/pboot:pics}
+                                    </div>
+                                    <button class="carousel-btn btn-prev" id="prevBtn" aria-label="上一张">
+                                        <i class="fas fa-chevron-left"></i>
+                                    </button>
+                                    <button class="carousel-btn btn-next" id="nextBtn" aria-label="下一张">
+                                        <i class="fas fa-chevron-right"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <!-- 指示点位于轮播外部 -->
+                            <div class="carousel-dots" id="carouselDots"></div>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </div>
+    </div>
+     {include file=footer.html}
+<!-- FOOTER_PLACEHOLDER -->
+    {include file=mobile_tabbar.html}
+    {include file=back-to-top.html}
+    
+    <script src="/skin/js/topbar.js"></script>
+    <script src="/skin/js/sidebar.js"></script>
+    <script src="/skin/js/factory.js"></script>
+    <script src="/skin/js/footer.js"></script>
+    <script src="/skin/js/mobile-tabbar.js"></script>
+    <script src="/skin/js/back-to-top.js"></script>
+    <script src="/skin/js/main.js"></script>
+</body>
+</html>

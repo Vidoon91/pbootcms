@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{pboot:pagetitle}</title>
+    <meta name="robots" content="noindex, nofollow">
+    <link rel="icon" href="/favicon.ico">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;family=Noto+Sans+SC:wght@300;400;500;700&amp;display=swap">
+    <link rel="stylesheet" href="/skin/css/base.css">
+    <link rel="stylesheet" href="/skin/css/topbar.css">
+    <link rel="stylesheet" href="/skin/css/sidebar.css">
+    <link rel="stylesheet" href="/skin/css/footer.css">
+    <link rel="stylesheet" href="/skin/css/mobile-tabbar.css">
+    <link rel="stylesheet" href="/skin/css/back-to-top.css">
+    <style>
+        .member-center-page {
+            min-height: 68vh;
+            padding: 56px 16px;
+            background: #f8fafc;
+        }
+        .member-center-wrap {
+            max-width: 980px;
+            margin: 0 auto;
+        }
+        .member-center-head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            margin-bottom: 22px;
+        }
+        .member-center-title {
+            margin: 0;
+            color: #0f172a;
+            font-size: 1.55rem;
+            line-height: 1.3;
+        }
+        .member-center-logout {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 999px;
+            border: 1px solid #dbe3ee;
+            padding: 9px 16px;
+            color: #475569;
+            text-decoration: none;
+            background: #fff;
+            font-weight: 600;
+        }
+        .member-center-card {
+            background: #fff;
+            border: 1px solid #e2e8f0;
+            border-radius: 14px;
+            box-shadow: 0 16px 36px rgba(15, 23, 42, 0.08);
+            padding: 26px;
+        }
+        .member-center-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 14px;
+            margin-top: 18px;
+        }
+        .member-center-action {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            padding: 18px;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            text-decoration: none;
+            color: #0f172a;
+            background: #fff;
+        }
+        .member-center-action:hover {
+            border-color: #1a56db;
+            box-shadow: 0 8px 22px rgba(26, 86, 219, 0.1);
+        }
+        .member-center-action strong {
+            font-size: 1rem;
+        }
+        .member-center-action span {
+            color: #64748b;
+            font-size: 0.88rem;
+        }
+        .member-center-note {
+            margin: 0;
+            color: #64748b;
+            line-height: 1.7;
+        }
+        @media (max-width: 720px) {
+            .member-center-head {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+            .member-center-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body class="sidebar-embedded-page">
+<!-- 顶部信息栏 -->
+<!-- TOPBAR_START -->
+{include file=topbar.html}
+<!-- TOPBAR_END -->
+
+<!-- 主导航栏 -->
+
+<!-- 侧边栏导航 -->
+
+<!-- 主内容包装器 -->
+<div class="main-content-wrapper">
+    <div class="sidebar-embedded-aside">
+        <!-- SIDEBAR_START -->
+        {include file=sidebar.html}
+        <!-- SIDEBAR_END -->
+    </div>
+    <div class="main-container">
+        <div class="main-content">
+            <main class="member-center-page">
+                <div class="member-center-wrap">
+                    <div class="member-center-head">
+                        <h1 class="member-center-title">个人中心</h1>
+                        <a class="member-center-logout" href="{pboot:logout}">退出登录</a>
+                    </div>
+                    <section class="member-center-card">
+                        <p class="member-center-note">你已成功登录。现在可以返回视频详情页发表评论、回复评论，或继续管理会员资料。</p>
+                        <div class="member-center-grid">
+                            <a class="member-center-action" href="{pboot:umodify}">
+                                <strong>资料修改</strong>
+                                <span>更新昵称、联系方式或密码</span>
+                            </a>
+                            <a class="member-center-action" href="{pboot:mycommentpage}">
+                                <strong>我的评论</strong>
+                                <span>查看和管理已发布评论</span>
+                            </a>
+                            <a class="member-center-action" href="/">
+                                <strong>返回首页</strong>
+                                <span>继续浏览 WishPower 内容</span>
+                            </a>
+                        </div>
+                    </section>
+                </div>
+            </main>
+        </div>
+    </div>
+</div>
+
+<!--页脚 FOOTER_START -->
+{include file=footer.html}
+<!-- FOOTER_END -->
+
+<!-- 移动端底部导航MOBILE_TABBAR_START -->
+{include file=mobile_tabbar.html}
+<!-- MOBILE_TABBAR_END -->
+
+<!-- BACK_TO_TOP_START 返回顶部按钮 -->
+{include file=back-to-top.html}
+<!-- BACK_TO_TOP_END -->
+
+<script src="/skin/js/topbar.js"></script>
+<script src="/skin/js/sidebar.js"></script>
+<script src="/skin/js/footer.js"></script>
+<script src="/skin/js/mobile-tabbar.js"></script>
+<script src="/skin/js/back-to-top.js"></script>
+<script src="/skin/js/main.js"></script>
+</body>
+</html>

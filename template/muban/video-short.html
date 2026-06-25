@@ -1,0 +1,374 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="format-detection" content="telephone=no,email=no,address=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="mobile-web-app-capable" content="yes">
+    <title>{content:title} - {pboot:sitesubtitle}</title>
+    <meta name="description" content="{content:description}">
+    <meta name="keywords" content="{content:keywords}">
+    <link rel="canonical" href="{content:link}">
+    <meta property="og:type" content="video.other">
+    <meta property="og:title" content="{content:title} - {pboot:sitesubtitle}">
+    <meta property="og:description" content="{content:description}">
+    <meta property="og:url" content="{content:link}">
+    <meta property="og:image" content="{content:ico}">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="{content:title} - {pboot:sitesubtitle}">
+    <meta name="twitter:description" content="{content:description}">
+    <meta name="twitter:image" content="{content:ico}">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;family=Noto+Sans+SC:wght@300;400;500;700&amp;display=swap">
+    <link rel="stylesheet" href="/skin/vendor/tcplayer/tcplayer.min.css">
+    <link rel="stylesheet" href="/skin/vendor/swiper/swiper-bundle.min.css">
+    <link rel="stylesheet" href="/skin/css/base.css">
+    <link rel="stylesheet" href="/skin/css/topbar.css">
+    <link rel="stylesheet" href="/skin/css/sidebar.css">
+    <link rel="stylesheet" href="/skin/css/footer.css">
+    <link rel="stylesheet" href="/skin/css/mobile-tabbar.css">
+    <link rel="stylesheet" href="/skin/css/back-to-top.css">
+
+    <script type="application/ld+json">
+        {
+            "@context": "https://schema.org",
+            "@type": "VideoObject",
+            "name": "{content:title}",
+            "description": "{content:description}",
+            "thumbnailUrl": ["{content:ico}"],
+            "uploadDate": "{content:date style=Y-m-d}",
+            "url": "{content:link}",
+            "embedUrl": "{content:link}"
+        }
+    </script>
+    <link rel="stylesheet" href="/skin/css/video-short.css?v=shortdetail_play_fix_20260624a">
+</head>
+<body class="sidebar-embedded-page video-short-static-detail">
+    <!-- TOPBAR_START -->
+{include file=topbar.html}
+    <!-- TOPBAR_END -->
+
+    <div id="shortVideoInitialData" hidden
+        data-content-id="{content:id}"
+        data-poster="{content:ico}"
+        data-url="{content:link}"
+        data-category="{sort:name}"
+        data-duration="{content:ext_video_duration}"
+        data-date="{content:date}"
+        data-views="{content:visits}"
+        data-file-id="{content:ext_tcplayer_file_id}"
+        data-sign-api="/api/tencent-vod-psign.php">
+        <div data-field="title">{content:title}</div>
+        <div data-field="description">{content:description}</div>
+    </div>
+
+    <div class="main-content-wrapper">
+        <div class="sidebar-embedded-aside">
+{include file=sidebar.html}
+        </div>
+        <div class="main-container">
+            <div class="main-content">
+                <div class="video-page-content">
+                    <div class="video-layout">
+                        <div class="short-feed-overlay video-short-player-surface" id="shortDetailOverlay" data-site-logo="{pboot:sitelogo}">
+                            <div class="short-feed-shell">
+                                <div class="short-feed-swiper" id="shortVideoPlayerFrame">
+                                    <div class="short-feed-wrapper" id="shortDetailWrapper">
+                                        <div class="short-feed-slide" data-index="0" data-content-id="{content:id}">
+                                            <div class="video-card-container">
+                                                <div class="video-portrait">
+                                                    <div class="short-feed-mobile-topbar">
+                                                        <div class="short-feed-mobile-author">
+                                                            <span class="short-feed-mobile-level" aria-label="认证账号"><i class="fas fa-certificate"></i></span>
+                                                            <div class="short-feed-mobile-author-text">
+                                                                <strong>WishPower</strong>
+                                                                <span>{content:visits} views | {sort:name}</span>
+                                                            </div>
+                                                        </div>
+                                                        <button class="short-feed-mobile-close" type="button" aria-label="关闭"><i class="fas fa-times"></i></button>
+                                                    </div>
+
+                                                    <div class="short-feed-video-box">
+                                                        <video
+                                                            id="shortVideoEl_{content:id}"
+                                                            class="short-feed-video video-player"
+                                                            playsinline
+                                                            webkit-playsinline
+                                                            x5-playsinline
+                                                            preload="none"
+                                                            poster="{content:ico}">
+                                                        </video>
+                                                        <div class="short-feed-loading" hidden>视频加载中...</div>
+                                                        <div class="short-feed-error" hidden>视频授权获取失败，请刷新页面后重试</div>
+                                                    </div>
+
+                                                    <button class="center-play-btn" type="button"><i class="fas fa-play"></i></button>
+
+                                                    <div class="video-info-overlay expanded">
+                                                        <div class="short-feed-mobile-copy-slot">
+                                                            <div class="video-title-row">
+                                                                <div class="video-title-header">
+                                                                    <span class="video-title">{content:title}</span>
+                                                                </div>
+                                                            </div>
+                                                            <div class="video-caption">{content:description}</div>
+                                                            <div class="video-tags">
+                                                                {pboot:tags id={content:id} target=tag}
+                                                                <a class="video-tag" href="[tags:link]" target="_blank" rel="tag noopener">[tags:text]</a>
+                                                                {/pboot:tags}
+                                                            </div>
+                                                            <div class="video-publish-date">{content:date}</div>
+                                                        </div>
+                                                        <div class="video-progress-wrap">
+                                                            <div class="video-progress-track"><div class="video-progress-bar"></div></div>
+                                                            <span class="video-time"><span class="current-time">00:00</span>/<span class="duration">{content:ext_video_duration}</span></span>
+                                                            <button class="fullscreen-btn sound-control-btn" type="button" aria-label="声音控制"><i class="fas fa-volume-up"></i></button>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="mobile-slide-sidebar">
+                                                        <a class="m-avatar-circle m-home-btn" href="/" aria-label="返回首页"><i class="fas fa-home"></i></a>
+                                                        <button class="m-action-btn m-intro-btn" type="button"><i class="fas fa-info-circle"></i><span>简介</span></button>
+                                                        <button class="m-action-btn m-quote-btn" type="button"><i class="fas fa-file-signature"></i><span>询价</span></button>
+                                                        <button class="m-action-btn m-ai-btn" type="button"><i class="fas fa-headset"></i><span>AI客服</span></button>
+                                                    </div>
+
+                                                    <div class="short-feed-mobile-bottombar">
+                                                        <div class="short-feed-mobile-comment">
+                                                            <input type="text" class="short-feed-mobile-comment-input" data-mobile-comment-input placeholder="说点什么...">
+                                                            <button type="button" class="short-feed-mobile-comment-submit" data-mobile-comment-submit>发布</button>
+                                                        </div>
+                                                        <button class="short-feed-mobile-emoji" type="button" aria-label="评论"><i class="far fa-comment"></i></button>
+                                                        <button class="short-feed-mobile-action m-cart-btn" type="button" aria-label="商品"><i class="fas fa-shopping-cart"></i></button>
+                                                        <button class="short-feed-mobile-action m-like-btn" type="button" aria-label="点赞"><i class="fas fa-heart"></i></button>
+                                                        <button class="short-feed-mobile-action m-share-btn" type="button" aria-label="分享"><i class="fas fa-share"></i></button>
+                                                    </div>
+                                                </div>
+
+                                                <aside class="short-video-desktop-detail short-feed-desktop-detail short-feed-detail-card">
+                                                    <div class="short-feed-detail-head">
+                                                        <div class="short-feed-detail-user">
+                                                            <img src="/touxiang.png" alt="WishPower">
+                                                            <strong>WishPower</strong>
+                                                        </div>
+                                                        <div class="short-feed-detail-actions">
+                                                            <button type="button" class="short-feed-detail-pill" data-detail-intro><i class="fas fa-info-circle"></i> 简介</button>
+                                                            <button type="button" class="short-feed-detail-pill" data-detail-ai><i class="fas fa-headset"></i> 客服</button>
+                                                            <button type="button" class="short-feed-detail-pill primary" data-detail-quote><i class="fas fa-file-signature"></i> 询价</button>
+                                                        </div>
+                                                    </div>
+                                                    <h1 class="short-feed-detail-title">{content:title}</h1>
+                                                    <p class="short-feed-detail-desc">{content:description}</p>
+                                                    <div class="short-feed-detail-tags">
+                                                        {pboot:tags id={content:id} target=tag}
+                                                        <a class="short-feed-detail-tag" href="[tags:link]" target="_blank" rel="tag noopener">#[tags:text]</a>
+                                                        {/pboot:tags}
+                                                    </div>
+                                                    <div class="short-feed-detail-date">{content:date}</div>
+                                                    <div class="short-feed-detail-comments">
+                                                        <div class="short-feed-detail-comment">
+                                                            <div class="short-feed-detail-comment-avatar">技</div>
+                                                            <div>
+                                                                <strong>技术控</strong>
+                                                                <p>这条线效率真高！</p>
+                                                                <span>2小时前 回复</span>
+                                                            </div>
+                                                        </div>
+                                                        <div class="short-feed-detail-reply">
+                                                            <div class="short-feed-detail-comment-avatar official">W</div>
+                                                            <div>
+                                                                <strong>WishPower官方</strong>
+                                                                <p>感谢支持!</p>
+                                                                <span>1小时前</span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="short-feed-detail-bottom">
+                                                        <div class="short-feed-detail-comment-bar">
+                                                            <input type="text" class="short-feed-detail-input" data-detail-comment-input placeholder="说点什么...">
+                                                            <button type="button" class="short-feed-detail-submit" data-detail-comment-submit>发布</button>
+                                                        </div>
+                                                        <button type="button" data-detail-cart><i class="fas fa-shopping-cart"></i></button>
+                                                        <button type="button" data-detail-like><i class="far fa-heart"></i><span>0</span></button>
+                                                        <button type="button" data-detail-save><i class="far fa-star"></i><span>0</span></button>
+                                                        <button type="button" data-detail-share><i class="fas fa-share-square"></i><span>0</span></button>
+                                                    </div>
+                                                </aside>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="desktop-nav-arrows" aria-label="上一篇和下一篇短视频">
+                            {pboot:if('{content:prelink}' != '')}
+                            <a class="nav-arrow-btn" href="{content:prelink}" title="{content:pretitle}" aria-label="上一个视频"><i class="fas fa-arrow-up"></i></a>
+                            {else}
+                            <span class="nav-arrow-btn disabled" aria-hidden="true"><i class="fas fa-arrow-up"></i></span>
+                            {/pboot:if}
+                            {pboot:if('{content:nextlink}' != '')}
+                            <a class="nav-arrow-btn" href="{content:nextlink}" title="{content:nexttitle}" aria-label="下一个视频"><i class="fas fa-arrow-down"></i></a>
+                            {else}
+                            <span class="nav-arrow-btn disabled" aria-hidden="true"><i class="fas fa-arrow-down"></i></span>
+                            {/pboot:if}
+                        </div>
+
+                        <aside class="short-feed-recommend" id="shortDetailRecommend">
+                            <div class="short-feed-recommend-header"><i class="fas fa-list-ul"></i> 推荐视频</div>
+                            <div class="short-feed-recommend-list">
+                                {pboot:list scode={content:scode} num=8 order='date desc,id desc' not={content:id}}
+                                <a class="short-feed-rec-item" href="[list:link]">
+                                    <span class="short-feed-rec-thumb">
+                                        <img src="[list:ico]" alt="[list:title]" loading="lazy">
+                                        <span class="short-feed-rec-play"><i class="fas fa-play"></i></span>
+                                    </span>
+                                    <span class="short-feed-rec-info">
+                                        <strong>[list:title]</strong>
+                                        <span><i class="fas fa-eye"></i> [list:visits] views</span>
+                                    </span>
+                                </a>
+                                {/pboot:list}
+                            </div>
+                        </aside>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay short-feed-modal-overlay" id="shortDetailPanelMask"></div>
+    <div class="short-feed-action-panels" id="shortDetailActionPanels">
+        <div class="slide-panel short-feed-cart-panel" id="shortDetailCartPanel">
+            <div class="panel-header">
+                <span>商品详情</span>
+                <span class="panel-close" data-short-panel-close>×</span>
+            </div>
+            <div id="shortDetailCartContent">
+                {pboot:if('{content:ext_product_id}'!='')}
+                {pboot:content id={content:ext_product_id}}
+                <div class="short-video-product">
+                    <div class="product-slide">
+                        <div class="product-carousel">
+                            <button class="product-carousel-nav prev" type="button" data-product-carousel-prev aria-label="上一张">
+                                <i class="fas fa-chevron-left"></i>
+                            </button>
+                            <div class="carousel-slides">
+                                {pboot:pics id=[content:id] num=5}
+                                <img class="carousel-slide" src="[pics:src]" alt="[pics:title]">
+                                {/pboot:pics}
+                            </div>
+                            <button class="product-carousel-nav next" type="button" data-product-carousel-next aria-label="下一张">
+                                <i class="fas fa-chevron-right"></i>
+                            </button>
+                        </div>
+                        <div class="product-detail">
+                            <h3>[content:title]</h3>
+                            <p class="product-desc">[content:description]</p>
+                            <div class="product-price">￥[content:ext_price]</div>
+                            <a class="detail-btn" href="[content:link]"><i class="fas fa-shopping-cart"></i> 立即购买</a>
+                        </div>
+                    </div>
+                </div>
+                {/pboot:content}
+                {/pboot:if}
+            </div>
+        </div>
+
+        <div class="comment-slide-panel short-feed-comment-panel" id="shortDetailCommentPanel">
+            <div class="panel-header">
+                <span>评论 (<span id="shortDetailCommentCount">0</span>)</span>
+                <span class="panel-close" data-short-panel-close>×</span>
+            </div>
+            <div class="comment-list-area" id="shortDetailComments"></div>
+            <div class="comment-input-row">
+                <input type="text" id="shortDetailCommentInput" placeholder="写下你的评论...">
+                <button type="button" id="shortDetailCommentSubmit">发布</button>
+            </div>
+        </div>
+
+        <div class="share-popup short-feed-share-panel" id="shortDetailSharePanel">
+            <div class="share-popup-header">
+                <span>分享视频</span>
+                <button class="share-popup-close" type="button" data-short-panel-close>×</button>
+            </div>
+            <div class="share-popup-grid" id="shortDetailSharePlatforms">
+                <div class="share-popup-item whatsapp" data-share-action="whatsapp"><div class="share-popup-icon"><i class="fab fa-whatsapp"></i></div><span>WhatsApp</span></div>
+                <div class="share-popup-item wechat" data-share-action="copy"><div class="share-popup-icon"><i class="fab fa-weixin"></i></div><span>微信</span></div>
+                <div class="share-popup-item pinterest" data-share-action="copy"><div class="share-popup-icon"><i class="fab fa-pinterest"></i></div><span>Pinterest</span></div>
+                <div class="share-popup-item facebook" data-share-action="native"><div class="share-popup-icon"><i class="fab fa-facebook-f"></i></div><span>Facebook</span></div>
+                <div class="share-popup-item linkedin" data-share-action="copy"><div class="share-popup-icon"><i class="fab fa-linkedin-in"></i></div><span>LinkedIn</span></div>
+                <div class="share-popup-item email" data-share-action="copy"><div class="share-popup-icon"><i class="fas fa-envelope"></i></div><span>邮箱</span></div>
+            </div>
+            <div class="share-popup-link-row">
+                <div class="share-popup-link" id="shortDetailShareLink">{content:link}</div>
+                <button class="share-popup-copy" type="button" data-share-action="copy">复制链接</button>
+            </div>
+        </div>
+
+        <div class="ai-chat-modal short-feed-ai-panel" id="shortDetailAiPanel">
+            <div class="ai-chat-header">
+                <span><i class="fas fa-headset"></i> 客服 · WishPower</span>
+                <span class="panel-close" data-short-panel-close>×</span>
+            </div>
+            <div class="ai-chat-body" id="shortDetailAiBody">
+                <div class="ai-chat-message bot">您好，我是 WishPower 客服。可以帮您查询产品、报价或技术问题。</div>
+                <div class="ai-chat-quick-actions">
+                    <button class="ai-chat-quick-btn" type="button" data-msg="我想咨询这款产品的报价">咨询报价</button>
+                    <button class="ai-chat-quick-btn" type="button" data-msg="这款产品的交货周期多久？">了解交期</button>
+                    <button class="ai-chat-quick-btn" type="button" data-msg="请推荐适合当前场景的产品">产品推荐</button>
+                </div>
+            </div>
+            <div class="ai-chat-input-row">
+                <input type="text" id="shortDetailAiInput" placeholder="输入您的问题...">
+                <button class="ai-chat-send" type="button" id="shortDetailAiSubmit">发送</button>
+            </div>
+        </div>
+
+        <div class="ai-chat-modal short-feed-intro-panel" id="shortDetailIntroPanel">
+            <div class="ai-chat-header">
+                <span><i class="fas fa-info-circle"></i> 视频简介</span>
+                <span class="panel-close" data-short-panel-close>×</span>
+            </div>
+            <div class="ai-chat-body short-feed-intro-body" id="shortDetailIntroBody">
+                <p class="short-feed-intro-text">{content:description}</p>
+            </div>
+        </div>
+
+        <div class="ai-chat-modal short-feed-quote-panel" id="shortDetailQuotePanel">
+            <div class="ai-chat-header">
+                <span><i class="fas fa-file-signature"></i> 在线询价</span>
+                <span class="panel-close" data-short-panel-close>×</span>
+            </div>
+            <div class="ai-chat-body short-feed-quote-body">
+                <div class="ai-chat-message bot">请留下您的需求，我们会尽快联系您。</div>
+                <div class="short-feed-quote-form">
+                    <input type="text" id="shortDetailQuoteName" placeholder="请输入姓名">
+                    <input type="text" id="shortDetailQuoteContact" placeholder="电话 / WhatsApp">
+                    <input type="email" id="shortDetailQuoteEmail" placeholder="请输入邮箱">
+                    <textarea id="shortDetailQuoteMessage" rows="4" placeholder="请输入留言内容"></textarea>
+                    <button type="button" id="shortDetailQuoteSubmit">提交询价</button>
+                </div>
+                <div class="comment-list-area" id="shortDetailQuoteMessages"></div>
+            </div>
+        </div>
+    </div>
+
+{include file=footer.html}
+{include file=mobile_tabbar.html}
+{include file=back-to-top.html}
+
+    <script src="/skin/js/topbar.js"></script>
+    <script src="/skin/js/sidebar.js"></script>
+    <script src="/skin/vendor/tcplayer/tcplayer.v5.3.3.min.js"></script>
+    <script src="/skin/js/footer.js"></script>
+    <script src="/skin/js/mobile-tabbar.js"></script>
+    <script src="/skin/js/back-to-top.js"></script>
+    <script src="/skin/js/main.js"></script>
+    <script src="/skin/js/video-short.js?v=shortdetail_play_fix_20260624a"></script>
+
+</body>
+</html>

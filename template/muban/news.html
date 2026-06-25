@@ -1,0 +1,375 @@
+﻿﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{content:title} - {sort:subname}</title>
+    <meta name="description" content="{content:description}">
+    <meta name="keywords" content="{content:keywords}">
+    <meta name="robots" content="index, follow">
+    
+    <!-- 字体与图标库（全局引用） -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;family=Noto+Sans+SC:wght@300;400;500;700&amp;display=swap">
+    <link rel="stylesheet" href="/skin/vendor/tcplayer/tcplayer.min.css">
+    <script src="/skin/vendor/tcplayer/tcplayer.v5.3.3.min.js"></script>
+    
+    <!-- 模块 CSS -->
+    <link rel="stylesheet" href="/skin/css/base.css">
+    <link rel="stylesheet" href="/skin/css/topbar.css">
+    <link rel="stylesheet" href="/skin/css/sidebar.css">
+    <link rel="stylesheet" href="/skin/css/news.css">
+    <link rel="stylesheet" href="/skin/css/footer.css">
+    <link rel="stylesheet" href="/skin/css/mobile-tabbar.css">
+    <link rel="stylesheet" href="/skin/css/back-to-top.css">
+</head>
+<body class="sidebar-embedded-page">
+    <!-- 顶部信息栏 -->
+<!-- TOPBAR_START -->
+{include file=topbar.html}
+<!-- TOPBAR_END -->
+    
+    <!-- 主导航栏 -->
+    
+    <!-- 侧边栏导航 -->
+    
+<!-- 主内容包装器 -->
+    <div class="main-content-wrapper">
+        <div class="sidebar-embedded-aside">
+<!-- SIDEBAR_START -->
+{include file=sidebar.html}
+<!-- SIDEBAR_END -->
+        </div>
+        <!-- 图片查看器 -->
+        <div class="np-image-viewer-overlay" id="imageViewerOverlay">
+            <div class="np-image-viewer-container">
+                <img src="" alt="" class="np-image-viewer-img" id="imageViewerImg">
+                <button class="np-image-viewer-close" id="imageViewerClose" aria-label="关闭图片查看">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+        </div>
+        
+        <div class="main-container">
+            <div class="main-content">
+                <!-- 新闻文章页内容开始 -->
+                <div class="np-article-main-container">
+                    <!-- 文章区域（PC 端占 70%-75%） -->
+                    <div class="np-article-content-area">
+                        <!-- 面包屑导航：增强版，已移除当前文章标题 -->
+                        <nav class="np-article-breadcrumb" aria-label="文章导航">
+                            <a href="/" class="np-breadcrumb-link np-breadcrumb-home">
+                                <i class="fas fa-home" aria-hidden="true"></i>
+                                <span>Home</span>
+                            </a>
+                            <span class="np-breadcrumb-separator" aria-hidden="true">
+                                <i class="fas fa-chevron-right"></i>
+                            </span>
+                            {pboot:if('{sort:scode}'!='{sort:tcode}')}
+                            {pboot:sort scode={sort:tcode}}
+                            <a href="[sort:link]" class="np-breadcrumb-link">[sort:subname]</a>
+                            {/pboot:sort}
+                            <span class="np-breadcrumb-separator" aria-hidden="true">
+                                <i class="fas fa-chevron-right"></i>
+                            </span>
+                            {/pboot:if}
+                            <a href="{sort:link}" class="np-breadcrumb-link np-breadcrumb-current">{sort:subname}</a>
+                        </nav>
+                        <!-- 文章主体 -->
+                        <article class="news-article" itemscope itemtype="https://schema.org/NewsArticle">
+                            <div class="np-article-header">
+                                <h1 class="np-article-title" itemprop="headline">{content:title}</h1>
+                                <div class="np-article-meta">
+                                    <div class="np-meta-item">
+                                        <i class="far fa-calendar" aria-hidden="true"></i>
+                                        <time class="publish-date" datetime="2024-06-15T10:00:00+08:00" itemprop="datePublished">
+                                            {content:date}
+                                        </time>
+                                    </div>
+                                    
+                                    <div class="np-meta-item">
+                                        <i class="far fa-user" aria-hidden="true"></i>
+                                        <span class="article-author" itemprop="author">
+                                            {content:author}
+                                        </span>
+                                    </div>
+                                    
+                                    <div class="np-meta-item">
+                                        <i class="far fa-eye" aria-hidden="true"></i>
+                                        <span class="view-count">
+                                            Visits <span id="viewCount">{content:visits}</span>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- 文章正文区域 -->
+                            <div class="np-article-content" itemprop="articleBody">{content:content}</div>
+                            
+                            <!-- 文章底部区域 -->
+                            <div class="np-article-footer">
+                                <!-- 分享按钮：缩小版 -->
+                                <div class="np-article-share">
+                                    <span class="np-share-label">分享</span>
+                                    <div class="np-share-buttons">
+                                        <button class="np-share-btn np-wechat" aria-label="微信分享" data-share="wechat">
+                                            <i class="fab fa-weixin"></i>
+                                            <span class="np-tooltip">WeChat</span>
+                                        </button>
+                                        <button class="np-share-btn np-whatsapp" aria-label="WhatsApp分享" data-share="whatsapp">
+                                            <i class="fab fa-whatsapp"></i>
+                                            <span class="np-tooltip">WhatsApp</span>
+                                        </button>
+                                        <button class="np-share-btn np-linkedin" aria-label="LinkedIn分享" data-share="linkedin">
+                                            <i class="fab fa-linkedin"></i>
+                                            <span class="np-tooltip">LinkedIn</span>
+                                        </button>
+                                        <button class="np-share-btn np-twitter" aria-label="Twitter分享" data-share="twitter">
+                                            <i class="fab fa-twitter"></i>
+                                            <span class="np-tooltip">Twitter</span>
+                                        </button>
+                                        <button class="np-share-btn np-facebook" aria-label="Facebook分享" data-share="facebook">
+                                            <i class="fab fa-facebook"></i>
+                                            <span class="np-tooltip">Facebook</span>
+                                        </button>
+                                        <button class="np-share-btn np-copy-link" aria-label="复制链接" id="copyLinkBtn">
+                                            <i class="fas fa-link"></i>
+                                            <span class="np-tooltip">Copy URL</span>
+                                        </button>
+                                    </div>
+                                </div>
+                                
+                                <!-- 上一篇 / 下一篇导航 -->
+                                <nav class="np-article-navigation" aria-label="文章导航">
+                                    {pboot:if('{content:prelink}' != '')}
+                                    <div class="np-prev-article">
+                                        <a href="{content:prelink}" class="np-nav-link">
+                                            <i class="fas fa-chevron-left"></i>
+                                            <div class="np-nav-content">
+                                                <span class="np-nav-label">Previous Article</span>
+                                                <span class="np-nav-title">{content:pretitle}</span>
+                                            </div>
+                                        </a>
+                                    </div>
+                                    {/pboot:if}
+                                    
+                                    {pboot:if('{content:nextlink}' != '')}
+                                    <div class="np-next-article">
+                                        <a href="{content:nextlink}" class="np-nav-link">
+                                            <div class="np-nav-content">
+                                                <span class="np-nav-label">Next Article</span>
+                                                <span class="np-nav-title">{content:nexttitle}</span>
+                                            </div>
+                                            <i class="fas fa-chevron-right"></i>
+                                        </a>
+                                    </div>
+                                    {/pboot:if}
+                                </nav>
+                            </div>
+                        </article>
+                    </div>
+                    
+                    <!-- 右侧边栏区域（PC 端占 25%-30%） -->
+                    <aside class="np-article-sidebar">
+                        
+                        {pboot:if('{content:ext_video_ids}' != '' && '{content:ext_video_scode}' != '')}
+                        <!-- 视频推荐 -->
+                        <div class="np-sidebar-widget np-video-shuttle-widget">
+                            <div class="np-widget-header np-video-shuttle-header">
+                                <h3 class="np-widget-title"><i class="fas fa-video" aria-hidden="true"></i>Featured Videos</h3>
+                            </div>
+                            <div class="np-video-shuttle" data-shuttle data-max="5">
+                                <button type="button" class="np-video-shuttle-nav np-video-shuttle-prev" aria-label="上一个视频"><i class="fas fa-chevron-left" aria-hidden="true"></i></button>
+                                <div class="np-video-shuttle-viewport">
+                                    <div class="np-video-shuttle-track">
+                                        {pboot:list scode={content:ext_video_scode} filter=a.id|{content:ext_video_ids} fuzzy=0 num=5 order='date desc,id desc'}
+                                        <article class="np-video-shuttle-card"
+                                                 data-app-id="[list:ext_tcplayer_app_id]"
+                                                 data-file-id="[list:ext_tcplayer_file_id]"
+                                                 data-psign="[list:ext_tcplayer_psign]"
+                                                 data-license-url="[list:ext_tcplayer_license_url]"
+                                                 data-license-key="[list:ext_tcplayer_license_key]"
+                                                 data-poster="[list:ico]"
+                                                 data-title="[list:title]">
+                                            <div class="np-video-shuttle-cover">
+                                                <img class="np-video-shuttle-poster" src="[list:ico]" alt="[list:title]" loading="lazy">
+                                                <span class="np-video-shuttle-badge">工厂视频</span>
+                                                <span class="np-video-shuttle-play"><i class="fas fa-play" aria-hidden="true"></i></span>
+                                                <span class="np-video-shuttle-duration">[list:ext_video_duration]</span>
+                                            </div>
+                                            <div class="np-video-shuttle-info">
+                                                <h4 class="np-video-shuttle-title"><a href="[list:link]">[list:title]</a></h4>
+                                                <div class="np-video-shuttle-meta">
+                                                    <span><i class="fas fa-eye" aria-hidden="true"></i> [list:visits]</span>
+                                                    <time datetime="[list:date style=Y-m-d]"><i class="far fa-calendar" aria-hidden="true"></i> [list:date style=Y-m-d H:i:s]</time>
+                                                </div>
+                                            </div>
+                                        </article>
+                                        {/pboot:list}
+                                    </div>
+                                </div>
+                                <button type="button" class="np-video-shuttle-nav np-video-shuttle-next" aria-label="下一个视频"><i class="fas fa-chevron-right" aria-hidden="true"></i></button>
+                            </div>
+                        </div>
+                        {/pboot:if}
+
+                        <!-- 企业信息卡片：EEAT 优化 -->
+                        <div class="np-sidebar-widget np-company-info-card">
+                            <div class="np-widget-header">
+                                <h3 class="np-widget-title">About Company</h3>
+                            </div>
+                            <div class="np-widget-content">
+                                <div class="np-company-logo-section">
+                                    <div class="np-company-logo">
+                                        <img src="{pboot:sitelogo}" alt="WishPower 绝缘子专家" loading="lazy">
+                                    </div>
+                                    <div class="np-company-basic-info">
+                                        <h4 class="np-company-name">WishPower</h4>
+                                        <p class="np-company-tagline">Leading Power Insulation Equipment Factory</p>
+                                        <div class="np-company-rating">
+                                            <span class="np-stars">
+                                                <i class="fas fa-star"></i>
+                                                <i class="fas fa-star"></i>
+                                                <i class="fas fa-star"></i>
+                                                <i class="fas fa-star"></i>
+                                                <i class="fas fa-star-half-alt"></i>
+                                            </span>
+                                            <span class="np-rating-text">4.8/5 客户评分</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="np-company-expertise">
+                                    <h5 class="np-section-title">业务范围</h5>
+                                    <div class="np-expertise-tags">
+                                        <span class="np-expertise-tag">Insulators</span>
+                                        <span class="np-expertise-tag">Surge Arresters</span>
+                                        <span class="np-expertise-tag">Fuse Cutouts</span>
+                                        <span class="np-expertise-tag">Insulation Bushings</span>
+                                        <span class="np-expertise-tag">OEM Solutions</span>
+                                        <span class="np-expertise-tag">FRP</span>
+                                    </div>
+                                </div>
+                                
+                                <div class="np-company-links">
+                                    <a href="/about-us/" class="np-company-link">
+                                        <i class="fas fa-info-circle"></i>
+                                        <span>Company</span>
+                                    </a>
+                                    <a href="/certificates/" class="np-company-link">
+                                        <i class="fas fa-certificate"></i>
+                                        <span>Certificates</span>
+                                    </a>
+                                    <a href="/factory-gallery/" class="np-company-link">
+                                        <i class="fas fa-industry"></i>
+                                        <span>Environment</span>
+                                    </a>
+                                </div>
+                                
+                            </div>
+                        </div>
+                        
+                        {pboot:if('{content:ext_product_scode}' != '')}
+                        <!-- 商品直达车 -->
+                        <div class="np-sidebar-widget np-product-shuttle-widget">
+                            <div class="np-widget-header np-product-shuttle-header">
+                                <h3 class="np-widget-title"><i class="fas fa-shopping-cart" aria-hidden="true"></i> Product Express</h3>
+                            </div>
+                            <div class="np-product-shuttle" data-shuttle>
+                                <button type="button" class="np-product-shuttle-nav np-product-shuttle-prev" aria-label="上一个产品"><i class="fas fa-chevron-left" aria-hidden="true"></i></button>
+                                <div class="np-product-shuttle-viewport">
+                                    <div class="np-product-shuttle-track">
+                                        {pboot:list scode={content:ext_product_scode} num=5 order=sorting}
+                                        <article class="np-product-shuttle-card">
+                                            <a href="[list:link]" class="np-product-shuttle-image">
+                                                <img src="[list:ico]" alt="[list:title]" loading="lazy">
+                                            </a>
+                                            <div class="np-product-shuttle-info">
+                                                <h4 class="np-product-shuttle-title"><a href="[list:link]">[list:title]</a></h4>
+                                                <a href="[list:link]" class="np-product-shuttle-buy"><i class="fas fa-shopping-cart" aria-hidden="true"></i> Request a Quote</a>
+                                            </div>
+                                        </article>
+                                        {/pboot:list}
+                                    </div>
+                                </div>
+                                <button type="button" class="np-product-shuttle-nav np-product-shuttle-next" aria-label="下一个产品"><i class="fas fa-chevron-right" aria-hidden="true"></i></button>
+                            </div>
+                        </div>
+                        {/pboot:if}
+
+                        <!-- 相关推荐 -->
+                        <div class="np-sidebar-widget np-related-news-widget">
+                            <div class="np-widget-header">
+                                <h3 class="np-widget-title">Related Articles</h3>
+                            </div>
+                            <div class="np-widget-content">
+                                <div class="np-related-news-list">
+                                    {pboot:list scode={sort:scode} num=5 order='date desc' not={content:id}}
+                                    <article class="np-related-news-item">
+                                        <a href="[list:link]" class="np-related-news-thumb">
+                                            <img src="[list:ico]" alt="[list:title]" loading="lazy">
+                                        </a>
+                                        <div class="np-related-news-info">
+                                            <h4 class="np-related-news-title">
+                                                <a href="[list:link]">[list:title]</a>
+                                            </h4>
+                                            <p class="np-related-news-desc">[list:description]</p>
+                                            <time class="np-related-news-date" datetime="[list:date style=Y-m-d]">
+                                                <i class="far fa-calendar" aria-hidden="true"></i>
+                                                [list:date style=Y-m-d]
+                                            </time>
+                                        </div>
+                                    </article>
+                                    {/pboot:list}
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 当前文章标签 -->
+                        {pboot:if('[tags:total]' > 0)}
+                            <div class="np-sidebar-widget np-tag-cloud-widget">
+                                <div class="np-widget-header">
+                                    <h3 class="np-widget-title">Tags 标签</h3>
+                                </div>
+                                <div class="np-widget-content">
+                                    <div class="np-tag-cloud">
+                                        {pboot:tags id={content:id} target=tag}
+                                        <a href="[tags:link]" class="np-tag">[tags:text]</a>
+                                        {/pboot:tags}
+                                    </div>
+                                </div>
+                            </div>
+                        {/pboot:if}
+                   
+                    </aside>
+                </div>
+                <!-- 新闻文章页内容结束 -->
+            </div>
+        </div>
+    </div>
+    
+    <!-- 页脚 -->
+<!-- FOOTER_START -->
+{include file=footer.html}
+<!-- FOOTER_END -->
+    
+    <!-- 移动端底部导航 -->
+<!-- MOBILE_TABBAR_START -->
+{include file=mobile_tabbar.html}
+<!-- MOBILE_TABBAR_END -->
+    
+    <!-- 返回顶部按钮 -->
+<!-- BACK_TO_TOP_START -->
+{include file=back-to-top.html}
+<!-- BACK_TO_TOP_END -->
+    
+    <!-- JS 模块（按依赖顺序） -->
+    <script src="/skin/js/topbar.js"></script>
+    <script src="/skin/js/sidebar.js"></script>
+    <script src="/skin/js/news.js"></script>
+    <script src="/skin/js/footer.js"></script>
+    <script src="/skin/js/mobile-tabbar.js"></script>
+    <script src="/skin/js/back-to-top.js"></script>
+    <script src="/skin/js/main.js"></script>
+</body>
+</html>

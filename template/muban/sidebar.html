@@ -1,0 +1,37 @@
+<script>
+    (function() {
+        if (window.matchMedia && window.matchMedia('(min-width: 769px)').matches) {
+            document.body.classList.add('sidebar-collapsed');
+        }
+    })();
+</script>
+<!-- SIDEBAR_START -->
+<div class="sidebar" id="sidebar">
+    <button type="button" class="sidebar-desktop-toggle" id="sidebarDesktopToggle" aria-label="Expand sidebar" aria-expanded="false">
+        <i class="fas fa-bars" aria-hidden="true"></i>
+    </button>
+    <div class="sidebar-content">
+        <div class="sidebar-item">
+            <span class="sidebar-icon"><i class="fas fa-home" aria-hidden="true"></i></span>
+            <span><a href="/" style="color: inherit;">Home</a></span>
+        </div>
+
+        {pboot:nav}
+        <div class="sidebar-nav-group" data-sidebar-group>
+            <div class="sidebar-item">
+                <span class="sidebar-icon" data-icon="[nav:ico]" data-title="[nav:subname]" data-index="[nav:i]"><i class="fas fa-circle" aria-hidden="true"></i></span>
+                <span><a href="[nav:link]" style="color: inherit;">[nav:subname]</a></span>
+                <button type="button" class="sidebar-subnav-toggle" aria-expanded="false" aria-label="Toggle [nav:subname] submenu">
+                    <i class="fas fa-chevron-down" aria-hidden="true"></i>
+                </button>
+            </div>
+            <div class="sidebar-subnav">
+                {pboot:2nav parent=[nav:scode]}
+                <a href="[2nav:link]" class="sidebar-subitem">[2nav:subname]</a>
+                {/pboot:2nav}
+            </div>
+        </div>
+        {/pboot:nav}
+    </div>
+</div>
+<!-- SIDEBAR_END -->

@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{content:title} - {pboot:sitesubtitle}</title>
+    <meta name="description" content="{content:description}">
+    <meta name="keywords" content="{content:keywords}">
+    <meta name="robots" content="index, follow">
+    
+    <!-- 字体与图标库（全局引用） -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;family=Noto+Sans+SC:wght@300;400;500;700&amp;display=swap">
+    
+    <!-- 模块化CSS -->
+    <link rel="stylesheet" href="/skin/css/base.css">
+    <link rel="stylesheet" href="/skin/css/topbar.css">
+    <link rel="stylesheet" href="/skin/css/sidebar.css">
+    <link rel="stylesheet" href="/skin/css/download.css">
+    <link rel="stylesheet" href="/skin/css/footer.css">
+    <link rel="stylesheet" href="/skin/css/mobile-tabbar.css">
+    <link rel="stylesheet" href="/skin/css/back-to-top.css">
+</head>
+<body class="sidebar-embedded-page">
+<!-- 顶部信息栏 -->
+<!-- TOPBAR_START -->
+{include file=topbar.html}
+<!-- TOPBAR_END -->
+    
+<!-- 主导航栏 -->
+    
+<!-- 侧边栏导航 -->
+<!-- ===== 主内容区包装器 ===== -->
+<div class="main-content-wrapper">
+    <div class="sidebar-embedded-aside">
+<!-- SIDEBAR_START -->
+{include file=sidebar.html}
+<!-- SIDEBAR_END -->
+    </div>
+    <div class="main-container">
+
+        <!-- 面包屑导航 -->
+        <nav class="breadcrumb-nav" aria-label="面包屑导航">
+            <div class="breadcrumb">
+                {pboot:position separator='' separatoricon='fa fa-angle-double-right breadcrumb-separator' indextext='首页' indexicon='fa fa-home'}
+            </div>
+        </nav>
+
+        <!-- 主内容区 -->
+        <div class="main-content-container">
+            <!-- 左列：资料详情 -->
+            <div class="content-left">
+                <!-- 资料详情主卡片 -->
+                <article class="download-detail">
+                    <div class="download-overview">
+                        <div class="download-overview-content">
+                            <div class="download-title-section">
+                                <h1 class="download-title">{content:title}</h1>
+                            </div>
+                            <div class="file-info-summary">
+                                {content:description}
+                            </div>
+                        </div>
+                        <aside class="download-file-panel">
+                            <div class="download-file-main">
+                                <div class="download-file-mark">
+                                    <i class="fas fa-file-{content:enclosureicon}"></i>
+                                </div>
+                                <div class="download-file-meta">
+                                    <span class="download-file-size">{content:enclosuresize}</span>
+                                </div>
+                            </div>
+                            <div class="download-actions">
+                                <a href="{content:enclosure}" class="btn-download-primary" id="downloadBtn">
+                                    <i class="fas fa-download"></i>
+                                    下载文件
+                                </a>
+                            </div>
+                        </aside>
+                    </div>
+
+                    <!-- 预览区域（JS 会根据文件类型动态调整） -->
+                    <section class="preview-section">
+                        <div class="preview-container">
+                            <div class="preview-header">
+                                <div class="preview-actions">
+                                    {pboot:if('{content:enclosuretype}'=='PDF')}
+                                    <button class="btn-preview-secondary" id="fullPreviewBtn" hidden>
+                                        <i class="fas fa-expand"></i>
+                                        全屏预览
+                                    </button>
+                                    {/pboot:if}
+                                </div>
+                            </div>
+                            <div class="preview-body" id="previewBody" data-preview-src="{content:enclosure}" data-preview-type="{content:enclosuretype}" style="display: flex; justify-content: center; align-items: center; background: #f5f5f5; min-height: 500px;">
+                                {pboot:if('{content:enclosuretype}'=='PDF')}
+                                <div class="preview-placeholder">
+                                    <div class="preview-placeholder-icon">
+                                        <i class="fas fa-file-pdf"></i>
+                                    </div>
+                                    <h3>PDF 预览已就绪</h3>
+                                    <p>点击后加载 PDF 预览，刷新页面不会自动请求附件。</p>
+                                    <button type="button" class="btn-preview-secondary preview-load-btn" id="loadPreviewBtn">
+                                        <i class="fas fa-eye"></i>
+                                        加载预览
+                                    </button>
+                                </div>
+                                {else}
+                                <div class="preview-placeholder">
+                                    <div class="preview-placeholder-icon">
+                                        <i class="fas fa-file-{content:enclosureicon}"></i>
+                                    </div>
+                                    <h3>暂不支持在线预览</h3>
+                                    <p>当前文件类型为 {content:enclosuretype}，请下载后在本地查看。</p>
+                                    <a href="{content:enclosure}" class="btn-download-primary" download>
+                                        <i class="fas fa-download"></i>
+                                        下载文件
+                                    </a>
+                                </div>
+                                {/pboot:if}
+                            </div>
+                        </div>
+                    </section>
+
+                </article>
+
+                <nav class="download-post-nav" aria-label="资料上一篇和下一篇">
+                    {pboot:if('{content:prelink}' != '')}
+                    <a href="{content:prelink}" class="download-post-link download-post-prev">
+                        <span class="download-post-icon">
+                            <i class="fas fa-chevron-left"></i>
+                        </span>
+                        <span class="download-post-copy">
+                            <span class="download-post-title">{content:pretitle}</span>
+                        </span>
+                    </a>
+                    {/pboot:if}
+                    {pboot:if('{content:nextlink}' != '')}
+                    <a href="{content:nextlink}" class="download-post-link download-post-next">
+                        <span class="download-post-copy">
+                            <span class="download-post-title">{content:nexttitle}</span>
+                        </span>
+                        <span class="download-post-icon">
+                            <i class="fas fa-chevron-right"></i>
+                        </span>
+                    </a>
+                    {/pboot:if}
+                </nav>
+
+                <!-- 相关下载 -->
+                <section class="related-downloads-section">
+                    <h2 class="section-title">相关技术资料</h2>
+                    <div class="related-downloads-grid">
+                        {pboot:list scode={content:scode} num=3 order=sorting}
+                        {pboot:if([list:id]!={content:id})}
+                        <div class="related-download-card">
+                            <div class="related-download-header">
+                                <h3 class="related-download-title">
+                                    <a href="[list:link]">[list:title]</a>
+                                </h3>
+                                <span class="related-file-badge">
+                                    <i class="fas fa-file-[list:enclosureicon]"></i>
+                                    [list:enclosuretype]
+                                </span>
+                            </div>
+                            <p>[list:description]</p>
+                            <div class="related-download-meta">
+                                <a href="[list:link]" class="btn-related-download">
+                                    <i class="fas fa-eye"></i>
+                                    预览
+                                </a>
+                            </div>
+                        </div>
+                        {/pboot:if}
+                        {/pboot:list}
+                    </div>
+                </section>
+
+                <!-- 页面底部行动号召 -->
+                <section class="cta-section">
+                    <h2 class="cta-title">需要更多技术资料？</h2>
+                    <p class="cta-description">我们的技术团队可以为您提供定制化的产品技术资料、项目设计方案和现场技术支持。</p>
+                    <div class="cta-buttons">
+                        <a href="/about/" class="btn-cta-primary">
+                            <i class="fas fa-comments"></i>
+                            联系技术团队
+                        </a>
+                        <a href="{content:sortlink}" class="btn-cta-secondary">
+                            <i class="fas fa-download"></i>
+                            浏览更多资料
+                        </a>
+                    </div>
+                </section>
+            </div>
+
+            <!-- 右列：侧边栏 -->
+            <div class="content-right">
+                <!-- WishPower 信息卡 -->
+                <div class="sidebar-card company-card">
+                    <h3>
+                        <i class="fas fa-bolt"></i>
+                        WishPower
+                    </h3>
+                    <p class="company-description">
+                        专注电力复合绝缘产品制造20年，为全球60多个国家和地区提供高压绝缘解决方案。
+                    </p>
+                    <ul class="company-features">
+                        <li>
+                            <i class="fas fa-check-circle"></i>
+                            ISO 9001质量管理体系认证
+                        </li>
+                        <li>
+                            <i class="fas fa-check-circle"></i>
+                            20年专业制造经验
+                        </li>
+                        <li>
+                            <i class="fas fa-check-circle"></i>
+                            产品出口60+国家
+                        </li>
+                    </ul>
+                    <div class="company-links">
+                        <a href="/about/" class="company-link">
+                            <i class="fas fa-info-circle"></i>
+                            关于我们
+                        </a>
+                        <a href="/about2/" class="company-link">
+                            <i class="fas fa-envelope"></i>
+                            联系我们
+                        </a>
+                    </div>
+                </div>
+
+                <!-- 技术咨询卡片 -->
+                <div class="sidebar-card support-card">
+                    <h3>
+                        <i class="fas fa-headset"></i>
+                        技术咨询
+                    </h3>
+                    <p class="support-description">
+                        对技术参数有疑问或需要个性化解决方案？我们的技术专家随时为您提供支持。
+                    </p>
+                    <div class="support-contact">
+                        <div class="support-contact-item">
+                            <i class="fas fa-envelope"></i>
+                            <span>{pboot:companyemail}</span>
+                        </div>
+                        <div class="support-contact-item">
+                            <i class="fas fa-phone"></i>
+                            <span>+86 {pboot:companymobile}</span>
+                        </div>
+                        <div class="support-contact-item">
+                            <i class="fas fa-clock"></i>
+                            <span>工作日 9:00-18:00 | 周一 周五</span>
+                        </div>
+                    </div>
+                    <a href="/contact.html?type=technical" class="btn-support">
+                        <i class="fas fa-comment-dots"></i>
+                        技术咨询
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 结构化数据 (BreadcrumbList 和 TechArticle) -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "首页",
+      "item": "https://www.wishpower.com/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "资料下载",
+      "item": "https://www.wishpower.com/downloads.html"
+    },
+    {
+      "@type": "ListItem",
+      "position": 3,
+      "name": "复合绝缘子产品目录 2024版",
+      "item": "https://www.wishpower.com/downloads/composite-insulator-catalog-2024.html"
+    }
+  ]
+}
+</script>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "headline": "复合绝缘子产品目录 2024版",
+  "description": "包含复合绝缘子全系列产品技术参数、规格尺寸、性能指标和应用场景",
+  "datePublished": "2024-03-15",
+  "dateModified": "2024-03-15",
+  "author": {
+    "@type": "Organization",
+    "name": "WishPower"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "WishPower",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://www.wishpower.com/logo.png"
+    }
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://www.wishpower.com/downloads/composite-insulator-catalog-2024.html"
+  },
+  "fileFormat": "application/pdf",
+  "fileSize": "5.2 MB",
+  "pageCount": 86
+}
+</script>
+    
+<!--页脚 FOOTER_START -->
+{include file=footer.html}
+<!-- FOOTER_END -->
+    
+<!-- 移动端底部导航MOBILE_TABBAR_START -->
+{include file=mobile_tabbar.html}
+<!-- MOBILE_TABBAR_END -->
+    
+<!-- BACK_TO_TOP_START 返回顶部按钮 -->
+{include file=back-to-top.html}
+<!-- BACK_TO_TOP_END -->
+    
+<!-- JS 模块（按依赖顺序） -->
+<script src="/skin/js/topbar.js"></script>
+<script src="/skin/js/sidebar.js"></script>
+<script src="/skin/js/download.js"></script>
+<script src="/skin/js/footer.js"></script>
+<script src="/skin/js/mobile-tabbar.js"></script>
+<script src="/skin/js/back-to-top.js"></script>
+<script src="/skin/js/main.js"></script>
+</body>
+</html>

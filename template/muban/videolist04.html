@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{sort:title} - {pboot:sitesubtitle}</title>
+    <meta name="keywords" content="{sort:keywords}">
+    <meta name="description" content="{sort:description}">
+    <meta name="robots" content="index, follow">
+    
+    <!-- 字体与图标库（全局引用） -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;family=Noto+Sans+SC:wght@300;400;500;700&amp;display=swap">
+    
+    <!-- 模块化CSS -->
+    <link rel="stylesheet" href="/skin/css/base.css">
+    <link rel="stylesheet" href="/skin/css/topbar.css">
+    <link rel="stylesheet" href="/skin/css/sidebar.css">
+    <link rel="stylesheet" href="/skin/css/videolist03.css">
+    <link rel="stylesheet" href="/skin/css/footer.css">
+    <link rel="stylesheet" href="/skin/css/mobile-tabbar.css">
+    <link rel="stylesheet" href="/skin/css/back-to-top.css">
+</head>
+<body class="sidebar-embedded-page">
+    <!-- 顶部信息栏 -->
+<!-- TOPBAR_START -->
+{include file=topbar.html}
+<!-- TOPBAR_END -->
+    
+    <!-- 主导航栏 -->
+    
+    <!-- 侧边栏导航 -->
+<!-- ===== 主内容区包装器 ===== -->
+<div class="main-content-wrapper">
+    <div class="sidebar-embedded-aside">
+<!-- SIDEBAR_START -->
+{include file=sidebar.html}
+<!-- SIDEBAR_END -->
+    </div>
+        <div class="main-container">
+            <div class="main-content">
+                <div class="content-layout">
+                    
+                    <!-- 3. 面包屑导航-->
+                    <div class="breadcrumb-stats-container">
+                        <div class="breadcrumb-section">
+                            <ul class="breadcrumb-list">
+                                <!-- 首页：固定不变 -->
+                                <li class="breadcrumb-item">
+                                    <a href="/" class="breadcrumb-link">
+                                        <i class="fas fa-home"></i>
+                                        首页
+                                    </a>
+                                </li>
+                                <!-- 一级栏目（视频探索）：始终显示，链接和名称动态输出 -->
+                                <li class="breadcrumb-item">
+                                    <a href="{sort:toplink}" class="breadcrumb-link">
+                                        <i class="fas fa-video"></i>
+                                        {sort:topname}
+                                    </a>
+                                </li>
+                                <!-- 二级栏目：只在前栏目有父栏目（即在某个二级栏目页）时才显示 -->
+                                {pboot:if('{sort:pcode}'!='0')}
+                                <li class="breadcrumb-item">
+                                    <a href="{sort:link}" class="breadcrumb-link">
+                                        <i class="fas fa-play-circle"></i>
+                                        {sort:name}
+                                    </a>
+                                </li>
+                                {/pboot:if}
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <!-- ===== 新增：视频筛选模块 ===== -->
+                    <div class="video-filter-section">
+                        <div class="video-filter-container" id="videoFilterContainer">
+                            <div class="video-filter-header" id="videoFilterToggle">
+                                <div class="video-filter-title">
+                                    <i class="fas fa-filter"></i>
+                                    视频筛选
+                                </div>
+                                <div class="video-filter-toggle">
+                                    <i class="fas fa-chevron-down"></i>
+                                </div>
+                            </div>
+                            
+                            <div class="video-filter-content" id="videoFilterContent">
+                                <!-- 第一排：产品类型 -->
+                                <div class="filter-row">
+                                    <div class="filter-row-content">
+                                        <div class="filter-row-title" data-clear-filter="product-type">
+                                            <i class="fas fa-box"></i>
+                                            产品类型
+                                        </div>
+                                        <div class="filter-tags">
+                                            {pboot:selectall field=ext_product_type text=全部 class='filter-tag filter-tag-all' active='filter-tag filter-tag-all active'}
+                                            {pboot:select field=ext_product_type}
+                                            <a href="[select:link]" class="filter-tag{pboot:if('[select:value]'=='[select:current]')} active{/pboot:if}" data-filter="product-type" data-value="[select:value]">
+                                                [select:value]
+                                            </a>
+                                            {/pboot:select}
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- 第二排：电压等级 -->
+                                <div class="filter-row">
+                                    <div class="filter-row-content">
+                                        <div class="filter-row-title" data-clear-filter="voltage">
+                                            <i class="fas fa-bolt"></i>
+                                            电压等级
+                                        </div>
+                                        <div class="filter-tags">
+                                            {pboot:selectall field=ext_voltage text=全部 class='filter-tag filter-tag-all' active='filter-tag filter-tag-all active'}
+                                            {pboot:select field=ext_voltage}
+                                            <a href="[select:link]" class="filter-tag{pboot:if('[select:value]'=='[select:current]')} active{/pboot:if}" data-filter="voltage" data-value="[select:value]">
+                                                [select:value]
+                                            </a>
+                                            {/pboot:select}
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- 第三排：应用场景 -->
+                                <div class="filter-row">
+                                    <div class="filter-row-content">
+                                        <div class="filter-row-title" data-clear-filter="application">
+                                            <i class="fas fa-map-marker-alt"></i>
+                                            应用场景
+                                        </div>
+                                        <div class="filter-tags">
+                                            {pboot:selectall field=ext_application text=全部 class='filter-tag filter-tag-all' active='filter-tag filter-tag-all active'}
+                                            {pboot:select field=ext_application}
+                                            <a href="[select:link]" class="filter-tag{pboot:if('[select:value]'=='[select:current]')} active{/pboot:if}" data-filter="application" data-value="[select:value]">
+                                                [select:value]
+                                            </a>
+                                            {/pboot:select}
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- 第四排：认证标准 -->
+                                <div class="filter-row">
+                                    <div class="filter-row-content">
+                                        <div class="filter-row-title" data-clear-filter="standard">
+                                            <i class="fas fa-certificate"></i>
+                                            认证标准
+                                        </div>
+                                        <div class="filter-tags">
+                                            {pboot:selectall field=ext_standard text=全部 class='filter-tag filter-tag-all' active='filter-tag filter-tag-all active'}
+                                            {pboot:select field=ext_standard}
+                                            <a href="[select:link]" class="filter-tag{pboot:if('[select:value]'=='[select:current]')} active{/pboot:if}" data-filter="standard" data-value="[select:value]">
+                                                [select:value]
+                                            </a>
+                                            {/pboot:select}
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- 第五排：材料/性能 -->
+                                <div class="filter-row">
+                                    <div class="filter-row-content">
+                                        <div class="filter-row-title" data-clear-filter="material">
+                                            <i class="fas fa-flask"></i>
+                                            材料/性能
+                                        </div>
+                                        <div class="filter-tags">
+                                            {pboot:selectall field=ext_material text=全部 class='filter-tag filter-tag-all' active='filter-tag filter-tag-all active'}
+                                            {pboot:select field=ext_material}
+                                            <a href="[select:link]" class="filter-tag{pboot:if('[select:value]'=='[select:current]')} active{/pboot:if}" data-filter="material" data-value="[select:value]">
+                                                [select:value]
+                                            </a>
+                                            {/pboot:select}
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- 筛选操作按钮 -->
+                                <div class="filter-actions">
+                                    <button class="filter-reset" id="filterReset" data-reset-url="{sort:link}">
+                                        <i class="fas fa-redo"></i>
+                                        重置筛选
+                                    </button>
+                                    <div class="filter-stats">
+                                        已选择 <strong id="selectedFiltersCount">0</strong> 个筛选条件
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- ===== 竖版 shorts 视频区域（PbootCMS 列表嵌套）===== -->
+                <div class="vertical-videos-section">
+                    <div class="vertical-video-list" id="verticalVideoList">
+                        {pboot:list num=10 page=1 order='date desc,id desc'}
+                        <article class="vertical-video-card">
+                            <div class="vertical-video-thumb">
+                                <a class="vertical-video-cover-link" href="[list:link]" aria-label="[list:title]">
+                                    <img class="vertical-video-cover" src="[list:ico]" alt="[list:title]" loading="lazy">
+                                </a>
+                                <a href="[list:link]" class="vertical-video-play-btn" aria-label="播放视频"><i class="fas fa-play"></i></a>
+                                <span class="vertical-video-duration">[list:ext_video_duration]</span>
+                                <span class="vertical-video-category">[list:sortname]</span>
+                            </div>
+                            <div class="vertical-video-info">
+                                <h3 class="vertical-video-title"><a href="[list:link]">[list:title]</a></h3>
+                                <div class="vertical-video-meta">
+                                    <span class="vertical-video-views"><i class="fas fa-eye"></i>[list:visits]</span>
+                                    <time class="vertical-video-date" datetime="[list:date]"><i class="far fa-calendar"></i>[list:date]</time>
+                                </div>
+                            </div>
+                        </article>
+                        {/pboot:list}
+                    </div>
+                </div>
+                                        <!-- 分页 - 保持原有HTML结构和UI样式 -->
+                    <div class="video-pagination">
+                        {page:bar}
+                    </div>
+                    
+                    <!-- 视频页面底部CTA -->
+                    <div class="video-cta">
+                        <h2>想观看更多专业视频？</h2>
+                        <p>订阅我们的YouTube频道，获取最新产品视频、安装教程和技术解析，第一时间了解WishPower最新动态。</p>
+                        <div class="video-cta-buttons">
+                            <a href="https://youtube.com" target="_blank" class="cta-button primary">
+                                <i class="fab fa-youtube"></i>
+                                订阅YouTube频道
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<!--页脚 FOOTER_START -->
+{include file=footer.html}
+<!-- FOOTER_END -->
+    
+<!-- 移动端底部导航MOBILE_TABBAR_START -->
+{include file=mobile_tabbar.html}
+<!-- MOBILE_TABBAR_END -->
+    
+<!-- BACK_TO_TOP_START 返回顶部按钮 -->
+{include file=back-to-top.html}
+<!-- BACK_TO_TOP_END -->
+    
+    <!-- JS 模块（按依赖顺序） -->
+    <script src="/skin/js/topbar.js"></script>
+    <script src="/skin/js/sidebar.js"></script>
+    <script src="/skin/js/videolist03.js"></script>
+    <script src="/skin/js/footer.js"></script>
+    <script src="/skin/js/mobile-tabbar.js"></script>
+    <script src="/skin/js/back-to-top.js"></script>
+    <script src="/skin/js/main.js"></script>
+</body>
+</html>

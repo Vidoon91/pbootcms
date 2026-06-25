@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{sort:title} - {pboot:sitesubtitle}</title>
+    <meta name="description" content="{sort:description}">
+    <meta name="keywords" content="{sort:keywords}">
+    <meta name="robots" content="index, follow">
+    
+    <!-- 字体与图标库（全局引用） -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;family=Noto+Sans+SC:wght@300;400;500;700&amp;display=swap">
+    
+    <!-- 模块化CSS -->
+    <link rel="stylesheet" href="/skin/css/base.css">
+    <link rel="stylesheet" href="/skin/css/topbar.css">
+    <link rel="stylesheet" href="/skin/css/sidebar.css">
+    <link rel="stylesheet" href="/skin/css/certificates.css">
+    <link rel="stylesheet" href="/skin/css/footer.css">
+    <link rel="stylesheet" href="/skin/css/mobile-tabbar.css">
+    <link rel="stylesheet" href="/skin/css/back-to-top.css">
+</head>
+<body class="sidebar-embedded-page">
+    <!-- 顶部信息栏 -->
+<!-- TOPBAR_START -->
+{include file=topbar.html}
+<!-- TOPBAR_END -->
+    
+    <!-- 主导航栏 -->
+    
+    <!-- 侧边栏导航 -->
+<!-- ===== 主内容区包装器 ===== -->
+<!-- 主内容包装器 -->
+<div class="main-content-wrapper">
+    <div class="sidebar-embedded-aside">
+<!-- SIDEBAR_START -->
+{include file=sidebar.html}
+<!-- SIDEBAR_END -->
+    </div>
+    <div class="main-container">
+        <div class="main-content">
+            <div class="content-layout">
+                <!-- ===== 资质证书页面内容开始 ===== -->
+                <!-- 首屏引导区 (Hero) -->
+                <section class="certificates-hero">
+                <!-- 内容层 -->
+                <div class="hero-content">
+                        <div class="hero-text-wrapper">
+                            <h1 class="hero-title">
+                                <span class="title-line">{sort:subname}</span>
+                                <span class="title-subline">{sort:def1}</span>
+                            </h1>
+                            <div class="subtitle">
+                                <span class="subtitle-item">国际认证</span>
+                                <span class="subtitle-separator">·</span>
+                                <span class="subtitle-item">质量体系</span>
+                                <span class="subtitle-separator">·</span>
+                                <span class="subtitle-item">行业合规</span>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                <!-- 面包屑导航 -->
+                <nav class="certificates-breadcrumb" aria-label="面包屑导航">
+                    <div class="breadcrumb-nav">
+                        {pboot:position separatoricon='fas fa-chevron-right' indextext='首页' indexicon='fas fa-home'}
+                    </div>
+                </nav>
+                
+                <!-- 资质说明区 -->
+                <section class="certificates-intro">
+                    <div class="intro-container">
+                        <p class="intro-text">
+                            {sort:description}
+                        </p>
+                    </div>
+                </section>
+                
+                <!-- 企业资质墙 (核心模块) -->
+                <section class="certificates-wall">
+                    <div class="wall-container">
+                        <!-- 左列：证书展示墙 (70%) -->
+                        <div class="certificates-grid">
+                            <h2 class="certificates-grid-title">企业资质墙</h2>
+                            
+                            <div class="certificates-grid-container" id="certificatesGrid">
+                                {pboot:list scode={sort:scode} num=9 order=sorting}
+                                <article class="certificate-item" data-certificate="[list:title]">
+                                    <div class="certificate-card">
+                                        <figure class="certificate-figure">
+                                            <div class="certificate-image-container">
+                                                <!-- 证书图片 - 点击放大功能保持不变 -->
+                                                <img src="[list:ico]" alt="[list:title]" class="certificate-image">
+                                            </div>
+                                            <!-- 证书标签 -->
+                                            <span class="certificate-badge">[list:subtitle]</span>
+                                            
+                                            <!-- 悬停层 - 只保留文字描述，移除按钮 -->
+                                            <div class="certificate-hover-overlay">
+                                                <div class="hover-content">
+                                                    <h3 class="certificate-title">[list:title]</h3>
+                                                    <p class="certificate-desc">[list:description]</p>
+                                                </div>
+                                            </div>
+                                        </figure>
+                                        
+                                        <!-- 证书元信息区域 - 添加查看详情链接 -->
+                                        <div class="certificate-meta">
+                                            <div class="meta-info">
+                                                <span>认证机构: [list:ext_organization]</span>
+                                                <span>日期/编号: [list:ext_validity]</span>
+                                            </div>
+                                            <a href="[list:link]" class="detail-link">
+                                                查看详情
+                                                <i class="fas fa-arrow-right"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </article>
+                                {/pboot:list}
+                            </div>
+                        </div>
+                        
+                        <!-- 右列：固定专业说明区 (30%) -->
+                        <div class="certificates-sidebar">
+                            <div class="sidebar-sticky">
+                                <!-- 认证概览卡 -->
+                                <div class="overview-card">
+                                    <h3 class="overview-title">
+                                        <i class="fas fa-certificate"></i>
+                                        认证概览
+                                    </h3>
+                                    <ul class="overview-list">
+                                        <li class="overview-item">
+                                            <div class="overview-icon">
+                                                <i class="fas fa-check-circle"></i>
+                                            </div>
+                                            <div class="overview-text">
+                                                <h4>质量体系认证</h4>
+                                                <p>通过ISO 9001质量管理体系认证，确保产品从原材料采购到成品出厂的全过程质量控制。</p>
+                                            </div>
+                                        </li>
+                                        <li class="overview-item">
+                                            <div class="overview-icon">
+                                                <i class="fas fa-globe-americas"></i>
+                                            </div>
+                                            <div class="overview-text">
+                                                <h4>国际标准符合</h4>
+                                                <p>产品符合IEC国际电工标准、欧盟CE指令、北美UL标准，满足全球主要市场的技术要求。</p>
+                                            </div>
+                                        </li>
+                                        <li class="overview-item">
+                                            <div class="overview-icon">
+                                                <i class="fas fa-leaf"></i>
+                                            </div>
+                                            <div class="overview-text">
+                                                <h4>环境与安全</h4>
+                                                <p>获得ISO 14001环境管理体系认证和ROHS环保认证，践行绿色制造理念。</p>
+                                            </div>
+                                        </li>
+                                        <li class="overview-item">
+                                            <div class="overview-icon">
+                                                <i class="fas fa-bolt"></i>
+                                            </div>
+                                            <div class="overview-text">
+                                                <h4>行业准入认证</h4>
+                                                <p>持有国家电网入网许可证，产品符合中国电力行业标准，服务于国内重点电力工程项目。</p>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </div>
+                                
+                                <!-- 企业背书卡 -->
+                                <div class="endorsement-card">
+                                    <h3 class="endorsement-title">
+                                        <i class="fas fa-building"></i>
+                                        WishPower 企业背书
+                                    </h3>
+                                    <div class="endorsement-logo">
+                                        <i class="fas fa-bolt"></i>
+                                        <span>WishPower</span>
+                                    </div>
+                                    <div class="endorsement-text">
+                                        专业高压绝缘子制造企业，拥有20年行业经验，产品出口全球60多个国家和地区。以技术创新和质量控制为核心竞争力。
+                                    </div>
+                                    <div class="endorsement-links">
+                                        <a href="/about/" class="endorsement-link">
+                                            <span>关于我们</span>
+                                            <i class="fas fa-arrow-right"></i>
+                                        </a>
+                                        <a href="/contact-us/" class="endorsement-link">  <!-- 注意这里的href是/contact.html -->
+                                            <span>联系我们</span>
+                                            <i class="fas fa-arrow-right"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                
+                <!-- ===== 资质证书页面内容结束 ===== -->
+            </div>
+        </div>
+    </div>
+        
+</div>    
+    
+<!--页脚 FOOTER_START -->
+{include file=footer.html}
+<!-- FOOTER_END -->
+    
+<!-- 移动端底部导航MOBILE_TABBAR_START -->
+{include file=mobile_tabbar.html}
+<!-- MOBILE_TABBAR_END -->
+    
+<!-- BACK_TO_TOP_START 返回顶部按钮 -->
+{include file=back-to-top.html}
+<!-- BACK_TO_TOP_END -->
+    
+    <!-- JS 模块（按依赖顺序） -->
+    <script src="/skin/js/topbar.js"></script>
+    <script src="/skin/js/sidebar.js"></script>
+    <script src="/skin/js/certificates.js"></script>
+    <script src="/skin/js/footer.js"></script>
+    <script src="/skin/js/mobile-tabbar.js"></script>
+    <script src="/skin/js/back-to-top.js"></script>
+    <script src="/skin/js/main.js"></script>
+</body>
+</html>

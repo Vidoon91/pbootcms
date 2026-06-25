@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{content:title} - {pboot:sitesubtitle}</title>
+    <meta name="description" content="{content:description}">
+    <meta name="keywords" content="{content:keywords}">
+    <meta name="robots" content="index, follow">
+    
+    <link rel="canonical" href="{content:link}">
+    
+    <meta property="og:site_name" content="{pboot:sitetitle}">
+    <meta property="og:title" content="{content:title}">
+    <meta property="og:description" content="{content:description}">
+    <meta property="og:image" content="{content:ico}">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:url" content="{content:link}">
+    <meta property="og:type" content="product">
+    
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@WishPower">
+    <meta name="twitter:title" content="{content:title}">
+    <meta name="twitter:description" content="{content:description}">
+    <meta name="twitter:image" content="{content:ico}">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;family=Noto+Sans+SC:wght@300;400;500;700&amp;display=swap">
+    <link rel="stylesheet" href="/skin/vendor/tcplayer/tcplayer.min.css">
+    
+    <!-- Modular CSS -->
+    <link rel="stylesheet" href="/skin/css/base.css">
+    <link rel="stylesheet" href="/skin/css/topbar.css">
+    <link rel="stylesheet" href="/skin/css/sidebar.css">
+    <link rel="stylesheet" href="/skin/css/product.css">
+    <link rel="stylesheet" href="/skin/css/footer.css">
+    <link rel="stylesheet" href="/skin/css/mobile-tabbar.css">
+    <link rel="stylesheet" href="/skin/css/back-to-top.css">
+</head>
+<body class="sidebar-embedded-page">
+    <!-- Top bar -->
+<!-- TOPBAR_START -->
+{include file=topbar.html}
+<!-- TOPBAR_END -->
+    
+    <!-- Main navigation -->
+    
+    <!-- Sidebar navigation -->
+
+<!-- Main content wrapper -->
+<div class="main-content-wrapper">
+    <div class="sidebar-embedded-aside">
+<!-- SIDEBAR_START -->
+{include file=sidebar.html}
+<!-- SIDEBAR_END -->
+    </div>
+    <div class="main-container">
+        <div class="main-content">
+            <!-- Product detail page starts -->
+            <section class="product-detail-page" itemscope itemtype="https://schema.org/Product">
+                <!-- Breadcrumb navigation -->
+                <nav class="breadcrumb" aria-label="Breadcrumb">
+                    <a href="/">Home</a>
+                    <span class="breadcrumb-separator"><i class="fas fa-chevron-right"></i></span>
+                    {pboot:if('{sort:pcode}'!='0')}
+                    {pboot:sort scode={sort:pcode}}
+                    <a href="[sort:link]">[sort:subname]</a>
+                    {/pboot:sort}
+                    <span class="breadcrumb-separator"><i class="fas fa-chevron-right"></i></span>
+                    {/pboot:if}
+                    <a href="{sort:link}">{sort:subname}</a>
+                </nav>
+
+                <!-- Main product section - 5-image carousel -->
+                <div class="product-main">
+                    <!-- Product gallery -->
+                    <div class="product-gallery">
+                        
+                        <div class="gallery-slider">
+                            <div class="slider-container" id="sliderContainer">
+                                <div class="slider-track" id="sliderTrack">
+                                    <!-- First slide: linked video cover, loaded from the video_id product extension field -->
+                                    {pboot:if('{content:ext_video_id}' != '')}
+                                    {pboot:content id={content:ext_video_id}}
+                                    <div class="slider-slide active">
+                                        <div class="video-cover"
+                                             data-video="true"
+                                             data-video-poster="[content:ico]"
+                                             data-content-id="[content:id]"
+                                             data-sign-api="/api/tencent-vod-psign.php"
+                                             data-file-id="[content:ext_tcplayer_file_id]">
+                                            <video id="productInlineTcPlayer"
+                                                   class="product-tc-video"
+                                                   controls
+                                                   playsinline
+                                                   webkit-playsinline
+                                                   x5-playsinline
+                                                   preload="none"></video>
+                                            <img src="[content:ico]" 
+                                                 alt="[content:title]" 
+                                                 class="video-cover-image"
+                                                 loading="lazy"
+                                                 onerror="this.src='/static/images/fengmain.webp'">
+                                            <div class="video-indicator">
+                                                <i class="fas fa-video"></i>
+                                                <span>Product Video</span>
+                                            </div>
+                                            <div class="video-play-overlay">
+                                                <div class="video-play-btn-large">
+                                                    <i class="fas fa-play"></i>
+                                                </div>
+                                            </div>
+                                            <button class="product-video-hitarea" type="button" aria-label="Play or pause video"></button>
+                                        </div>
+                                    </div>
+                                    {/pboot:content}
+                                    {/pboot:if}
+                                    
+                                    <!-- Product images: dynamically loop through up to 5 images -->
+                                    {pboot:pics id={content:id} num=5}
+                                    <div class="slider-slide">
+                                        <img src="[pics:src]" 
+                                             alt="{content:title}[pics:i]" 
+                                             class="slider-image"
+                                             loading="lazy"
+                                             onerror="this.src='/static/images/default-product.jpg'">
+                                    </div>
+                                    {/pboot:pics}
+                                </div>
+                                <div class="slider-nav">
+                                    <button class="slider-prev" id="sliderPrev" aria-label="Previous image">
+                                        <i class="fas fa-chevron-left"></i>
+                                    </button>
+                                    <button class="slider-next" id="sliderNext" aria-label="Next image">
+                                        <i class="fas fa-chevron-right"></i>
+                                    </button>
+                                </div>
+                               
+                                <div class="image-counter">
+                                    <span id="currentSlide">1</span> / <span id="totalSlides">1</span>
+                                    <span class="media-type">
+                                        <i class="fas fa-video"></i>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="thumbnail-images">
+                            <!-- Thumbnail 1: linked video cover -->
+                            {pboot:if('{content:ext_video_id}' != '')}
+                            {pboot:content id={content:ext_video_id}}
+                            <div class="thumbnail-item active" data-index="0">
+                                <div class="thumbnail-video-cover"
+                                     data-video="true"
+                                     data-video-poster="[content:ico]"
+                                     data-content-id="[content:id]"
+                                     data-sign-api="/api/tencent-vod-psign.php"
+                                     data-file-id="[content:ext_tcplayer_file_id]">
+                                    <img src="[content:ico]" 
+                                         alt="[content:title]" 
+                                         class="thumbnail-image"
+                                         loading="lazy"
+                                         onerror="this.src='/static/images/fengmain.webp'">
+                                    <div class="thumbnail-play-btn">
+                                        <i class="fas fa-play"></i>
+                                    </div>
+                                </div>
+                            </div>
+                            {/pboot:content}
+                            {/pboot:if}
+                            
+                            <!-- Thumbnails: product images, matching the slides -->
+                            {pboot:pics id={content:id} num=5}
+                            <div class="thumbnail-item" data-index="[pics:i]">
+                                <img src="[pics:src]" 
+                                     alt="{content:title}[pics:i]" 
+                                     class="thumbnail-image"
+                                     loading="lazy"
+                                     onerror="this.src='/static/images/default-product.jpg'">
+                            </div>
+                            {/pboot:pics}
+                        </div>
+                    </div>
+                    
+                    <!-- Product information -->
+                    <div class="product-info">
+                        <div class="product-header">
+                            <h1 class="product-title" itemprop="name">{content:title}</h1>
+                            <p class="product-subtitle" itemprop="description"><b>Factory</b>: We are a professional manufacturer providing OEM custom production services.</p>
+                           <!-- Product star rating -->
+                            <div class="product-rating">
+                                <span class="product-stars">
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star-half-alt"></i>
+                                </span>
+                                <span class="product-rating-text">4.8/5 Customer Rating | Views: {content:visits}</span> 
+                            </div>
+                        </div>
+                        
+                        <div class="product-meta-grid">
+                            <div class="meta-item">
+                                <span class="meta-label">
+                                    <i class="fas fa-industry"></i>
+                                    Brand
+                                </span>
+                                <span class="meta-value product-sku" itemprop="sku"><b>WishPower</b></span>
+                            </div>
+                            <div class="meta-item">
+                                <span class="meta-label">
+                                    <i class="fas fa-layer-group"></i>
+                                    Product Category
+                                </span>
+                                <span class="meta-value" itemprop="category">{sort:subname}</span>
+                            </div>
+                            <div class="meta-item">
+                                <span class="meta-label">
+                                    <i class="fas fa-barcode"></i>
+                                    Model
+                                </span>
+                                <span class="meta-value" itemprop="additionalProperty" itemscope itemtype="https://schema.org/PropertyValue">
+                                    <span itemprop="value">{content:ext_model}</span>
+                                </span>
+                            </div>
+                            <div class="meta-item">
+                                <span class="meta-label">
+                                    <i class="fas fa-dollar-sign"></i>
+                                    Price
+                                </span>
+                                <span class="meta-value" itemprop="additionalProperty" itemscope itemtype="https://schema.org/PropertyValue">
+                                    <span itemprop="name"> </span> <span itemprop="value">{content:ext_price}</span>
+                                </span>
+                            </div>
+                            <div class="meta-item">
+                                <span class="meta-label">
+                                    <i class="fas fa-handshake"></i>
+                                    Source Factory
+                                </span>
+                                <span class="meta-value" itemprop="additionalProperty" itemscope itemtype="https://schema.org/PropertyValue">
+                                    <span itemprop="value">Yes</span>
+                                </span>
+                            </div>
+                            <div class="meta-item">
+                                <span class="meta-label">
+                                    <i class="fas fa-palette"></i>
+                                    Color
+                                </span>
+                                <span class="meta-value" itemprop="additionalProperty" itemscope itemtype="https://schema.org/PropertyValue">
+                                    <span itemprop="value">Grey/Red</span>
+                                </span>
+                            </div>
+                            <div class="meta-item">
+                                <span class="meta-label">
+                                    <i class="fas fa-globe-americas"></i>
+                                    Country / Region
+                                </span>
+                                <span class="meta-value">China</span>
+                            </div>
+                            <div class="meta-item">
+                                <span class="meta-label">
+                                    <i class="fas fa-clock"></i>
+                                    Lead Time
+                                </span>
+                                <span class="meta-value">15 Working Days</span>
+                            </div>
+                        </div>
+                        
+                        <!-- Product action buttons -->
+                        <div class="product-actions">
+                            <a href="#quote-form" class="quote-btn">
+                                <i class="fas fa-file-signature"></i>
+                                Get a Quote
+                            </a>
+                            <a href="https://wa.me/86{pboot:companymobile}?text=Hello, I am interested in {content:title}. Please send me more information." target="_blank" class="whatsapp-btn">
+                                <i class="fab fa-whatsapp"></i>
+                                Online Inquiry
+                            </a>
+                        </div>
+                        
+                    </div>
+                </div>
+
+                <!-- Two-column layout: product detail tabs and sidebar -->
+                <div class="product-content-layout">
+                    <!-- Left column - product detail tabs and lower modules -->
+                    <div class="left-column-content">
+                        <!-- Product detail tabs - reordered and expanded -->
+                        <div class="product-tabs-container">
+                            <ul class="tab-nav" role="tablist">
+                                <li class="active" role="tab" data-tab="description" id="tab-description">
+                                    Product Overview
+                                </li>
+                                <li role="tab" data-tab="specs" id="tab-specs">
+                                    Technical Specifications
+                                </li>
+                                <li role="tab" data-tab="structure" id="tab-structure">
+                                    Product Structure
+                                </li>
+                                <li role="tab" data-tab="application" id="tab-application">
+                                    Applications
+                                </li>
+                                <li role="tab" data-tab="installation" id="tab-installation">
+                                    Testing Capability
+                                </li>
+                                <li role="tab" data-tab="packaging" id="tab-packaging">
+                                    Packaging &amp; Customization
+                                </li>
+                            </ul>
+                            
+                            <div class="tab-content">
+                                <!-- Product description -->
+                                <div id="description" class="tab-pane active" role="tabpanel" aria-labelledby="tab-description">
+                                    <div class="product-description">
+                                        <h3><i class="fas fa-file-alt"></i> Product Overview</h3>
+                                            {content:content}
+                                    </div>
+                                </div>
+                                
+                                <!-- Technical specifications -->
+                                <div id="specs" class="tab-pane" role="tabpanel" aria-labelledby="tab-specs">
+                                    <div class="product-description">
+                                        <h3><i class="fas fa-list-alt"></i> Technical Specifications</h3>
+                                    </div>
+                                    <div class="specs-table-container">
+                                        {content:ext_specs_table}
+                                    </div>
+                                </div>
+                                
+                                <!-- Product structure -->
+                                <div id="structure" class="tab-pane" role="tabpanel" aria-labelledby="tab-structure">
+                                    <div class="product-description">
+                                        <h3><i class="fas fa-puzzle-piece"></i>Product Structure</h3>
+                                        {content:ext_structure_content}
+                                    </div>
+                                </div>
+
+                                <!-- Applications -->
+                                <div id="application" class="tab-pane" role="tabpanel" aria-labelledby="tab-application">
+                                    <div class="product-description">
+                                        <h3><i class="fas fa-map-marked-alt"></i> Main Applications</h3>
+                                            {content:ext_application_content}
+                                    </div>
+                                </div>
+                                
+                                <!-- Installation and maintenance -->
+                                <div id="installation" class="tab-pane" role="tabpanel" aria-labelledby="tab-installation">
+                                    <div class="product-description">
+                                        <h3><i class="fas fa-screwdriver-wrench"></i> Testing Capability</h3>
+                                        {content:ext_test_content}
+                                    </div>
+                                </div>
+                                
+                                <!-- Packaging and customization -->
+                                <div id="packaging" class="tab-pane" role="tabpanel" aria-labelledby="tab-packaging">
+                                    <div class="product-description">
+                                        <h3><i class="fas fa-box-open"></i> Packaging &amp; Transportation</h3>
+                                        <p>To keep products safe during transportation and storage, we use the following packaging methods:</p>
+                                        <ul class="description-list">
+                                            <li><strong>Individual Packaging</strong>: Each product is wrapped with protective film, packed in a high-strength carton, and cushioned with buffer materials.</li>
+                                            <li><strong>Pallet Packaging</strong>: Multiple products are fixed on wooden pallets and wrapped with stretch film, suitable for container shipping.</li>
+                                            <li><strong>Export Packaging</strong>: Fumigated wooden cases, moisture-proof treatment, and detailed packing lists are provided according to sea freight requirements.</li>
+                                        </ul>
+                                        
+                                        <h3><i class="fas fa-pencil-alt"></i> Customization Service</h3>
+                                        <p>WishPower can provide the following customization options according to customer requirements:</p>
+                                        <ul class="description-list">
+                                            <li><strong>Structural Dimensions</strong>: Adjust overall height, creepage distance, shed quantity, and shed diameter.</li>
+                                            <li><strong>End Fittings</strong>: Customize ball-socket, tongue-clevis, eye, or other interface types according to connection requirements.</li>
+                                            <li><strong>Color</strong>: Standard gray, with red, yellow, blue, and other colors available subject to MOQ.</li>
+                                            <li><strong>Special Environments</strong>: Formulations for extreme cold (-60 C), strong UV exposure, heavy pollution, and other harsh conditions.</li>
+                                            <li><strong>Voltage Classes</strong>: Full-range customization from 10kV to 1000kV.</li>
+                                            <li><strong>Marking</strong>: Customer logos or model numbers can be molded or printed on the product.</li>
+                                        </ul>
+                                        <p>For specific customization requirements, please contact our sales engineers. We will provide a technical solution within 24 hours.</p>
+                                    </div>
+                                </div>
+            
+                            </div>
+                        </div>
+                        
+                        {pboot:if('{content:ext_download_ids}' != '')}
+                        <!-- ===== Downloads ===== -->
+                        <div class="downloads-section">
+                            <h3 class="section-title" style="padding: 0 20px; margin-top: 15px;"><i class="fas fa-download"></i> Downloads</h3>
+                            
+                            <div class="downloads-grid">
+                                {pboot:list scode=* filter=a.id|{content:ext_download_ids} fuzzy=0 num=3 order=sorting}
+                                <div class="download-card">
+                                    <div class="download-icon">
+                                        <i class="fas fa-file-[list:enclosureicon]"></i>
+                                    </div>
+                                    
+                                    <div class="download-content">
+                                        <div class="download-title">[list:title]</div>
+                                        <div class="download-desc">[list:description]</div>
+                                        
+                                        <div class="download-meta">
+                                            <div class="download-meta-item">
+                                                <i class="fas fa-file-[list:enclosureicon]"></i>
+                                                <span>[list:enclosuretype]</span>
+                                            </div>
+                                            <div class="download-meta-item">
+                                                <i class="fas fa-weight"></i>
+                                                <span>[list:enclosuresize]</span>
+                                            </div>
+                                            <div class="download-meta-item">
+                                                <i class="fas fa-calendar-alt"></i>
+                                                <span>[list:date style=Y-m]</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <a href="[list:link]" class="download-btn" target="_blank" rel="noopener">
+                                        <i class="fas fa-download"></i>
+                                        Download
+                                    </a>
+                                </div>
+                                {/pboot:list}
+                            </div>
+                        </div>
+                        {/pboot:if}
+                        
+                        <div class="post-navigation">
+                            {pboot:if('{content:prelink}' != '')}
+                            <a href="{content:prelink}" class="nav-post prev" title="{content:prelink}">
+                                <div class="nav-icon">
+                                    <i class="fas fa-arrow-left"></i>
+                                </div>
+                                <div class="nav-content">
+                                    <div class="nav-title">{content:pretitle}</div>
+                                </div>
+                            </a>
+                            {/pboot:if}
+                            
+                            {pboot:if('{content:nextlink}' != '')}
+                            <a href="{content:nextlink}" class="nav-post next" title="{content:nextlink}">
+                                <div class="nav-icon">
+                                    <i class="fas fa-arrow-right"></i>
+                                </div>
+                                <div class="nav-content">
+                                    <div class="nav-title">{content:nexttitle}</div>
+                                </div>
+                            </a>
+                            {/pboot:if}
+                        </div>
+                        
+                        {pboot:if('{content:ext_faq_scode}' != '')}
+                        <!-- ===== FAQ module: enter the FAQ category ID in ext_faq_scode ===== -->
+                        <div class="faq-module">
+                            <div class="faq-tab-content">
+                                <h3 class="section-title" style="padding: 0 20px; margin-top: 15px;"><i class="fas fa-question-circle"></i> FAQ</h3>
+                                <div class="faq-list-tab">
+                                    {pboot:list scode={content:ext_faq_scode} num=5 order=random}
+                                    <div class="faq-item-tab{pboot:2if([list:i]==1)} active{/pboot:2if}">
+                                        <div class="faq-question-tab">
+                                            <span>Q: [list:title]</span>
+                                            <i class="fas fa-chevron-down faq-toggle-tab"></i>
+                                        </div>
+                                        <div class="faq-answer-tab">
+                                            <div class="faq-answer-content-tab">
+                                                <p class="faq-answer-text">A: [list:content drophtml=1 dropblank=1]</p>
+                                                <button type="button" class="faq-more-toggle" hidden>More</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {/pboot:list}
+                                </div>
+                            </div>
+                        </div>
+                        {/pboot:if}
+                        
+                    </div>
+
+                    <!-- Right column - sidebar with mobile optimization -->
+                    <div class="product-sidebar">
+                        <!-- About WishPower module -->
+                        <div class="sidebar-card company-info-card">
+                        <div class="sidebar-header">
+                            <i class="fas fa-building"></i>
+                            <h3 class="sidebar-title">About WishPower</h3>
+                        </div>
+                        
+                        <div class="sidebar-content">
+                            <div class="company-logo-section">
+                                <div class="company-logo">
+                                    <div class="company-logo-letter">W</div>
+                                </div>
+                                <div class="company-basic-info">
+                                    <h4 class="company-name">WishPower Insulator Co., Ltd.</h4>
+                                    <p class="company-tagline">High-Voltage Insulation Solution Specialist</p>
+                                    <div class="company-rating">
+                                        <span class="stars">
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star-half-alt"></i>
+                                        </span>
+                                        <span class="rating-text">4.8/5 Customer Rating</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="company-stats">
+                                <div class="stat-item">
+                                    <div class="stat-icon">
+                                        <i class="fas fa-calendar-alt"></i>
+                                    </div>
+                                    <div class="stat-info">
+                                        <span class="stat-number">20+</span>
+                                        <span class="stat-label">Years Experience</span>
+                                    </div>
+                                </div>
+                                
+                                <div class="stat-item">
+                                    <div class="stat-icon">
+                                        <i class="fas fa-globe-asia"></i>
+                                    </div>
+                                    <div class="stat-info">
+                                        <span class="stat-number">60+</span>
+                                        <span class="stat-label">Countries / Regions</span>
+                                    </div>
+                                </div>
+                                
+                                <div class="stat-item">
+                                    <div class="stat-icon">
+                                        <i class="fas fa-award"></i>
+                                    </div>
+                                    <div class="stat-info">
+                                        <span class="stat-number">50+</span>
+                                        <span class="stat-label">Patented Technologies</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="company-expertise">
+                                <h5 class="section-title">Service</h5>
+                                <div class="expertise-tags">
+                                    <span class="expertise-tag">Composite Insulator</span>
+                                    <span class="expertise-tag">Surge Arresters</span>
+                                    <span class="expertise-tag">Fuse Cutouts</span>
+                                    <span class="expertise-tag">OEM/ODM</span>
+                                    <span class="expertise-tag">Composite Bushings</span>
+                                    <span class="expertise-tag">Custom Production</span>
+                                </div>
+                            </div>
+                            
+                        </div>
+                    </div>
+                        
+                        {pboot:if('{content:ext_video_ids}' != '' && '{content:ext_video_scode}' != '')}
+                        <!-- Featured video recommendations -->
+                        <div class="sidebar-card np-video-shuttle-widget product-video-shuttle-widget">
+                            <div class="product-video-shuttle-header">
+                                <h3 class="product-video-shuttle-title"><i class="fas fa-video" aria-hidden="true"></i>Featured Videos</h3>
+                            </div>
+                            <div class="np-video-shuttle" data-shuttle data-max="5">
+                                <button type="button" class="np-video-shuttle-nav np-video-shuttle-prev" aria-label="Previous video"><i class="fas fa-chevron-left" aria-hidden="true"></i></button>
+                                <div class="np-video-shuttle-viewport">
+                                    <div class="np-video-shuttle-track">
+                                        {pboot:list scode={content:ext_video_scode} filter=a.id|{content:ext_video_ids} fuzzy=0 num=5 order='date desc,id desc'}
+                                        <article class="np-video-shuttle-card"
+                                                 data-content-id="[list:id]"
+                                                 data-sign-api="/api/tencent-vod-psign.php"
+                                                 data-file-id="[list:ext_tcplayer_file_id]"
+                                                 data-poster="[list:ico]"
+                                                 data-title="[list:title]">
+                                            <div class="np-video-shuttle-cover">
+                                                <img class="np-video-shuttle-poster" src="[list:ico]" alt="[list:title]" loading="lazy">
+                                                <span class="np-video-shuttle-badge">Factory Video</span>
+                                                <span class="np-video-shuttle-play"><i class="fas fa-play" aria-hidden="true"></i></span>
+                                                <span class="np-video-shuttle-duration">[list:ext_video_duration]</span>
+                                            </div>
+                                            <div class="np-video-shuttle-info">
+                                                <h4 class="np-video-shuttle-title"><a href="[list:link]">[list:title]</a></h4>
+                                                <div class="np-video-shuttle-meta">
+                                                    <span><i class="fas fa-eye" aria-hidden="true"></i> [list:visits]</span>
+                                                    <time datetime="[list:date style=Y-m-d]"><i class="far fa-calendar" aria-hidden="true"></i> [list:date style=Y-m-d]</time>
+                                                </div>
+                                            </div>
+                                        </article>
+                                        {/pboot:list}
+                                    </div>
+                                </div>
+                                <button type="button" class="np-video-shuttle-nav np-video-shuttle-next" aria-label="Next video"><i class="fas fa-chevron-right" aria-hidden="true"></i></button>
+                            </div>
+                        </div>
+                        {/pboot:if}
+
+                        <!-- Related products -->
+                        <div class="sidebar-card related-products-widget">
+                            <div class="related-products-header">
+                                <h3 class="related-products-heading"><i class="fas fa-shopping-cart" aria-hidden="true"></i>Product Express</h3>
+                            </div>
+                            <div class="related-products-carousel" data-related-products data-max="5">
+                                <button type="button" class="related-products-nav related-products-prev" aria-label="Previous product"><i class="fas fa-chevron-left" aria-hidden="true"></i></button>
+                                <div class="related-products-viewport">
+                                    <div class="related-products-track">
+                                        {pboot:list scode={content:scode} num=5 order=random not={content:id}}
+                                        <article class="related-products-slide">
+                                            <a href="[list:link]" class="related-products-media" aria-label="[list:title]">
+                                                <img src="[list:ico]" alt="[list:title]" loading="lazy">
+                                            </a>
+                                            <div class="related-products-body">
+                                                <h4 class="related-products-name"><a href="[list:link]">[list:title]</a></h4>
+                                                <a href="[list:link]" class="related-products-quote"><i class="fas fa-shopping-cart" aria-hidden="true"></i>Request a Quote</a>
+                                            </div>
+                                        </article>
+                                        {/pboot:list}
+                                    </div>
+                                </div>
+                                <button type="button" class="related-products-nav related-products-next" aria-label="Next product"><i class="fas fa-chevron-right" aria-hidden="true"></i></button>
+                            </div>
+                        </div>
+
+                        <!-- Sales team contact module -->
+                        <div class="sidebar-card contact-team">
+                            <div class="sidebar-header">
+                                <i class="fas fa-users"></i>
+                                <h3 class="sidebar-title">Business Inquiry</h3>
+                            </div>
+                            
+                            <div class="sidebar-content">
+                                <div class="team-intro">
+                                    <p>WishPower professional sales team provides one-on-one consultation and technical support.</p>
+                                </div>
+                                
+                                <div class="team-contact-options">
+                                    <div class="contact-option">
+                                        <div class="option-icon">
+                                            <i class="fas fa-headset"></i>
+                                        </div>
+                                        <div class="option-info">
+                                            <h5>Technical Support Hotline</h5>
+                                            <a href="tel:+86{pboot:companymobile}" class="option-link">+86 {pboot:companymobile}</a>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="contact-option">
+                                        <div class="option-icon">
+                                            <i class="fas fa-envelope-open-text"></i>
+                                        </div>
+                                        <div class="option-info">
+                                            <h5>Technical Support Email</h5>
+                                            <a href="mailto:{pboot:companyemail}" class="option-link">{pboot:companyemail}</a>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="global-contact">
+                                    <a href="https://wa.me/86{pboot:companymobile}" class="global-whatsapp-btn" target="_blank">
+                                        <i class="fab fa-whatsapp"></i>
+                                        <span>Official WhatsApp</span>
+                                    </a>
+                                    <p class="contact-note">Reply within 24 hours with multilingual support.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Product tags -->
+                        {pboot:if('[tags:total]' > 0)}
+                        <div class="sidebar-card product-tags-card">
+                            <div class="sidebar-header">
+                                <i class="fas fa-tags"></i>
+                                <h3 class="sidebar-title">Tags</h3>
+                            </div>
+                            <div class="sidebar-content">
+                                <div class="product-tags">
+                                    {pboot:tags id={content:id} target=tag}
+                                    <a href="[tags:link]" class="product-tag" rel="tag">
+                                        <i class="fas fa-hashtag"></i>
+                                        [tags:text]
+                                    </a>
+                                    {/pboot:tags}
+                                </div>
+                            </div>
+                        </div>
+                        {/pboot:if}
+                        
+                        
+
+                    </div>
+                </div>
+            </section>
+            <!-- Product detail page ends -->
+        </div>
+    </div>
+    <!-- Image lightbox -->
+    <div class="lightbox-overlay" id="lightboxOverlay">
+        <div class="lightbox-container">
+            <img src="" alt="" class="lightbox-image" id="lightboxImage">
+            <button class="lightbox-close" id="lightboxClose" aria-label="Close lightbox">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+    </div> 
+</div>
+    
+<!-- FOOTER_START Footer-->
+{include file=footer.html}
+<!-- FOOTER_END -->
+    
+<!-- MOBILE_TABBAR_START Mobile bottom navigation-->
+{include file=mobile_tabbar.html}
+<!-- MOBILE_TABBAR_END -->
+    
+<!-- BACK_TO_TOP_START Back-to-top button-->
+{include file=back-to-top.html}
+<!-- BACK_TO_TOP_END -->
+    
+    <!-- JS modules in dependency order -->
+    <script src="/skin/js/topbar.js"></script>
+    <script src="/skin/js/sidebar.js"></script>
+    <script src="/skin/vendor/tcplayer/tcplayer.v5.3.3.min.js"></script>
+    <script src="/skin/js/product.js"></script>
+    <script src="/skin/js/footer.js"></script>
+    <script src="/skin/js/mobile-tabbar.js"></script>
+    <script src="/skin/js/back-to-top.js"></script>
+    <script src="/skin/js/main.js"></script>
+</body>
+</html>

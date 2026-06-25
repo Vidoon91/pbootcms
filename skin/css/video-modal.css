@@ -1,0 +1,250 @@
+/* ===== video-modal.css ===== */
+.video-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.85);
+    z-index: 9999;
+    display: none;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+.video-modal-overlay.active {
+    display: flex;
+    opacity: 1;
+}
+.video-modal-container {
+    position: relative;
+    width: 90%;
+    max-width: 1200px;
+    background: #000;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+    aspect-ratio: 16/9;
+    max-height: 90vh;
+}
+.video-modal-player {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+.video-modal-controls {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
+    padding: 15px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    z-index: 10;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+.video-modal-container:hover .video-modal-controls {
+    opacity: 1;
+}
+.video-modal-close {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    width: 44px;
+    height: 44px;
+    background: rgba(0, 0, 0, 0.6);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 18px;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.3s;
+    z-index: 10000;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+@supports (backdrop-filter: blur(5px)) {
+    .video-modal-close {
+        backdrop-filter: blur(5px);
+    }
+}
+.video-modal-close:hover {
+    background: rgba(0, 0, 0, 0.8);
+    transform: rotate(90deg);
+}
+.video-modal-controls-left {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+.video-modal-control-btn {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 18px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+}
+.video-modal-control-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+.video-modal-time {
+    color: white;
+    font-size: 16px;
+    font-family: monospace;
+}
+.video-modal-progress {
+    flex: 1;
+    height: 6px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 3px;
+    margin: 0 20px;
+    position: relative;
+    cursor: pointer;
+}
+.video-modal-progress-bar {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    background: #1a56db;
+    border-radius: 3px;
+    width: 0%;
+}
+.video-modal-controls-right {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+.video-modal-volume {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+.video-modal-volume-slider {
+    width: 100px;
+    height: 6px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 3px;
+    position: relative;
+    cursor: pointer;
+}
+.video-modal-volume-level {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    background: white;
+    border-radius: 3px;
+    width: 70%;
+}
+.video-modal-fullscreen-btn {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 18px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+}
+.video-modal-fullscreen-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+/* ===== 移动端视频弹窗自适应修复 ===== */
+@media (max-width: 768px) {
+    .video-modal-overlay {
+        padding: 0;
+    }
+    .video-modal-container {
+        width: 100%;
+        max-width: 100%;
+        border-radius: 0;
+        max-height: 100vh;
+        aspect-ratio: 16/9;
+    }
+    .video-modal-close {
+        top: 10px;
+        right: 10px;
+        width: 36px;
+        height: 36px;
+        font-size: 16px;
+        background: rgba(0, 0, 0, 0.7);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+    }
+    .video-modal-controls {
+        padding: 10px 12px;
+        opacity: 1; /* 移动端常显，方便触摸 */
+        background: linear-gradient(to top, rgba(0,0,0,0.9), rgba(0,0,0,0.4));
+    }
+    .video-modal-controls-left,
+    .video-modal-controls-right {
+        gap: 8px;
+    }
+    .video-modal-control-btn {
+        width: 32px;
+        height: 32px;
+        font-size: 16px;
+    }
+    .video-modal-time {
+        font-size: 13px;
+    }
+    .video-modal-progress {
+        margin: 0 12px;
+        height: 4px;
+    }
+    .video-modal-volume {
+        display: none; /* 移动端简化，保留全屏按钮即可 */
+    }
+    .video-modal-fullscreen-btn {
+        width: 32px;
+        height: 32px;
+        font-size: 16px;
+    }
+    .video-modal-volume-slider,
+    .video-modal-volume-level {
+        display: none;
+    }
+}
+
+/* 针对小屏设备（480px以下）进一步优化 */
+@media (max-width: 480px) {
+    .video-modal-close {
+        width: 32px;
+        height: 32px;
+        top: 8px;
+        right: 8px;
+        font-size: 14px;
+    }
+    .video-modal-controls {
+        padding: 8px 10px;
+    }
+    .video-modal-control-btn {
+        width: 28px;
+        height: 28px;
+        font-size: 14px;
+    }
+    .video-modal-time {
+        font-size: 11px;
+    }
+    .video-modal-progress {
+        margin: 0 8px;
+    }
+}

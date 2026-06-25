@@ -1,0 +1,625 @@
+/**
+ * footer.css
+ * 页脚模块样式 - 完整响应式 + 移动端左对齐修复 + 合并二维码模块 + 验证码容器（同行优化）
+ */
+
+.footer {
+    background-color: #0F172A;
+    color: #E9ECEF;
+    padding: 40px 16px 22px;
+    position: relative;
+    z-index: 50;
+    margin-top: auto;
+    transition: background-color 0.3s ease;
+    width: 100%;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    flex-shrink: 0;
+}
+
+@media (max-width: 768px) {
+    .footer {
+        margin-left: 0 !important;
+        width: 100% !important;
+        padding: 30px 16px 72px;
+    }
+
+    .footer-contact-info-section {
+        display: none !important;
+    }
+}
+
+.footer-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1.2fr 1.5fr 2fr 1.4fr;
+    gap: 20px;
+}
+
+/* 公司信息模块 */
+.footer-company {
+    /* 无额外样式 */
+}
+
+.footer-section.center-content {
+    text-align: center;
+}
+
+.footer-section.center-content .footer-links {
+    justify-content: center;
+    text-align: left;
+    display: inline-block;
+}
+
+.footer-logo {
+    display: flex;
+    align-items: center;
+    margin-bottom: 12px;
+    font-size: 18px;
+    font-weight: 700;
+    color: white;
+}
+
+.footer-logo i {
+    margin-right: 8px;
+    color: #6595ff;
+}
+
+.social-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 12px;
+}
+
+.social-link {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.3s, transform 0.3s, border-color 0.3s;
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.social-link:hover {
+    background: #1a56db;
+    transform: translateY(-2px);
+    border-color: #1a56db;
+}
+
+.footer-title {
+    color: white;
+    font-size: 16px;
+    font-weight: 700;
+    margin-bottom: 15px;
+    position: relative;
+    padding-bottom: 8px;
+    display: inline-block;
+}
+
+.footer-title::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 40px;
+    height: 3px;
+    background: linear-gradient(90deg, #1a56db, #1e40af);
+    border-radius: 3px;
+    transition: width 0.3s ease;
+}
+
+.footer-section:hover .footer-title::after {
+    width: 60px;
+}
+
+.footer-section.center-content .footer-title {
+    display: block;
+    text-align: center;
+}
+
+.footer-section.center-content .footer-title::after {
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+/* 合并二维码模块样式 */
+.footer-qr-combined {
+    text-align: left;
+}
+
+.footer-qr-combined .footer-title {
+    display: inline-block;
+    text-align: left;
+}
+
+.qr-row {
+    display: flex;
+    gap: 16px;
+    margin-top: 12px;
+    flex-wrap: wrap;
+}
+
+.qr-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    min-width: 0;
+}
+
+.qr-img {
+    width: 120px;
+    height: 120px;
+    flex-shrink: 0;
+    max-width: none;
+    min-width: 0;
+    object-fit: contain;
+    background-color: transparent;
+    border-radius: 8px;
+    border: 2px solid transparent;
+    padding: 0;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+    transition: transform 0.3s ease, border-color 0.3s ease;
+    display: block;
+}
+
+.qr-img:hover {
+    transform: scale(1.05);
+    border-color: #1a56db;
+}
+
+.whatsapp-qr:hover {
+    border-color: #25D366;
+}
+
+.official-qr:hover {
+    border-color: #1a56db;
+}
+
+.qr-label {
+    font-size: 12px;
+    color: #E9ECEF;
+    margin-top: 8px;
+    opacity: 0.9;
+    letter-spacing: 0.3px;
+}
+
+.footer-links {
+    list-style: none;
+}
+
+.footer-links li {
+    margin-bottom: 12px;
+}
+
+.footer-links a {
+    color: #E9ECEF;
+    font-size: 13px;
+    transition: color 0.2s, transform 0.2s;
+    display: flex;
+    align-items: center;
+}
+
+.footer-links a:hover {
+    color: white;
+    transform: translateX(4px);
+}
+
+.footer-section.center-content .footer-links a:hover {
+    transform: none;
+}
+
+.footer-links a i {
+    margin-right: 4px;
+    font-size: 11px;
+    color: #b7c6e7;
+}
+
+.contact-info {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.contact-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    font-size: 13px;
+    color: #E9ECEF;
+}
+
+.contact-item i {
+    width: 16px;
+    text-align: center;
+    color: #b7c6e7;
+    margin-top: 2px;
+    font-size: 13px;
+}
+
+.contact-item a {
+    color: #E9ECEF;
+    transition: color 0.3s;
+}
+
+.contact-item a:hover {
+    color: #1a56db;
+}
+
+.footer-contact-form p {
+    margin-bottom: 12px;
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+.contact-form {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.contact-input, 
+.contact-textarea {
+    width: 100%;
+    padding: 8px 12px;
+    border-radius: 4px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    font-size: 13px;
+    outline: none;
+    transition: border-color 0.3s, background-color 0.3s;
+    box-sizing: border-box;
+}
+
+/* 统一文本域高度与其他输入框一致 */
+.contact-textarea {
+    min-height: 40px;
+    resize: vertical;
+}
+
+.contact-input:focus, 
+.contact-textarea:focus {
+    border-color: #1a56db;
+    background: rgba(255, 255, 255, 0.15);
+}
+
+.contact-btn {
+    background: #1a56db;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 4px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    width: 100%;
+    font-size: 13px;
+}
+
+.contact-btn:hover {
+    background: #1e40af;
+}
+
+.footer-bottom {
+    max-width: 1400px;
+    margin: 3px auto 0;
+    padding-top: 20px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+}
+
+.copyright {
+    font-size: 13px;
+    color: #E9ECEF;
+}
+
+.footer-nav {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
+.footer-nav a {
+    color: #E9ECEF;
+    font-size: 13px;
+    transition: color 0.2s;
+    position: relative;
+}
+
+.footer-nav a:hover {
+    color: white;
+}
+
+.footer-nav a.about-us {
+    color: #1a56db;
+    font-weight: 500;
+}
+
+.footer-nav a.about-us:hover {
+    color: white;
+}
+
+.footer-nav a.about-us::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: -3px;
+    width: 100%;
+    height: 2px;
+    background: #1a56db;
+}
+
+.footer-links-section {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding-top: 20px;
+    margin-bottom: 20px;
+}
+
+.footer-links-container {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+    width: 100%;
+}
+
+.footer-links-label {
+    font-size: 13px;
+    color: #E9ECEF;
+    font-weight: 500;
+    white-space: nowrap;
+}
+
+.footer-link {
+    color: #E9ECEF;
+    font-size: 13px;
+    text-decoration: none;
+    transition: color 0.2s;
+    white-space: nowrap;
+    position: relative;
+    padding: 4px 0;
+}
+
+.footer-link:hover {
+    color: white;
+}
+
+.footer-link::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 1px;
+    background-color: #1a56db;
+    transform: scaleX(0);
+    transition: transform 0.3s ease;
+}
+
+.footer-link:hover::after {
+    transform: scaleX(1);
+}
+
+/* ===== 验证码容器样式（始终同行） ===== */
+.contact-code-wrapper {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    width: 100%;
+    flex-wrap: nowrap; /* 强制不换行，确保输入框和图片同行 */
+}
+
+/* 验证码输入框：PC端宽度50% */
+.code-input {
+    width: 50% !important;
+    flex-shrink: 1;
+    min-width: 0; /* 允许缩小 */
+}
+
+.contact-code-wrapper img {
+    height: 40px;
+    width: auto;
+    border-radius: 4px;
+    cursor: pointer;
+    flex-shrink: 0;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    background: #fff;
+    padding: 2px;
+    transition: border-color 0.3s;
+}
+
+.contact-code-wrapper img:hover {
+    border-color: #1a56db;
+}
+
+/* 移动端适配：输入框宽度自适应，依然同行 */
+@media (max-width: 768px) {
+    .code-input {
+        width: calc(100% - 48px) !important; /* 减去图片宽度+间距，确保同行 */
+        flex: 1;
+    }
+    .contact-code-wrapper img {
+        height: 38px; /* 略缩小，保持比例 */
+    }
+}
+
+@media (max-width: 480px) {
+    .code-input {
+        width: calc(100% - 44px) !important; /* 进一步缩小间距 */
+    }
+    .contact-code-wrapper img {
+        height: 36px;
+    }
+}
+
+/* ===== 移动端响应式 ===== */
+@media (max-width: 992px) {
+    .footer-container {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .footer-container {
+        grid-template-columns: 1fr;
+        gap: 24px;
+    }
+
+    .footer-section,
+    .footer-section.center-content {
+        text-align: left !important;
+    }
+
+    .footer-section.center-content .footer-title::after,
+    .footer-title::after {
+        left: 0 !important;
+        transform: none !important;
+    }
+
+    .footer-section.center-content .footer-links {
+        display: block;
+        text-align: left;
+        justify-content: flex-start;
+    }
+
+    .footer-links li {
+        text-align: left;
+    }
+
+    .footer-links a {
+        justify-content: flex-start;
+    }
+
+    .contact-info {
+        align-items: flex-start;
+    }
+
+    .footer-contact-form {
+        text-align: left;
+    }
+
+    .footer-qr-combined {
+        text-align: left !important;
+    }
+    .qr-row {
+        justify-content: flex-start;
+    }
+    .qr-item {
+        align-items: flex-start;
+        text-align: left;
+    }
+    .qr-img {
+        width: 100px;
+        height: 100px;
+    }
+    .qr-label {
+        font-size: 11px;
+    }
+
+    .footer-links-section {
+        margin-bottom: 16px;
+        padding-top: 16px;
+    }
+
+    .footer-links-container {
+        flex-direction: row;
+        align-items: center;
+        gap: 12px;
+        overflow-x: auto;
+        padding-bottom: 4px;
+        scrollbar-width: thin;
+        scrollbar-color: rgba(255,255,255,0.3) transparent;
+    }
+
+    .footer-links-container::-webkit-scrollbar {
+        height: 4px;
+    }
+
+    .footer-links-container::-webkit-scrollbar-track {
+        background: transparent;
+    }
+
+    .footer-links-container::-webkit-scrollbar-thumb {
+        background-color: rgba(255,255,255,0.3);
+        border-radius: 2px;
+    }
+
+    .footer-links-container::-webkit-scrollbar-thumb:hover {
+        background-color: rgba(255,255,255,0.5);
+    }
+
+    .footer-links-label {
+        margin-bottom: 0;
+        margin-right: 8px;
+        flex-shrink: 0;
+    }
+
+    .footer-link {
+        padding: 4px 8px;
+        display: inline-block;
+        width: auto;
+        flex-shrink: 0;
+    }
+
+    .footer-bottom {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+    }
+}
+
+@media (max-width: 480px) {
+    .footer-links-section {
+        padding: 0 12px;
+        margin-bottom: 12px;
+    }
+
+    .footer-links-container {
+        gap: 8px;
+        padding-bottom: 4px;
+    }
+
+    .footer-links-label {
+        font-size: 12px;
+        margin-right: 4px;
+    }
+
+    .footer-link {
+        font-size: 12px;
+        padding: 4px 4px;
+    }
+
+    .qr-img {
+        width: 90px;
+        height: 90px;
+    }
+}
+
+@media (max-width: 360px) {
+    .footer-links-container {
+        gap: 8px;
+    }
+    .footer-links-label {
+        font-size: 11px;
+        margin-right: 6px;
+    }
+    .footer-link {
+        font-size: 11px;
+        padding: 2px 6px;
+    }
+    .qr-img {
+        width: 80px;
+        height: 80px;
+    }
+}

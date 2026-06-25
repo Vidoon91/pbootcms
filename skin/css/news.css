@@ -1,0 +1,1998 @@
+/* ===== 新闻文章页面专用样式（带 np- 前缀） ===== */
+/* 主内容区域布局 */
+.np-article-main-container {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 16px;
+    min-width: 0;
+    box-sizing: border-box;
+}
+
+@media (min-width: 769px) {
+    .np-article-main-container {
+        flex-direction: row;
+        gap: 24px;
+        padding: 20px;
+    }
+}
+
+/* 文章区域 (PC端占70-75%) */
+.np-article-content-area {
+    flex: 1;
+    max-width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+    background: #FFFFFF;
+    border: 1px solid rgba(226, 232, 240, 0.9);
+    border-radius: 18px;
+    padding: 22px;
+    box-shadow: 0 18px 45px rgba(15, 23, 42, 0.06);
+}
+
+@media (min-width: 769px) {
+    .np-article-content-area {
+        flex: 0 0 72%;
+        max-width: 72%;
+        padding: 15px 34px 34px;
+    }
+}
+
+/* 右侧边栏区域 (PC端占25-30%) */
+.np-article-sidebar {
+    flex: 1;
+    max-width: 100%;
+    margin-top: 24px;
+    min-width: 0;
+}
+
+@media (min-width: 769px) {
+    .np-article-sidebar {
+        flex: 0 0 28%;
+        max-width: 28%;
+        margin-top: 0;
+    }
+}
+
+/* ===== 面包屑导航样式 ===== */
+.np-article-breadcrumb {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 4px;
+    margin-bottom: 26px;
+    font-size: 13px;
+    background: linear-gradient(180deg, #F8FBFF 0%, #FFFFFF 100%);
+    padding: 9px 14px;
+    border: 1px solid #E2E8F0;
+    border-radius: 40px;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.9);
+}
+
+/* PbootCMS 输出的面包屑项样式 */
+.np-article-breadcrumb .breadcrumb-item,
+.np-article-breadcrumb a,
+.np-article-breadcrumb span {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    color: #6C757D;
+    transition: color 0.2s ease;
+}
+
+.np-article-breadcrumb a {
+    text-decoration: none;
+}
+
+.np-article-breadcrumb a:hover {
+    color: #1a56db;
+    text-decoration: none;
+}
+
+.np-breadcrumb-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.np-breadcrumb-home i {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: #EAF1FF;
+    color: #1a56db;
+    font-size: 12px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* 首页图标 - 针对 Pboot 输出的首页链接 */
+.np-article-breadcrumb a[href="/"] i,
+.np-article-breadcrumb a[href="/"]::before {
+    color: #1a56db;
+}
+
+/* 如果 Pboot 没有自动输出首页图标，手动添加 */
+.np-article-breadcrumb a[href="/"] {
+    display: inline-flex;
+    align-items: center;
+}
+
+.np-article-breadcrumb a[href="/"]:not(:has(i))::before {
+    font-family: "Font Awesome 6 Free";
+    font-weight: 900;
+    content: "\f015";
+    color: #1a56db;
+    margin-right: 4px;
+    font-size: 14px;
+    display: inline-block;
+}
+
+/* 分隔符样式 - 使用您原有的 np-breadcrumb-separator 类 */
+.np-article-breadcrumb .np-breadcrumb-separator {
+    margin: 0 5px;
+    color: #94A3B8;
+    font-size: 10px;
+    display: inline-flex;
+    align-items: center;
+    line-height: 1;
+}
+
+.np-article-breadcrumb .np-breadcrumb-separator i {
+    font-size: 9px;
+    color: #94A3B8;
+}
+
+/* 当前项（无链接的 span）样式 - Pboot 最后一项通常是 span */
+.np-breadcrumb-current {
+    font-weight: 600;
+    color: #0F172A;
+}
+
+.np-article-breadcrumb a.np-breadcrumb-current:hover {
+    color: #1a56db;
+}
+
+/* 兼容 Pboot 可能输出的其他类名 */
+.np-article-breadcrumb .active {
+    font-weight: 600;
+    color: #333333;
+}
+
+/* 文章标题区域 */
+.np-article-header {
+    position: relative;
+    margin-bottom: 30px;
+    padding-bottom: 22px;
+    border-bottom: 1px solid #E6EDF5;
+}
+
+.np-article-title {
+    font-size: 26px;
+    font-weight: 700;
+    line-height: 1.25;
+    margin-bottom: 18px;
+    color: #0F172A;
+    letter-spacing: 0;
+}
+
+@media (min-width: 769px) {
+    .np-article-title {
+        font-size: 36px;
+    }
+}
+
+/* 文章元信息 - 优化版 */
+.np-article-meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    padding-bottom: 0;
+    border-bottom: 0;
+    font-size: 13px;
+    color: #6C757D;
+}
+
+.np-meta-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    min-height: 32px;
+    padding: 6px 10px;
+    border: 1px solid #E2E8F0;
+    border-radius: 999px;
+    background: #F8FAFC;
+    color: #475569;
+}
+
+.np-meta-item i {
+    font-size: 13px;
+    color: #1a56db;
+}
+
+/* ===== 文章正文区域 - 适配 PbootCMS 动态内容 ===== */
+.np-article-content {
+    line-height: 1.85;
+    font-size: 16px;
+    color: #243041;
+}
+
+.np-article-excerpt {
+    background: #F8F9FA;
+    padding: 16px;
+    border-left: 4px solid #1a56db;
+    border-radius: 0 6px 6px 0;
+    margin-bottom: 24px;
+    font-size: 16px;
+    font-style: italic;
+    color: #333333;
+}
+
+/* 正文标题样式 - 固定宽度下划线（5个英文字符宽） */
+.np-article-content h2,
+.np-article-content h3,
+.np-article-content h4 {
+    position: relative;
+    border-bottom: none;
+    margin-bottom: 1rem;
+    padding-bottom: 0;
+    color: #0F172A;
+    letter-spacing: 0;
+}
+
+.np-article-content h2 {
+    font-size: 24px;
+    font-weight: 700;
+    margin-top: 36px;
+}
+
+.np-article-content h3 {
+    font-size: 19px;
+    font-weight: 600;
+    margin-top: 28px;
+}
+
+.np-article-content h4 {
+    font-size: 16px;
+    font-weight: 600;
+    margin-top: 20px;
+}
+
+/* 伪元素下划线 - 固定宽度 5ch */
+.np-article-content h2::after,
+.np-article-content h3::after {
+    content: '';
+    display: block;
+    width: 56px;
+    height: 3px;
+    background: linear-gradient(90deg, #1a56db 0%, #93C5FD 100%);
+    border-radius: 999px;
+    margin-top: 8px;
+}
+
+/* 正文段落 */
+.np-article-content p {
+    margin-bottom: 18px;
+    text-align: justify;
+}
+
+/* 引用块样式 - 适配 <blockquote> 标签 */
+.np-article-content blockquote {
+    background: linear-gradient(180deg, #F8FBFF 0%, #F4F7FB 100%);
+    padding: 18px 20px;
+    border-left: 4px solid #1a56db;
+    border-radius: 12px;
+    margin: 24px 0;
+    font-size: 16px;
+    font-style: italic;
+    color: #243041;
+    box-shadow: inset 0 0 0 1px rgba(226, 232, 240, 0.7);
+}
+
+.np-article-content blockquote p {
+    margin-bottom: 0;
+}
+
+/* 列表样式 */
+.np-article-content ul,
+.np-article-content ol {
+    margin: 16px 0 16px 20px;
+    list-style-type: disc;
+}
+.np-article-content ul {
+    list-style-type: disc;
+}
+.np-article-content ol {
+    list-style-type: decimal;
+}
+.np-article-content li {
+    margin-bottom: 8px;
+    padding-left: 4px;
+}
+
+/* 图片样式 - 无包裹层直接输出 */
+.np-article-content img {
+    display: block;
+    width: 80%;
+    max-width: 1200px;
+    height: auto;
+    margin: 20px auto;
+    border-radius: 12px;
+    box-shadow: 0 14px 34px rgba(15, 23, 42, 0.10);
+    cursor: zoom-in;
+    transition: box-shadow 0.3s ease;
+}
+.np-article-content img:hover {
+    box-shadow: 0 18px 42px rgba(15, 23, 42, 0.14);
+}
+
+/* 如果图片被包裹在 <figure> 中 */
+.np-article-content figure {
+    margin: 20px auto;
+    width: 80%;
+    max-width: 1200px;
+    text-align: center;
+}
+.np-article-content figure img {
+    width: 100%;
+    margin: 0;
+}
+.np-article-content figcaption {
+    margin-top: 8px;
+    font-size: 13px;
+    color: #6C757D;
+    text-align: center;
+}
+
+/* 图片说明文字 */
+.np-article-content img + em,
+.np-article-content img + p {
+    display: block;
+    text-align: center;
+    font-size: 13px;
+    color: #6C757D;
+    margin-top: calc(-1 * 16px);
+    margin-bottom: 20px;
+    font-style: normal;
+}
+
+/* 文章底部区域 */
+.np-article-footer {
+    margin-top: 36px;
+    padding-top: 26px;
+    border-top: 1px solid #E6EDF5;
+}
+
+/* 标签 */
+.np-article-tags {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 20px;
+}
+
+.np-tags-label {
+    font-weight: 500;
+    color: #333333;
+}
+
+.np-tag-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+}
+
+.np-tag {
+    display: inline-block;
+    padding: 4px 12px;
+    background: #F8F9FA;
+    color: #333333;
+    border-radius: 50%;
+    font-size: 13px;
+    transition: all 0.3s ease;
+    border: 1px solid #E9ECEF;
+}
+
+.np-tag:hover {
+    background: #1a56db;
+    color: white;
+    border-color: #1a56db;
+    transform: translateY(-2px);
+}
+
+/* 分享按钮 - 缩小版 */
+.np-article-share {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 24px;
+    padding: 14px 16px;
+    background: linear-gradient(180deg, #F8FBFF 0%, #F3F7FC 100%);
+    border: 1px solid #E2E8F0;
+    border-radius: 14px;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.85);
+}
+
+.np-share-label {
+    font-weight: 700;
+    color: #0F172A;
+    font-size: 13px;
+}
+
+.np-share-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.np-share-btn {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: transform 0.25s ease, box-shadow 0.25s ease, filter 0.25s ease;
+    font-size: 14px;
+    color: white;
+    position: relative;
+    box-shadow: 0 8px 18px rgba(15, 23, 42, 0.12);
+}
+
+.np-share-btn:hover {
+    transform: translateY(-2px);
+    filter: saturate(1.08);
+    box-shadow: 0 12px 24px rgba(15, 23, 42, 0.18);
+}
+
+.np-share-btn.np-wechat {
+    background: #09BB07;
+}
+
+.np-share-btn.np-whatsapp {
+    background: #25D366;
+}
+
+.np-share-btn.np-linkedin {
+    background: #0077B5;
+}
+
+.np-share-btn.np-twitter {
+    background: #1DA1F2;
+}
+
+.np-share-btn.np-facebook {
+    background: #1877F2;
+}
+
+.np-share-btn.np-copy-link {
+    background: #6C757D;
+}
+
+.np-share-btn.np-copy-link.copied {
+    background: #1a56db;
+}
+
+.np-share-btn .np-tooltip {
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 4px 8px;
+    border-radius: 8px;
+    font-size: 11px;
+    white-space: nowrap;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.2s ease;
+    margin-bottom: 6px;
+}
+
+.np-share-btn:hover .np-tooltip {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* 上一篇/下一篇导航 */
+.np-article-navigation {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 14px;
+    margin-top: 24px;
+}
+
+@media (min-width: 769px) {
+    .np-article-navigation {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+.np-prev-article, .np-next-article {
+    border: 1px solid #E2E8F0;
+    border-radius: 14px;
+    overflow: hidden;
+    background: linear-gradient(180deg, #FFFFFF 0%, #F8FAFC 100%);
+    box-shadow: 0 10px 26px rgba(15, 23, 42, 0.05);
+    transition: border-color 0.25s ease, box-shadow 0.25s ease, transform 0.25s ease;
+}
+
+.np-prev-article:hover, .np-next-article:hover {
+    border-color: #1a56db;
+    box-shadow: 0 16px 34px rgba(26, 86, 219, 0.12);
+    transform: translateY(-2px);
+}
+
+.np-nav-link {
+    display: flex;
+    align-items: center;
+    min-height: 86px;
+    padding: 18px;
+    color: #0F172A;
+    transition: color 0.2s ease;
+}
+
+.np-prev-article .np-nav-link {
+    text-align: left;
+}
+
+.np-next-article .np-nav-link {
+    text-align: right;
+    justify-content: flex-end;
+}
+
+.np-nav-content {
+    flex: 1;
+}
+
+.np-nav-label {
+    display: block;
+    font-size: 12px;
+    font-weight: 700;
+    color: #64748B;
+    margin-bottom: 6px;
+}
+
+.np-nav-title {
+    display: block;
+    font-weight: 700;
+    font-size: 14px;
+    line-height: 1.45;
+    color: #0F172A;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.np-nav-link i {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: #EAF1FF;
+    font-size: 13px;
+    color: #1a56db;
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.25s ease, color 0.25s ease;
+}
+
+.np-prev-article:hover .np-nav-link i,
+.np-next-article:hover .np-nav-link i {
+    background: #1a56db;
+    color: #FFFFFF;
+}
+
+.np-prev-article .np-nav-link i {
+    margin-right: 12px;
+}
+
+.np-next-article .np-nav-link i {
+    margin-left: 12px;
+}
+
+/* 右侧边栏组件 */
+.np-sidebar-widget {
+    margin-bottom: 24px;
+    border: 1px solid #E9ECEF;
+    border-radius: 8px;
+    overflow: hidden;
+    background: #FFFFFF;
+}
+
+.np-widget-header {
+    padding: 12px 16px;
+    background: #F8F9FA;
+    border-bottom: 1px solid #E9ECEF;
+}
+
+.np-widget-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: #333333;
+    margin: 0;
+}
+
+.np-widget-content {
+    padding: 16px;
+}
+
+/* 企业信息卡片样式 - EEAT优化 */
+.np-company-info-card {
+    position: relative;
+    overflow: hidden;
+    border-color: #DCE7F3;
+    border-radius: 16px;
+    background: linear-gradient(180deg, #F8FBFF 0%, #FFFFFF 44%, #F7FAFD 100%);
+    box-shadow: 0 16px 36px rgba(15, 23, 42, 0.08);
+}
+
+.np-company-info-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, #1a56db 0%, #60A5FA 50%, #FF8C00 100%);
+}
+
+.np-company-info-card .np-widget-header {
+    position: relative;
+    padding: 16px 18px 10px;
+    background: transparent;
+    border-bottom: 0;
+}
+
+.np-company-info-card .np-widget-title {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 16px;
+    font-weight: 800;
+    color: #0F172A;
+}
+
+.np-company-info-card .np-widget-title::before {
+    content: '';
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #FF8C00;
+    box-shadow: 0 0 0 4px rgba(255, 140, 0, 0.14);
+}
+
+.np-company-info-card .np-widget-content {
+    padding: 8px 16px 16px;
+}
+
+.np-company-info-card .np-company-logo-section {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 14px;
+    padding: 14px;
+    border: 1px solid #E4ECF5;
+    border-radius: 14px;
+    background: rgba(255, 255, 255, 0.78);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.95);
+}
+
+.np-company-logo {
+    width: 66px;
+    height: 66px;
+    border-radius: 14px;
+    overflow: hidden;
+    margin-right: 0;
+    flex-shrink: 0;
+    background: #FFFFFF;
+    padding: 8px;
+    border: 1px solid #E2E8F0;
+    box-shadow: 0 10px 22px rgba(15, 23, 42, 0.08);
+}
+
+.np-company-logo img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.np-company-basic-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.np-company-name {
+    font-size: 15px;
+    font-weight: 800;
+    margin-bottom: 5px;
+    color: #0F172A;
+    line-height: 1.3;
+}
+
+.np-company-tagline {
+    font-size: 13px;
+    color: #1a56db;
+    margin-bottom: 7px;
+    font-weight: 700;
+}
+
+.np-company-rating {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+}
+
+.np-stars {
+    color: #FFB400;
+    font-size: 12px;
+    line-height: 1;
+}
+
+.np-rating-text {
+    font-size: 11px;
+    color: #64748B;
+    font-weight: 600;
+}
+
+.np-section-title {
+    position: relative;
+    font-size: 13px;
+    font-weight: 800;
+    margin-bottom: 9px;
+    color: #0F172A;
+}
+
+/* 业务范围 */
+.np-company-expertise {
+    margin-bottom: 15px;
+    padding: 12px;
+    border: 1px solid #E4ECF5;
+    border-radius: 14px;
+    background: rgba(248, 250, 252, 0.78);
+}
+
+.np-expertise-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.np-expertise-tag {
+    display: inline-block;
+    padding: 5px 9px;
+    background: #FFFFFF;
+    color: #1a56db;
+    border: 1px solid rgba(26, 86, 219, 0.14);
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 700;
+    box-shadow: 0 4px 10px rgba(15, 23, 42, 0.04);
+}
+
+/* 公司链接 */
+.np-company-links {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    margin-bottom: 0;
+}
+
+.np-company-link {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 62px;
+    padding: 8px 6px;
+    background: #FFFFFF;
+    border: 1px solid #E4ECF5;
+    border-radius: 12px;
+    color: #0F172A;
+    text-decoration: none;
+    font-size: 11px;
+    font-weight: 700;
+    text-align: center;
+    transition: transform 0.25s ease, background-color 0.25s ease, border-color 0.25s ease, color 0.25s ease, box-shadow 0.25s ease;
+    box-shadow: 0 8px 18px rgba(15, 23, 42, 0.05);
+}
+
+.np-company-link:hover {
+    background: #1a56db;
+    color: white;
+    border-color: #1a56db;
+    transform: translateY(-2px);
+    box-shadow: 0 14px 24px rgba(26, 86, 219, 0.18);
+}
+
+.np-company-link i {
+    font-size: 15px;
+    margin-bottom: 6px;
+    color: #FF8C00;
+    transition: color 0.25s ease;
+}
+
+.np-company-link:hover i {
+    color: #FFFFFF;
+}
+
+/* 文章作者信息 */
+.np-article-author-info {
+    display: flex;
+    align-items: flex-start;
+    padding: 8px;
+    background: #F8F9FA;
+    border-radius: 6px;
+    border-left: 3px solid #1a56db;
+}
+
+.np-author-avatar-small {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    overflow: hidden;
+    margin-right: 8px;
+    flex-shrink: 0;
+    border: 2px solid #E9ECEF;
+}
+
+.np-author-avatar-small img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.np-author-details {
+    flex: 1;
+    min-width: 0;
+}
+
+.np-author-intro {
+    font-size: 10px;
+    color: #6C757D;
+    margin-bottom: 2px;
+}
+
+.np-author-details .np-author-name {
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: 2px;
+    color: #333333;
+}
+
+.np-author-details .np-author-title {
+    font-size: 11px;
+    color: #1a56db;
+    margin-bottom: 4px;
+    font-weight: 500;
+}
+
+.np-author-details .np-author-brief {
+    font-size: 10px;
+    color: #6C757D;
+    line-height: 1.4;
+    margin-bottom: 0;
+}
+
+/* 商品直通车 */
+.np-product-shuttle-widget {
+    background: linear-gradient(180deg, #F8FBFF 0%, #EEF4FA 100%);
+    border-color: #DDE5EF;
+    border-radius: 14px;
+    padding: 0 14px 14px;
+    overflow: hidden;
+}
+
+.np-product-shuttle-header {
+    padding: 14px 0 12px;
+    background: transparent;
+    border-bottom: 0;
+}
+
+.np-product-shuttle-header .np-widget-title {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: #111827;
+    font-weight: 700;
+}
+
+.np-product-shuttle-header .np-widget-title i {
+    color: #FF8C00;
+}
+
+.np-product-shuttle {
+    position: relative;
+    width: 100%;
+    min-width: 0;
+    touch-action: pan-y;
+}
+
+.np-product-shuttle-viewport {
+    width: 100%;
+    min-width: 0;
+    overflow: hidden;
+    border-radius: 12px;
+}
+
+.np-product-shuttle-track {
+    display: flex;
+    width: 100%;
+    transition: transform 0.35s cubic-bezier(0.22, 0.61, 0.36, 1);
+    will-change: transform;
+}
+
+.np-product-shuttle-card {
+    flex: 0 0 100%;
+    min-width: 0;
+    max-width: 100%;
+    background: #FFFFFF;
+    border: 1px solid #E9ECEF;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 6px 18px rgba(15, 23, 42, 0.06);
+}
+
+.np-product-shuttle-image {
+    display: block;
+    width: 100%;
+    aspect-ratio: 1 / 0.78;
+    background: #FFFFFF;
+    overflow: hidden;
+}
+
+.np-product-shuttle-image img {
+    width: 100%;
+    max-width: 100%;
+    height: 100%;
+    object-fit: contain;
+    display: block;
+    padding: 14px;
+}
+
+.np-product-shuttle-info {
+    padding: 18px 16px 18px;
+}
+
+.np-product-shuttle-title {
+    margin: 0 0 14px;
+    min-height: 44px;
+    font-size: 17px;
+    font-weight: 700;
+    line-height: 1.3;
+    color: #0F172A;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    overflow-wrap: anywhere;
+}
+
+.np-product-shuttle-title a {
+    color: inherit;
+    text-decoration: none;
+}
+
+.np-product-shuttle-buy {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    min-height: 38px;
+    padding: 8px 14px;
+    background: #1a56db;
+    color: #FFFFFF;
+    border-radius: 999px;
+    font-size: 14px;
+    font-weight: 700;
+    text-decoration: none;
+    box-sizing: border-box;
+    transition: background-color 0.25s ease, transform 0.25s ease;
+}
+
+.np-product-shuttle-buy:hover {
+    background: #1e40af;
+    color: #FFFFFF;
+    transform: translateY(-1px);
+}
+
+.np-product-shuttle-buy i {
+    color: #FF8C00;
+}
+
+.np-product-shuttle-nav {
+    position: absolute;
+    top: 40%;
+    transform: translateY(-50%);
+    width: 34px;
+    height: 34px;
+    border: 0;
+    border-radius: 50%;
+    background: rgba(15, 23, 42, 0.48);
+    color: #FFFFFF;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 3;
+    transition: background-color 0.25s ease, transform 0.25s ease;
+}
+
+.np-product-shuttle-nav:hover {
+    background: rgba(26, 86, 219, 0.9);
+    transform: translateY(-50%) scale(1.06);
+}
+
+.np-product-shuttle-prev {
+    left: 8px;
+}
+
+.np-product-shuttle-next {
+    right: 8px;
+}
+
+@media (max-width: 768px) {
+    .np-product-shuttle-widget {
+        width: 100%;
+        max-width: 420px;
+        margin-left: auto;
+        margin-right: auto;
+        padding: 0 12px 12px;
+    }
+
+    .np-product-shuttle-card {
+        flex: 0 0 100%;
+        width: 100%;
+    }
+
+    .np-product-shuttle-image {
+        aspect-ratio: 1 / 0.7;
+    }
+
+    .np-product-shuttle-image img {
+        padding: 10px;
+    }
+
+    .np-product-shuttle-info {
+        padding: 14px;
+    }
+
+    .np-product-shuttle-title {
+        min-height: 40px;
+        font-size: 15px;
+    }
+
+    .np-product-shuttle-buy {
+        min-height: 36px;
+        font-size: 13px;
+    }
+}
+
+@media (max-width: 480px) {
+    .np-product-shuttle-widget {
+        max-width: none;
+        border-radius: 12px;
+        padding: 0 10px 10px;
+    }
+
+    .np-product-shuttle-viewport,
+    .np-product-shuttle-card {
+        border-radius: 10px;
+    }
+
+    .np-product-shuttle-image {
+        aspect-ratio: 1 / 0.66;
+    }
+
+    .np-product-shuttle-nav {
+        width: 30px;
+        height: 30px;
+    }
+}
+
+/* 视频推荐直通车 */
+.np-video-shuttle-widget {
+    background: linear-gradient(180deg, #F8FBFF 0%, #EEF4FA 100%);
+    border-color: #DDE5EF;
+    border-radius: 14px;
+    padding: 0 14px 14px;
+    overflow: hidden;
+}
+
+.np-video-shuttle-header {
+    padding: 14px 0 12px;
+    background: transparent;
+    border-bottom: 0;
+}
+
+.np-video-shuttle-header .np-widget-title {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: #111827;
+    font-weight: 700;
+}
+
+.np-video-shuttle-header .np-widget-title i {
+    color: #FF8C00;
+}
+
+.np-video-shuttle {
+    position: relative;
+    width: 100%;
+    min-width: 0;
+    touch-action: pan-y;
+}
+
+.np-video-shuttle-viewport {
+    width: 100%;
+    min-width: 0;
+    overflow: hidden;
+    border-radius: 8px;
+}
+
+.np-video-shuttle-track {
+    display: flex;
+    width: 100%;
+    transition: transform 0.35s cubic-bezier(0.22, 0.61, 0.36, 1);
+    will-change: transform;
+}
+
+.np-video-shuttle-card {
+    position: relative;
+    flex: 0 0 100%;
+    min-width: 0;
+    max-width: 100%;
+    border-radius: 8px;
+    overflow: hidden;
+    background: #0F172A;
+    box-shadow: 0 6px 18px rgba(15, 23, 42, 0.08);
+}
+
+.np-video-shuttle-cover {
+    position: relative;
+    display: block;
+    width: 100%;
+    aspect-ratio: 9 / 14;
+    overflow: hidden;
+    background: #000000;
+    color: #FFFFFF;
+    text-decoration: none;
+}
+
+.np-video-shuttle-poster {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: opacity 0.25s ease, transform 0.45s ease;
+}
+
+.np-video-shuttle-cover video,
+.np-video-shuttle-cover .tcplayer,
+.np-video-shuttle-cover .tcp-player,
+.np-video-shuttle-cover .video-js,
+.np-video-shuttle-cover [id$="_container"] {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    display: block;
+    transition: transform 0.45s ease;
+}
+
+.np-video-shuttle-cover video,
+.np-video-shuttle-cover .vjs-tech {
+    object-fit: contain;
+    background: #000000;
+}
+
+.np-video-shuttle-cover .vjs-poster,
+.np-video-shuttle-cover .video-js .vjs-poster,
+.np-video-shuttle-cover .tcplayer .vjs-poster {
+    background-color: #000000;
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.np-video-shuttle-cover .vjs-poster img,
+.np-video-shuttle-cover .video-js .vjs-poster img,
+.np-video-shuttle-cover .tcplayer .vjs-poster img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.np-video-shuttle-cover::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 45%;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.82), transparent);
+    pointer-events: none;
+}
+
+.np-video-shuttle-card.is-playing .np-video-shuttle-cover::after,
+.np-video-shuttle-card.is-playing .np-video-shuttle-badge,
+.np-video-shuttle-card.is-playing .np-video-shuttle-duration,
+.np-video-shuttle-card.is-playing .np-video-shuttle-info,
+.np-video-shuttle-card.is-playing .np-video-shuttle-poster {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.np-video-shuttle-card.is-playing .np-video-shuttle-cover {
+    background: #000000;
+}
+
+.np-video-shuttle-card.is-playing .np-video-shuttle-play {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.np-video-shuttle-badge {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    z-index: 2;
+    display: inline-flex;
+    align-items: center;
+    padding: 5px 12px;
+    border-radius: 999px;
+    background: #FF8C00;
+    color: #FFFFFF;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.np-video-shuttle-play {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    z-index: 2;
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.94);
+    color: #1a56db;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transform: translate(-50%, -50%);
+    box-shadow: 0 8px 20px rgba(15, 23, 42, 0.24);
+}
+
+.np-video-shuttle-play i {
+    margin-left: 3px;
+}
+
+.np-video-shuttle-duration {
+    position: absolute;
+    right: 10px;
+    bottom: 12px;
+    z-index: 2;
+    padding: 4px 8px;
+    border-radius: 999px;
+    background: rgba(0, 0, 0, 0.82);
+    color: #FFFFFF;
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 1;
+}
+
+.np-video-shuttle-info {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 2;
+    padding: 0 12px 14px;
+    color: #FFFFFF;
+    pointer-events: none;
+}
+
+.np-video-shuttle-title {
+    margin: 0 0 8px;
+    padding-right: 50px;
+    font-size: 15px;
+    font-weight: 700;
+    line-height: 1.35;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.np-video-shuttle-title a {
+    color: inherit;
+    text-decoration: none;
+    pointer-events: auto;
+}
+
+.np-video-shuttle-meta {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    font-size: 12px;
+    line-height: 1.2;
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.np-video-shuttle-meta span,
+.np-video-shuttle-meta time {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.np-video-shuttle-nav {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 34px;
+    height: 34px;
+    border: 0;
+    border-radius: 50%;
+    background: rgba(15, 23, 42, 0.48);
+    color: #FFFFFF;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 3;
+    transition: background-color 0.25s ease, transform 0.25s ease;
+}
+
+.np-video-shuttle-nav:hover {
+    background: rgba(26, 86, 219, 0.9);
+    transform: translateY(-50%) scale(1.06);
+}
+
+.np-video-shuttle-prev {
+    left: 8px;
+}
+
+.np-video-shuttle-next {
+    right: 8px;
+}
+
+@media (max-width: 768px) {
+    .np-video-shuttle-widget {
+        width: 100%;
+        max-width: 420px;
+        margin-left: auto;
+        margin-right: auto;
+        padding: 0 12px 12px;
+    }
+
+    .np-video-shuttle-card {
+        flex: 0 0 100%;
+        width: 100%;
+    }
+
+    .np-video-shuttle-cover {
+        aspect-ratio: 9 / 13.5;
+    }
+
+    .np-video-shuttle-title {
+        font-size: 14px;
+    }
+
+    .np-video-shuttle-meta {
+        font-size: 11px;
+        gap: 6px;
+    }
+}
+
+@media (max-width: 480px) {
+    .np-video-shuttle-widget {
+        max-width: none;
+        border-radius: 12px;
+        padding: 0 10px 10px;
+    }
+
+    .np-video-shuttle-cover {
+        aspect-ratio: 9 / 13;
+    }
+
+    .np-video-shuttle-play {
+        width: 46px;
+        height: 46px;
+    }
+
+    .np-video-shuttle-nav {
+        width: 30px;
+        height: 30px;
+    }
+
+    .np-video-shuttle-info {
+        padding: 0 10px 12px;
+    }
+
+    .np-video-shuttle-title {
+        padding-right: 44px;
+        font-size: 13px;
+    }
+}
+/* 标签云样式 */
+.np-tag-cloud-widget {
+    border-color: #DCE7F3;
+    border-radius: 16px;
+    background: linear-gradient(180deg, #F8FBFF 0%, #FFFFFF 48%, #F7FAFD 100%);
+    box-shadow: 0 14px 30px rgba(15, 23, 42, 0.06);
+}
+
+.np-tag-cloud-widget .np-widget-header {
+    padding: 15px 18px 8px;
+    background: transparent;
+    border-bottom: 0;
+}
+
+.np-tag-cloud-widget .np-widget-title {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 16px;
+    font-weight: 800;
+    color: #0F172A;
+}
+
+.np-tag-cloud-widget .np-widget-title::before {
+    content: '\f02c';
+    font-family: "Font Awesome 6 Free";
+    font-weight: 900;
+    width: 26px;
+    height: 26px;
+    border-radius: 9px;
+    background: #EAF1FF;
+    color: #1a56db;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+}
+
+.np-tag-cloud-widget .np-widget-content {
+    padding: 10px 16px 16px;
+}
+
+.np-tag-cloud {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 12px;
+    border: 1px solid #E4ECF5;
+    border-radius: 14px;
+    background: rgba(248, 250, 252, 0.78);
+}
+
+.np-tag-cloud .np-tag {
+    display: inline-flex;
+    align-items: center;
+    min-height: 30px;
+    padding: 6px 11px;
+    border-radius: 999px;
+    border: 1px solid rgba(26, 86, 219, 0.14);
+    background: #FFFFFF;
+    color: #1a56db;
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 1;
+    text-decoration: none;
+    box-shadow: 0 4px 10px rgba(15, 23, 42, 0.04);
+    transition: transform 0.25s ease, background-color 0.25s ease, border-color 0.25s ease, color 0.25s ease, box-shadow 0.25s ease;
+}
+
+.np-tag-cloud .np-tag:hover {
+    background: #1a56db;
+    border-color: #1a56db;
+    color: #FFFFFF;
+    transform: translateY(-2px);
+    box-shadow: 0 10px 18px rgba(26, 86, 219, 0.16);
+}
+
+/* 相关推荐 */
+.np-related-news-widget {
+    border-color: #DCE7F3;
+    border-radius: 16px;
+    background: linear-gradient(180deg, #F8FBFF 0%, #FFFFFF 48%, #F7FAFD 100%);
+    box-shadow: 0 14px 30px rgba(15, 23, 42, 0.06);
+}
+
+.np-related-news-widget .np-widget-header {
+    padding: 15px 18px 8px;
+    background: transparent;
+    border-bottom: 0;
+}
+
+.np-related-news-widget .np-widget-title {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 16px;
+    font-weight: 800;
+    color: #0F172A;
+}
+
+.np-related-news-widget .np-widget-title::before {
+    content: '\f1ea';
+    font-family: "Font Awesome 6 Free";
+    font-weight: 900;
+    width: 26px;
+    height: 26px;
+    border-radius: 9px;
+    background: #EAF1FF;
+    color: #1a56db;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+}
+
+.np-related-news-widget .np-widget-content {
+    padding: 10px 16px 16px;
+}
+
+.np-related-news-list {
+    display: grid;
+    gap: 10px;
+}
+
+.np-related-news-item {
+    display: grid;
+    grid-template-columns: 92px minmax(0, 1fr);
+    gap: 12px;
+    padding: 10px;
+    border: 1px solid #E4ECF5;
+    border-radius: 14px;
+    background: rgba(255, 255, 255, 0.86);
+    box-shadow: 0 8px 18px rgba(15, 23, 42, 0.05);
+    transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+}
+
+.np-related-news-item:hover {
+    transform: translateY(-2px);
+    border-color: rgba(26, 86, 219, 0.36);
+    box-shadow: 0 14px 26px rgba(26, 86, 219, 0.12);
+}
+
+.np-related-news-thumb {
+    position: relative;
+    display: block;
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    border-radius: 11px;
+    overflow: hidden;
+    background: #EEF2F7;
+}
+
+.np-related-news-thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.35s ease;
+}
+
+.np-related-news-item:hover .np-related-news-thumb img {
+    transform: scale(1.05);
+}
+
+.np-related-news-info {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+.np-related-news-title {
+    margin: 0 0 6px;
+    font-size: 13px;
+    font-weight: 800;
+    line-height: 1.35;
+    color: #0F172A;
+}
+
+.np-related-news-title a {
+    color: inherit;
+    text-decoration: none;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.np-related-news-item:hover .np-related-news-title a {
+    color: #1a56db;
+}
+
+.np-related-news-desc {
+    margin: 0 0 8px;
+    font-size: 12px;
+    line-height: 1.45;
+    color: #64748B;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.np-related-news-date {
+    margin-top: auto;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 11px;
+    font-weight: 700;
+    color: #94A3B8;
+}
+
+.np-related-news-date i {
+    color: #1a56db;
+    font-size: 11px;
+}
+
+/* ===== 移动端整体优化 ===== */
+@media (max-width: 768px) {
+    .main-content-wrapper,
+    .main-container,
+    .main-content,
+    .content-layout,
+    .np-article-main-container,
+    .np-article-content-area,
+    .np-article-sidebar,
+    .np-sidebar-widget,
+    .np-product-shuttle,
+    .np-product-shuttle-viewport,
+    .np-product-shuttle-track,
+    .np-video-shuttle,
+    .np-video-shuttle-viewport,
+    .np-video-shuttle-track {
+        min-width: 0;
+        max-width: 100%;
+        box-sizing: border-box;
+    }
+
+    .main-content-wrapper,
+    .main-container,
+    .main-content {
+        overflow-x: hidden;
+    }
+
+    .np-article-main-container {
+        padding: 14px 12px 86px;
+    }
+
+    .np-article-content-area {
+        padding: 18px 16px 22px;
+        border-radius: 14px;
+        box-shadow: 0 12px 28px rgba(15, 23, 42, 0.05);
+    }
+
+    .np-article-breadcrumb {
+        margin-bottom: 20px;
+        padding: 8px 10px;
+        border-radius: 18px;
+    }
+
+    .np-article-meta {
+        gap: 6px;
+    }
+
+    .np-meta-item {
+        min-height: 30px;
+        padding: 5px 9px;
+        font-size: 12px;
+    }
+
+    .np-article-sidebar {
+        width: 100%;
+        margin-top: 20px;
+    }
+
+    /* 文章主标题调小 */
+    .np-article-title {
+        font-size: 20px; /* 原24px */
+        line-height: 1.3;
+        margin-bottom: 14px;
+    }
+
+    .np-article-header {
+        margin-bottom: 24px;
+        padding-bottom: 18px;
+    }
+
+    /* 正文标题进一步缩小 */
+    .np-article-content h2 {
+        font-size: 16px; /* 原20px */
+        margin-top: 1.6rem;
+        margin-bottom: 0.8rem;
+    }
+
+    .np-article-content h3 {
+        font-size: 15px; /* 原18px */
+        margin-top: 1.4rem;
+        margin-bottom: 0.6rem;
+    }
+
+    .np-article-content h4 {
+        font-size: 14px; /* 原16px */
+        margin-top: 1.2rem;
+        margin-bottom: 0.5rem;
+    }
+
+    /* 伪元素下划线宽度自动适应字体大小，无需额外设置 */
+
+    /* 正文段落字体保持 16px 左右，行高略增 */
+    .np-article-content {
+        font-size: 16px;
+        line-height: 1.7;
+        letter-spacing: 0;
+        word-break: break-word;
+        overflow-wrap: break-word;
+    }
+
+    .np-article-content p {
+        margin-bottom: 1.2em;
+        text-align: left;
+    }
+
+    /* 引用块适当缩小 */
+    .np-article-content blockquote {
+        font-size: 15px;
+        padding: 1rem 1.2rem;
+    }
+
+    .np-article-share {
+        padding: 12px;
+        border-radius: 12px;
+    }
+
+    .np-share-buttons {
+        gap: 6px;
+    }
+
+    .np-share-btn {
+        width: 36px;
+        height: 36px;
+    }
+
+    /* 列表缩进微调 */
+    .np-article-content ul,
+    .np-article-content ol {
+        margin-left: 1.2rem;
+    }
+
+    /* 图片自适应 */
+    .np-article-content img,
+    .np-article-content figure {
+        width: 100% !important;
+        max-width: 100% !important;
+        height: auto !important;
+        margin-left: auto !important;
+        margin-right: auto !important;
+        display: block;
+    }
+
+    .np-article-content figure {
+        margin: 20px auto;
+        padding: 0;
+    }
+
+    .np-article-content figcaption,
+    .np-article-content img + em,
+    .np-article-content img + p {
+        width: 100%;
+        box-sizing: border-box;
+        padding-left: 8px;
+        padding-right: 8px;
+    }
+
+    /* 原有其他移动端样式 */
+    .np-company-info-card .np-company-logo-section {
+        flex-direction: row;
+        text-align: left;
+        align-items: center;
+        padding: 12px;
+    }
+
+    .np-company-logo {
+        margin-right: 0;
+        margin-bottom: 0;
+        width: 58px;
+        height: 58px;
+        border-radius: 12px;
+    }
+
+    .np-company-links {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 6px;
+    }
+
+    .np-company-link {
+        min-height: 58px;
+        padding: 7px 4px;
+    }
+
+    .np-tag-cloud-widget .np-widget-header {
+        padding: 14px 16px 8px;
+    }
+
+    .np-tag-cloud-widget .np-widget-content {
+        padding: 8px 12px 12px;
+    }
+
+    .np-tag-cloud {
+        gap: 6px;
+        padding: 10px;
+    }
+
+    .np-tag-cloud .np-tag {
+        min-height: 28px;
+        padding: 5px 10px;
+        font-size: 12px;
+    }
+
+    .np-related-news-widget .np-widget-header {
+        padding: 14px 16px 8px;
+    }
+
+    .np-related-news-widget .np-widget-content {
+        padding: 8px 12px 12px;
+    }
+
+    .np-related-news-list {
+        gap: 8px;
+    }
+
+    .np-related-news-item {
+        grid-template-columns: 86px minmax(0, 1fr);
+        gap: 10px;
+        padding: 9px;
+    }
+
+    .np-related-news-title {
+        font-size: 13px;
+    }
+
+    .np-related-news-desc {
+        font-size: 11px;
+        -webkit-line-clamp: 2;
+    }
+}
+
+/* 打印样式 */
+@media print {
+    .np-article-sidebar,
+    .np-article-share,
+    .mobile-tabbar,
+    .back-to-top,
+    .header,
+    .top-bar,
+    .sidebar,
+    .footer {
+        display: none !important;
+    }
+    
+    .np-article-main-container {
+        display: block;
+        max-width: 100%;
+        padding: 0;
+    }
+    
+    .np-article-content-area {
+        max-width: 100%;
+    }
+    
+    .np-article-title {
+        font-size: 24pt;
+    }
+    
+    .np-article-content {
+        font-size: 12pt;
+    }
+    
+    /* 打印时标题样式 */
+    .np-article-content h2 {
+        font-size: 16pt;
+        break-after: avoid;
+    }
+    
+    .np-article-content h3 {
+        font-size: 14pt;
+        break-after: avoid;
+    }
+    
+    a {
+        color: black;
+        text-decoration: underline;
+    }
+}
+
+/* 可访问性优化 */
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+/* 图片查看器 */
+.np-image-viewer-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.9);
+    z-index: 99999;
+    display: none;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+.np-image-viewer-overlay.active {
+    display: flex;
+    opacity: 1;
+}
+
+.np-image-viewer-container {
+    position: relative;
+    max-width: 90%;
+    max-height: 90%;
+}
+
+.np-image-viewer-img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    border-radius: 6px;
+}
+
+.np-image-viewer-close {
+    position: absolute;
+    top: -40px;
+    right: 0;
+    width: 36px;
+    height: 36px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 20px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.np-image-viewer-close:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
