@@ -98,7 +98,6 @@ document.addEventListener('DOMContentLoaded', function() {
     let slidesRendered = false;
     let listUrl = window.location.href;
     let isOpen = false;
-    let historyOpened = false;
     const videos = cards.map((card, index) => {
         const extra = card.querySelector('.short-video-card-extra');
         const mobileCopyNode = extra?.querySelector('.short-video-mobile-copy') || null;
@@ -262,13 +261,21 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function updateUrl(video, replace) {
-        if (!video?.url || video.url === window.location.href) return;
-        const state = { shortFeed: true, contentId: video.id, listUrl };
+        if (!video?.url) return;
+
+        const targetUrl = new URL(video.url, window.location.href).href;
+        const state = {
+            shortFeed: true,
+            contentId: String(video.id || ''),
+            listUrl
+        };
+
         if (replace) {
-            history.replaceState(state, '', video.url);
-        } else {
-            history.pushState(state, '', video.url);
+            history.replaceState(state, '', targetUrl);
+            return;
         }
+
+        history.pushState(state, '', targetUrl);
     }
 
     function showSlideMessage(slide, type, visible) {
@@ -333,6 +340,18 @@ document.addEventListener('DOMContentLoaded', function() {
         wrapper.querySelectorAll('.video-card-container').forEach(card => card.classList.remove('playing'));
     }
 
+    function pauseActivePlayer() {
+        if (activePlayer && typeof activePlayer.pause === 'function') {
+            try {
+                activePlayer.pause();
+            } catch (error) {
+                console.warn('Pause short feed player failed:', error);
+            }
+        }
+
+        clearPlayingState();
+    }
+
     function createVideoMarkup(video) {
         const videoId = `shortFeedVideo_${video.id || video.index}`;
         return `
@@ -371,18 +390,19 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function destroyActivePlayer() {
         playToken++;
-        clearPlayingState();
-        activeSlideIndex = -1;
+        pauseActivePlayer();
+
         if (activePlayer && typeof activePlayer.dispose === 'function') {
             try {
-                if (typeof activePlayer.pause === 'function') activePlayer.pause();
                 activePlayer.dispose();
             } catch (error) {
                 console.error('Destroy short feed player failed:', error);
             }
         }
+
         activePlayer = null;
         activePlayerId = '';
+        activeSlideIndex = -1;
     }
 
     async function fetchPsign(contentId) {
@@ -400,28 +420,67 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     async function playActiveSlide() {
+        if (!isOpen) return;
+
         const index = getActiveIndex();
         const video = videos[index];
         const slide = wrapper.querySelector(`.short-feed-slide[data-index="${index}"]`);
-        const videoElement = prepareVideoElement(slide, video);
-        if (!video || !slide || !videoElement || !video.id) return;
 
-        const playerId = videoElement.id;
+        if (!video || !slide || !video.id) return;
+
+        if (activePlayer && activeSlideIndex === index && activePlayerId) {
+            if (
+                typeof activePlayer.paused === 'function' &&
+                activePlayer.paused() &&
+                typeof activePlayer.play === 'function'
+            ) {
+                const result = activePlayer.play();
+
+                if (result && typeof result.then === 'function') {
+                    result
+                        .then(() => setSlidePlaying(slide, true))
+                        .catch(error => {
+                            setSlidePlaying(slide, false);
+                            console.warn('Short feed play failed:', error);
+                        });
+                } else {
+                    setSlidePlaying(slide, true);
+                }
+            }
+
+            return;
+        }
 
         destroyActivePlayer();
+
+        const videoElement = prepareVideoElement(slide, video);
+        if (!videoElement) return;
+
+        const playerId = videoElement.id;
+        const currentToken = ++playToken;
+
         showSlideMessage(slide, 'error', false);
         showSlideMessage(slide, 'loading', true);
 
         try {
-            const currentToken = ++playToken;
             if (typeof TCPlayer === 'undefined') {
                 throw new Error('TCPlayer SDK not loaded');
             }
+
             const signData = await fetchPsign(video.id);
-            if (currentToken !== playToken) return;
+
+            if (
+                currentToken !== playToken ||
+                !isOpen ||
+                getActiveIndex() !== index
+            ) {
+                return;
+            }
+
             if (!signData.appId || !signData.fileId || !signData.psign) {
                 throw new Error('Signature payload missing appId, fileId or psign');
             }
+
             activePlayer = TCPlayer(playerId, {
                 appID: String(signData.appId),
                 fileID: String(signData.fileId),
@@ -436,13 +495,25 @@ document.addEventListener('DOMContentLoaded', function() {
                 playsinline: true,
                 preload: 'none'
             });
+
             activePlayerId = playerId;
             activeSlideIndex = index;
+
             activePlayer.ready(function() {
-                if (currentToken !== playToken || !activePlayer) return;
+                if (
+                    currentToken !== playToken ||
+                    !activePlayer ||
+                    !isOpen ||
+                    activeSlideIndex !== index
+                ) {
+                    return;
+                }
+
                 showSlideMessage(slide, 'loading', false);
+
                 const playResult = activePlayer.play();
-                if (playResult && typeof playResult.catch === 'function') {
+
+                if (playResult && typeof playResult.then === 'function') {
                     playResult
                         .then(() => setSlidePlaying(slide, true))
                         .catch(error => {
@@ -456,39 +527,92 @@ document.addEventListener('DOMContentLoaded', function() {
 
             if (typeof activePlayer.on === 'function') {
                 activePlayer.on('play', () => {
-                    if (currentToken === playToken && activeSlideIndex === index) setSlidePlaying(slide, true);
+                    if (
+                        currentToken === playToken &&
+                        isOpen &&
+                        activeSlideIndex === index
+                    ) {
+                        setSlidePlaying(slide, true);
+                    }
                 });
+
                 activePlayer.on('playing', () => {
-                    if (currentToken === playToken && activeSlideIndex === index) setSlidePlaying(slide, true);
+                    if (
+                        currentToken === playToken &&
+                        isOpen &&
+                        activeSlideIndex === index
+                    ) {
+                        setSlidePlaying(slide, true);
+                    }
                 });
+
                 activePlayer.on('timeupdate', () => {
-                    if (currentToken === playToken && activeSlideIndex === index) syncSlideProgress(slide);
+                    if (
+                        currentToken === playToken &&
+                        isOpen &&
+                        activeSlideIndex === index
+                    ) {
+                        syncSlideProgress(slide);
+                    }
                 });
+
                 activePlayer.on('durationchange', () => {
-                    if (currentToken === playToken && activeSlideIndex === index) syncSlideProgress(slide);
+                    if (
+                        currentToken === playToken &&
+                        isOpen &&
+                        activeSlideIndex === index
+                    ) {
+                        syncSlideProgress(slide);
+                    }
                 });
+
                 activePlayer.on('loadedmetadata', () => {
-                    if (currentToken !== playToken || activeSlideIndex !== index) return;
+                    if (
+                        currentToken !== playToken ||
+                        !isOpen ||
+                        activeSlideIndex !== index
+                    ) {
+                        return;
+                    }
+
                     syncSlideProgress(slide);
                     updateVideoPresentationMode(videoElement, slide);
                 });
+
                 activePlayer.on('pause', () => {
-                    if (currentToken === playToken && activeSlideIndex === index) {
+                    if (
+                        currentToken === playToken &&
+                        activeSlideIndex === index
+                    ) {
                         syncSlideProgress(slide);
                         setSlidePlaying(slide, false);
                     }
                 });
+
                 activePlayer.on('ended', () => {
-                    if (currentToken === playToken && activeSlideIndex === index) {
+                    if (
+                        currentToken === playToken &&
+                        activeSlideIndex === index
+                    ) {
                         syncSlideProgress(slide);
                         setSlidePlaying(slide, false);
                     }
                 });
+
                 activePlayer.on('error', () => {
-                    if (currentToken === playToken && activeSlideIndex === index) setSlidePlaying(slide, false);
+                    if (
+                        currentToken === playToken &&
+                        activeSlideIndex === index
+                    ) {
+                        showSlideMessage(slide, 'loading', false);
+                        showSlideMessage(slide, 'error', true);
+                        setSlidePlaying(slide, false);
+                    }
                 });
             }
         } catch (error) {
+            if (currentToken !== playToken || !isOpen) return;
+
             console.error('Short feed player init failed:', error);
             showSlideMessage(slide, 'loading', false);
             showSlideMessage(slide, 'error', true);
@@ -763,24 +887,60 @@ document.addEventListener('DOMContentLoaded', function() {
         if (comments) comments.scrollTop = comments.scrollHeight;
     }
 
+    function setSwiperEnabled(enabled) {
+        if (!swiper) return;
+
+        if (enabled) {
+            if (typeof swiper.enable === 'function') swiper.enable();
+            if (swiper.keyboard && typeof swiper.keyboard.enable === 'function') {
+                swiper.keyboard.enable();
+            }
+            if (swiper.mousewheel && typeof swiper.mousewheel.enable === 'function') {
+                swiper.mousewheel.enable();
+            }
+            return;
+        }
+
+        if (swiper.keyboard && typeof swiper.keyboard.disable === 'function') {
+            swiper.keyboard.disable();
+        }
+        if (swiper.mousewheel && typeof swiper.mousewheel.disable === 'function') {
+            swiper.mousewheel.disable();
+        }
+        if (typeof swiper.disable === 'function') swiper.disable();
+    }
+
     function initSwiper(initialIndex) {
         if (typeof Swiper === 'undefined') {
             console.error('Swiper SDK not loaded');
             return;
         }
 
+        const targetIndex = Math.max(
+            0,
+            Math.min(videos.length - 1, Number(initialIndex) || 0)
+        );
+
         if (swiper) {
-            swiper.slideTo(initialIndex, 0);
-            playActiveSlide();
+            setSwiperEnabled(true);
+
+            if (swiper.activeIndex === targetIndex) {
+                renderRecommendations(videos[targetIndex]);
+                playActiveSlide();
+            } else {
+                swiper.slideTo(targetIndex, 0);
+            }
+
             return;
         }
 
         swiper = new Swiper('#shortFeedSwiper', {
             direction: 'vertical',
-            initialSlide: initialIndex,
+            initialSlide: targetIndex,
             speed: 420,
             slidesPerView: 1,
             resistanceRatio: 0.45,
+            preventInteractionOnTransition: true,
             mousewheel: {
                 forceToAxis: true,
                 sensitivity: 0.85,
@@ -788,13 +948,25 @@ document.addEventListener('DOMContentLoaded', function() {
             },
             keyboard: {
                 enabled: true,
-                onlyInViewport: false
+                onlyInViewport: true
             },
             on: {
                 init() {
+                    if (!isOpen) return;
+
+                    const video = videos[getActiveIndex()];
+                    renderRecommendations(video);
                     playActiveSlide();
                 },
-                slideChange() {
+
+                slideChangeTransitionStart() {
+                    if (!isOpen) return;
+                    pauseActivePlayer();
+                },
+
+                slideChangeTransitionEnd() {
+                    if (!isOpen) return;
+
                     const video = videos[getActiveIndex()];
                     updateUrl(video, true);
                     renderRecommendations(video);
@@ -804,31 +976,68 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    function openFeed(index) {
+    function openFeed(index, options = {}) {
         renderSlides();
-        listUrl = isOpen ? listUrl : window.location.href;
+
+        const fromHistory = options.fromHistory === true;
+        const targetIndex = Math.max(
+            0,
+            Math.min(videos.length - 1, Number(index) || 0)
+        );
+        const video = videos[targetIndex];
+
+        if (!video) return;
+
+        if (!isOpen) {
+            listUrl = fromHistory && options.listUrl
+                ? options.listUrl
+                : window.location.href;
+        }
+
         isOpen = true;
         overlay.hidden = false;
         overlay.setAttribute('aria-hidden', 'false');
         document.body.classList.add('short-feed-open');
-        renderRecommendations(videos[index]);
-        initSwiper(index);
-        updateUrl(videos[index], historyOpened);
-        historyOpened = true;
+
+        if (!fromHistory) {
+            updateUrl(video, false);
+        }
+
+        renderRecommendations(video);
+        initSwiper(targetIndex);
+        setSwiperEnabled(true);
     }
 
-    function closeFeed(pushListUrl = true) {
+    function closeFeed(restoreHistory = true) {
         if (!isOpen) return;
+
         closeActionPanels();
         destroyActivePlayer();
+        setSwiperEnabled(false);
+
         isOpen = false;
         overlay.hidden = true;
         overlay.setAttribute('aria-hidden', 'true');
         document.body.classList.remove('short-feed-open');
-        if (pushListUrl && listUrl && window.location.href !== listUrl) {
-            history.pushState({ shortFeed: false }, '', listUrl);
+
+        if (
+            !restoreHistory ||
+            !listUrl ||
+            window.location.href === listUrl
+        ) {
+            return;
         }
-        historyOpened = false;
+
+        if (history.state?.shortFeed) {
+            history.back();
+            return;
+        }
+
+        history.replaceState(
+            { shortFeed: false },
+            '',
+            listUrl
+        );
     }
 
     function handleCardClick(event) {
@@ -848,10 +1057,6 @@ document.addEventListener('DOMContentLoaded', function() {
     if (list) {
         list.addEventListener('click', handleCardClick, true);
     }
-
-    cards.forEach(card => {
-        card.addEventListener('click', handleCardClick, true);
-    });
 
     closeBtn?.addEventListener('click', () => closeFeed(true));
     prevBtn?.addEventListener('click', () => swiper?.slidePrev());
@@ -1106,8 +1311,27 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     window.addEventListener('popstate', event => {
-        if (isOpen && !event.state?.shortFeed) {
+        const historyState = event.state;
+
+        if (historyState?.shortFeed) {
+            const index = videos.findIndex(video => {
+                return String(video.id || '') === String(historyState.contentId || '');
+            });
+
+            if (index >= 0) {
+                openFeed(index, {
+                    fromHistory: true,
+                    listUrl: historyState.listUrl || listUrl
+                });
+            }
+
+            return;
+        }
+
+        if (isOpen) {
             closeFeed(false);
         }
     });
+
+    window.addEventListener('beforeunload', destroyActivePlayer);
 });
