@@ -67,7 +67,8 @@
             fileId: dataNode.dataset.fileId || '',
             licenseUrl: dataNode.dataset.licenseUrl || '',
             licenseKey: dataNode.dataset.licenseKey || '',
-            signApi: dataNode.dataset.signApi || '/api/tencent-vod-psign.php'
+            signApi: dataNode.dataset.signApi || '/api/tencent-vod-psign.php',
+            layout: null
         };
     }
 
@@ -130,6 +131,34 @@
         let playToken = 0;
         let initPromise = null;
         let pendingPlay = false;
+        const LAYOUT_CLASSES = [
+            'is-portrait-video',
+            'is-landscape-video',
+            'is-video-layout-pending',
+            'is-video-layout-ready'
+        ];
+
+        function resetPresentationMode() {
+            ctx.videoBox.classList.remove(...LAYOUT_CLASSES);
+
+            if (video.layout === 'portrait') {
+                ctx.videoBox.classList.add(
+                    'is-portrait-video',
+                    'is-video-layout-ready'
+                );
+                return;
+            }
+
+            if (video.layout === 'landscape') {
+                ctx.videoBox.classList.add(
+                    'is-landscape-video',
+                    'is-video-layout-ready'
+                );
+                return;
+            }
+
+            ctx.videoBox.classList.add('is-video-layout-pending');
+        }
 
         function setPlaying(playing) {
             ctx.card.classList.toggle('playing', !!playing);
@@ -165,11 +194,39 @@
         }
 
         function updatePresentationMode() {
-            const renderedVideo = scoped(ctx.videoBox, '.vjs-tech, video') || ctx.videoElement;
-            const videoWidth = Number(renderedVideo.videoWidth) || 0;
-            const videoHeight = Number(renderedVideo.videoHeight) || 0;
-            ctx.videoBox.classList.toggle('is-portrait-video', videoHeight > videoWidth);
+            const renderedVideo =
+                scoped(ctx.videoBox, '.vjs-tech') ||
+                scoped(ctx.videoBox, 'video.tcp-video') ||
+                scoped(ctx.videoBox, 'video') ||
+                ctx.videoElement;
+
+            const videoWidth = Number(renderedVideo?.videoWidth) || 0;
+            const videoHeight = Number(renderedVideo?.videoHeight) || 0;
+
+            if (!videoWidth || !videoHeight) {
+                return false;
+            }
+
+            video.layout = videoHeight > videoWidth
+                ? 'portrait'
+                : 'landscape';
+
+            ctx.videoBox.classList.remove(...LAYOUT_CLASSES);
+
+            ctx.videoBox.classList.add(
+                video.layout === 'portrait'
+                    ? 'is-portrait-video'
+                    : 'is-landscape-video'
+            );
+
+            requestAnimationFrame(() => {
+                ctx.videoBox.classList.add('is-video-layout-ready');
+            });
+
+            return true;
         }
+
+        resetPresentationMode();
 
         async function requestPsign(params) {
             const response = await fetch(`${video.signApi}?${params.toString()}`, {
@@ -221,8 +278,14 @@
             player.on('durationchange', syncProgress);
             player.on('loadedmetadata', () => {
                 if (token !== playToken) return;
+
                 syncProgress();
-                updatePresentationMode();
+
+                const layoutReady = updatePresentationMode();
+
+                if (layoutReady) {
+                    showSlideMessage('loading', false);
+                }
             });
             player.on('pause', () => {
                 syncProgress();
@@ -234,6 +297,7 @@
             });
             player.on('error', () => {
                 showSlideMessage('loading', false);
+                showSlideMessage('error', true);
                 setPlaying(false);
             });
         }
@@ -257,6 +321,7 @@
 
             showSlideMessage('error', false);
             showSlideMessage('loading', true);
+            resetPresentationMode();
 
             initPromise = (async function() {
                 const token = ++playToken;
@@ -288,11 +353,21 @@
 
                 player.ready(function() {
                     if (token !== playToken || !player) return;
-                    showSlideMessage('loading', false);
+
                     syncSoundIcon();
                     syncProgress();
-                    updatePresentationMode();
-                    if (pendingPlay) playExistingPlayer();
+
+                    const layoutReady = updatePresentationMode();
+
+                    if (layoutReady) {
+                        showSlideMessage('loading', false);
+                    } else {
+                        showSlideMessage('loading', true);
+                    }
+
+                    if (pendingPlay) {
+                        playExistingPlayer();
+                    }
                 });
 
                 return player;
@@ -377,6 +452,7 @@
                 console.error('Destroy detail player failed:', error);
             }
             player = null;
+            initPromise = null;
         }
 
         return {

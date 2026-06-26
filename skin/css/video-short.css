@@ -82,15 +82,52 @@
   background: #000;
 }
 
-.video-short-static-detail .short-feed-video-box video,
-.video-short-static-detail .short-feed-video-box .tcp-video,
 .video-short-static-detail .short-feed-video-box .tcplayer,
-.video-short-static-detail .short-feed-video-box .video-js,
-.video-short-static-detail .short-feed-video-box .vjs-tech {
+.video-short-static-detail .short-feed-video-box .video-js {
+  position: absolute !important;
+  inset: 0 !important;
   width: 100% !important;
   height: 100% !important;
-  object-fit: contain !important;
+  margin: 0 !important;
+  padding: 0 !important;
   background: #000 !important;
+  transition: none !important;
+  transform: none !important;
+}
+
+.video-short-static-detail .short-feed-video-box > video,
+.video-short-static-detail .short-feed-video-box video.tcp-video,
+.video-short-static-detail .short-feed-video-box .tcp-video,
+.video-short-static-detail .short-feed-video-box .vjs-poster,
+.video-short-static-detail .short-feed-video-box .vjs-poster img,
+.video-short-static-detail .short-feed-video-box .vjs-tech {
+  position: absolute !important;
+  inset: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  object-fit: contain !important;
+  background-size: contain !important;
+  background-repeat: no-repeat !important;
+  background-color: #000 !important;
+  transition: none !important;
+  transform: none !important;
+}
+
+.video-short-static-detail .short-feed-video-box > video,
+.video-short-static-detail .short-feed-video-box video.tcp-video,
+.video-short-static-detail .short-feed-video-box .tcp-video,
+.video-short-static-detail .short-feed-video-box .vjs-tech,
+.video-short-static-detail .short-feed-video-box .vjs-poster img {
+  object-position: center center !important;
+}
+
+.video-short-static-detail .short-feed-video-box .vjs-poster {
+  background-position: center center !important;
+  background-size: contain !important;
+  background-repeat: no-repeat !important;
+  background-color: #000 !important;
 }
 
 .video-short-static-detail .short-feed-video-box .vjs-control-bar,
@@ -1158,15 +1195,19 @@
     overflow: hidden;
   }
 
-  .video-short-static-detail .short-feed-video-box video,
-  .video-short-static-detail .short-feed-video-box .tcp-video,
   .video-short-static-detail .short-feed-video-box .tcplayer,
-  .video-short-static-detail .short-feed-video-box .video-js,
+  .video-short-static-detail .short-feed-video-box .video-js {
+    background: #000 !important;
+  }
+
+  .video-short-static-detail .short-feed-video-box > video,
+  .video-short-static-detail .short-feed-video-box video.tcp-video,
+  .video-short-static-detail .short-feed-video-box .tcp-video,
   .video-short-static-detail .short-feed-video-box .vjs-tech,
   .video-short-static-detail .short-feed-video-box .vjs-poster img {
     object-fit: contain !important;
     object-position: center center !important;
-    background: #000 !important;
+    background-color: #000 !important;
   }
 
   .video-short-static-detail .short-feed-video-box .vjs-poster {
@@ -1176,10 +1217,9 @@
     background-color: #000 !important;
   }
 
-  .video-short-static-detail .short-feed-video-box.is-portrait-video video,
+  .video-short-static-detail .short-feed-video-box.is-portrait-video > video,
+  .video-short-static-detail .short-feed-video-box.is-portrait-video video.tcp-video,
   .video-short-static-detail .short-feed-video-box.is-portrait-video .tcp-video,
-  .video-short-static-detail .short-feed-video-box.is-portrait-video .tcplayer,
-  .video-short-static-detail .short-feed-video-box.is-portrait-video .video-js,
   .video-short-static-detail .short-feed-video-box.is-portrait-video .vjs-tech,
   .video-short-static-detail .short-feed-video-box.is-portrait-video .vjs-poster img {
     object-position: center top !important;
@@ -1187,6 +1227,36 @@
 
   .video-short-static-detail .short-feed-video-box.is-portrait-video .vjs-poster {
     background-position: center top !important;
+  }
+
+  .video-short-static-detail .short-feed-video-box.is-landscape-video > video,
+  .video-short-static-detail .short-feed-video-box.is-landscape-video video.tcp-video,
+  .video-short-static-detail .short-feed-video-box.is-landscape-video .tcp-video,
+  .video-short-static-detail .short-feed-video-box.is-landscape-video .vjs-tech,
+  .video-short-static-detail .short-feed-video-box.is-landscape-video .vjs-poster img {
+    object-position: center center !important;
+  }
+
+  .video-short-static-detail .short-feed-video-box.is-landscape-video .vjs-poster {
+    background-position: center center !important;
+  }
+
+  .video-short-static-detail .short-feed-video-box.is-video-layout-pending > video,
+  .video-short-static-detail .short-feed-video-box.is-video-layout-pending .video-js,
+  .video-short-static-detail .short-feed-video-box.is-video-layout-pending .tcplayer,
+  .video-short-static-detail .short-feed-video-box.is-video-layout-pending .vjs-tech,
+  .video-short-static-detail .short-feed-video-box.is-video-layout-pending .vjs-poster {
+    opacity: 0 !important;
+    visibility: hidden !important;
+  }
+
+  .video-short-static-detail .short-feed-video-box.is-video-layout-ready > video,
+  .video-short-static-detail .short-feed-video-box.is-video-layout-ready .video-js,
+  .video-short-static-detail .short-feed-video-box.is-video-layout-ready .tcplayer,
+  .video-short-static-detail .short-feed-video-box.is-video-layout-ready .vjs-tech,
+  .video-short-static-detail .short-feed-video-box.is-video-layout-ready .vjs-poster {
+    opacity: 1 !important;
+    visibility: visible !important;
   }
 
   .video-short-static-detail .short-feed-video-box::after {
