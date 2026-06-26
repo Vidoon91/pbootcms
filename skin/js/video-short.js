@@ -36,6 +36,10 @@
         return String(scoped(dataNode, `[data-field="${name}"]`)?.textContent || '').trim();
     }
 
+    function getFieldHtml(dataNode, name) {
+        return String(scoped(dataNode, `[data-field="${name}"]`)?.innerHTML || '').trim();
+    }
+
     function escapeHtml(value) {
         return String(value || '').replace(/[&<>"']/g, char => ({
             '&': '&amp;',
@@ -53,14 +57,53 @@
         return `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
     }
 
-    function readVideoData(dataNode) {
+    function normalizeUrl(value, base = window.location.href) {
+        const text = String(value || '').trim();
+        if (!text) return '';
+
+        try {
+            return new URL(text, base).href;
+        } catch (error) {
+            return '';
+        }
+    }
+
+    function getMetaContent(sourceDoc, selector) {
+        return String(sourceDoc.querySelector(selector)?.getAttribute('content') || '').trim();
+    }
+
+    function readSeoData(sourceDoc = document, base = window.location.href) {
+        const canonicalHref = sourceDoc.querySelector('link[rel="canonical"]')?.getAttribute('href') || '';
+
+        return {
+            documentTitle: sourceDoc.title || '',
+            metaDescription: getMetaContent(sourceDoc, 'meta[name="description"]'),
+            canonicalUrl: normalizeUrl(canonicalHref, base),
+            ogTitle: getMetaContent(sourceDoc, 'meta[property="og:title"]'),
+            ogDescription: getMetaContent(sourceDoc, 'meta[property="og:description"]'),
+            ogUrl: normalizeUrl(getMetaContent(sourceDoc, 'meta[property="og:url"]'), base),
+            ogImage: normalizeUrl(getMetaContent(sourceDoc, 'meta[property="og:image"]'), base),
+            twitterTitle: getMetaContent(sourceDoc, 'meta[name="twitter:title"]'),
+            twitterDescription: getMetaContent(sourceDoc, 'meta[name="twitter:description"]'),
+            twitterImage: normalizeUrl(getMetaContent(sourceDoc, 'meta[name="twitter:image"]'), base),
+            jsonLd: String(sourceDoc.querySelector('script[type="application/ld+json"]')?.textContent || '').trim()
+        };
+    }
+
+    function readVideoData(dataNode, sourceDoc = document, base = window.location.href) {
+        const seo = readSeoData(sourceDoc, base);
+
         return {
             id: dataNode.dataset.contentId || '',
-            title: getFieldText(dataNode, 'title') || document.title,
-            url: dataNode.dataset.url || window.location.href,
+            title: getFieldText(dataNode, 'title') || seo.documentTitle || document.title,
+            url: normalizeUrl(dataNode.dataset.url, base) || normalizeUrl(base),
+            prevUrl: normalizeUrl(dataNode.dataset.prevUrl, base),
+            nextUrl: normalizeUrl(dataNode.dataset.nextUrl, base),
+            prevTitle: dataNode.dataset.prevTitle || '',
+            nextTitle: dataNode.dataset.nextTitle || '',
             poster: dataNode.dataset.poster || '',
             category: dataNode.dataset.category || '',
-            description: getFieldText(dataNode, 'description') || '',
+            description: getFieldHtml(dataNode, 'description') || '',
             duration: dataNode.dataset.duration || '00:00',
             date: dataNode.dataset.date || '',
             visits: dataNode.dataset.views || '0',
@@ -68,44 +111,37 @@
             licenseUrl: dataNode.dataset.licenseUrl || '',
             licenseKey: dataNode.dataset.licenseKey || '',
             signApi: dataNode.dataset.signApi || '/api/tencent-vod-psign.php',
+            documentTitle: seo.documentTitle,
+            metaDescription: seo.metaDescription,
+            canonicalUrl: seo.canonicalUrl,
+            ogTitle: seo.ogTitle,
+            ogDescription: seo.ogDescription,
+            ogUrl: seo.ogUrl,
+            ogImage: seo.ogImage,
+            twitterTitle: seo.twitterTitle,
+            twitterDescription: seo.twitterDescription,
+            twitterImage: seo.twitterImage,
+            jsonLd: seo.jsonLd,
             layout: null
         };
     }
 
-    function createContext() {
+    function createPageContext() {
         const dataNode = byId('shortVideoInitialData');
         const root = byId('shortDetailOverlay');
+        const frame = byId('shortVideoPlayerFrame');
+        const wrapper = byId('shortDetailWrapper');
         const panelsRoot = byId('shortDetailActionPanels');
 
-        if (!dataNode || !root) return null;
-
-        const slide = scoped(root, '.short-feed-slide');
-        const card = scoped(root, '.video-card-container');
-        const videoBox = scoped(root, '.short-feed-video-box');
-        const videoElement = scoped(root, '.short-feed-video');
-
-        if (!slide || !card || !videoBox || !videoElement) return null;
+        if (!dataNode || !root || !frame || !wrapper) return null;
 
         return {
             dataNode,
             root,
+            frame,
+            wrapper,
             panelsRoot,
             mask: byId('shortDetailPanelMask'),
-            slide,
-            card,
-            videoBox,
-            videoElement,
-            centerPlayBtn: scoped(root, '.center-play-btn'),
-            progressTrack: scoped(root, '.video-progress-track'),
-            progressBar: scoped(root, '.video-progress-bar'),
-            currentTime: scoped(root, '.current-time'),
-            duration: scoped(root, '.duration'),
-            soundButton: scoped(root, '.sound-control-btn'),
-            detailComments: scoped(root, '.short-feed-detail-comments'),
-            detailCommentInput: scoped(root, '[data-detail-comment-input]'),
-            detailCommentSubmit: scoped(root, '[data-detail-comment-submit]'),
-            mobileCommentInput: scoped(root, '[data-mobile-comment-input]'),
-            mobileCommentSubmit: scoped(root, '[data-mobile-comment-submit]'),
             panels: {
                 cartContent: byId('shortDetailCartContent'),
                 commentCount: byId('shortDetailCommentCount'),
@@ -122,8 +158,224 @@
                 quoteMessage: byId('shortDetailQuoteMessage'),
                 quoteSubmit: byId('shortDetailQuoteSubmit'),
                 quoteMessages: byId('shortDetailQuoteMessages')
+            },
+            seo: {
+                description: document.querySelector('meta[name="description"]'),
+                canonical: document.querySelector('link[rel="canonical"]'),
+                ogTitle: document.querySelector('meta[property="og:title"]'),
+                ogDescription: document.querySelector('meta[property="og:description"]'),
+                ogUrl: document.querySelector('meta[property="og:url"]'),
+                ogImage: document.querySelector('meta[property="og:image"]'),
+                twitterTitle: document.querySelector('meta[name="twitter:title"]'),
+                twitterDescription: document.querySelector('meta[name="twitter:description"]'),
+                twitterImage: document.querySelector('meta[name="twitter:image"]'),
+                jsonLd: document.querySelector('script[type="application/ld+json"]')
             }
         };
+    }
+
+    function createSlideContext(pageCtx, slide) {
+        if (!pageCtx || !slide) return null;
+
+        const card = scoped(slide, '.video-card-container');
+        const videoBox = scoped(slide, '.short-feed-video-box');
+        const videoElement = scoped(slide, '.short-feed-video');
+
+        if (!card || !videoBox || !videoElement) return null;
+
+        return {
+            ...pageCtx,
+            slide,
+            card,
+            videoBox,
+            videoElement,
+            centerPlayBtn: scoped(slide, '.center-play-btn'),
+            progressTrack: scoped(slide, '.video-progress-track'),
+            progressBar: scoped(slide, '.video-progress-bar'),
+            currentTime: scoped(slide, '.current-time'),
+            duration: scoped(slide, '.duration'),
+            soundButton: scoped(slide, '.sound-control-btn'),
+            detailComments: scoped(slide, '.short-feed-detail-comments'),
+            detailCommentInput: scoped(slide, '[data-detail-comment-input]'),
+            detailCommentSubmit: scoped(slide, '[data-detail-comment-submit]'),
+            mobileCommentInput: scoped(slide, '[data-mobile-comment-input]'),
+            mobileCommentSubmit: scoped(slide, '[data-mobile-comment-submit]')
+        };
+    }
+
+    function createVideoRecord(video, slide, options = {}) {
+        const key = video.url || normalizeUrl(options.sourceUrl) || String(video.id || '');
+
+        return {
+            key,
+            video,
+            slide,
+            cartHtml: options.cartHtml || '',
+            panelCommentsHtml: options.panelCommentsHtml || '',
+            panelCommentCount: Number(options.panelCommentCount) || 0,
+            sourceUrl: options.sourceUrl || video.url || '',
+            loadedFromNetwork: options.loadedFromNetwork === true
+        };
+    }
+
+    function removeRemoteOnlyNodes(root) {
+        if (!root) return;
+
+        scopedAll(root, [
+            'script',
+            'style',
+            'link',
+            'header',
+            'footer',
+            '.topbar',
+            '.top-bar',
+            '.site-header',
+            '.nav-header',
+            '.sidebar-embedded-aside',
+            '.mobile-tabbar',
+            '.back-to-top',
+            '.short-feed-action-panels',
+            '.short-feed-modal-overlay'
+        ].join(',')).forEach(node => node.remove());
+    }
+
+    function ensureSlideVideoMarkup(slide, video) {
+        const videoBox = scoped(slide, '.short-feed-video-box');
+        if (!videoBox) return;
+
+        let videoElement = scoped(videoBox, '.short-feed-video');
+        if (!videoElement) {
+            videoElement = document.createElement('video');
+            videoElement.className = 'short-feed-video video-player';
+            videoBox.prepend(videoElement);
+        }
+
+        videoElement.id = `shortVideoEl_${video.id || Date.now()}`;
+        videoElement.setAttribute('playsinline', '');
+        videoElement.setAttribute('webkit-playsinline', '');
+        videoElement.setAttribute('x5-playsinline', '');
+        videoElement.setAttribute('preload', 'none');
+        if (video.poster) videoElement.setAttribute('poster', video.poster);
+
+        if (!scoped(videoBox, '.short-feed-loading')) {
+            const loading = document.createElement('div');
+            loading.className = 'short-feed-loading';
+            loading.hidden = true;
+            loading.textContent = '视频加载中...';
+            videoElement.insertAdjacentElement('afterend', loading);
+        }
+
+        if (!scoped(videoBox, '.short-feed-error')) {
+            const error = document.createElement('div');
+            error.className = 'short-feed-error';
+            error.hidden = true;
+            error.textContent = '视频授权获取失败，请刷新页面后重试';
+            videoBox.appendChild(error);
+        }
+    }
+
+    function normalizeRemoteSlide(sourceSlide, video) {
+        if (!sourceSlide) return null;
+
+        const slide = sourceSlide.cloneNode(true);
+        removeRemoteOnlyNodes(slide);
+        scoped(slide, '.short-feed-desktop-detail')?.remove();
+
+        slide.classList.add('short-feed-slide', 'swiper-slide');
+        slide.classList.remove('swiper-slide-active', 'swiper-slide-prev', 'swiper-slide-next');
+        slide.dataset.contentId = video.id || '';
+        slide.dataset.detailUrl = video.url || '';
+        slide.dataset.recordKey = video.url || String(video.id || '');
+
+        scoped(slide, '.video-card-container')?.classList.remove('playing');
+
+        const videoBox = scoped(slide, '.short-feed-video-box');
+        if (videoBox) {
+            videoBox.classList.remove(
+                'is-portrait-video',
+                'is-landscape-video',
+                'is-video-layout-ready'
+            );
+            videoBox.classList.add('is-video-layout-pending');
+        }
+
+        const progressBar = scoped(slide, '.video-progress-bar');
+        const currentTime = scoped(slide, '.current-time');
+        if (progressBar) progressBar.style.width = '0';
+        if (currentTime) currentTime.textContent = '00:00';
+
+        ensureSlideVideoMarkup(slide, video);
+        return slide;
+    }
+
+    async function fetchDetailRecord(pageCtx, url, state) {
+        const targetUrl = normalizeUrl(url);
+        if (!targetUrl) return null;
+
+        const parsedUrl = new URL(targetUrl);
+        if (parsedUrl.origin !== window.location.origin) {
+            console.warn('Skip cross-origin short detail preload:', targetUrl);
+            return null;
+        }
+
+        if (state.recordsByUrl.has(targetUrl)) {
+            return state.recordsByUrl.get(targetUrl);
+        }
+
+        if (state.loadPromises.has(targetUrl)) {
+            return state.loadPromises.get(targetUrl);
+        }
+
+        const controller = new AbortController();
+        const timeout = window.setTimeout(() => controller.abort(), 8000);
+
+        const loadPromise = (async function() {
+            try {
+                const response = await fetch(targetUrl, {
+                    method: 'GET',
+                    credentials: 'same-origin',
+                    cache: 'no-store',
+                    headers: { Accept: 'text/html' },
+                    signal: controller.signal
+                });
+
+                const contentType = response.headers.get('content-type') || '';
+                if (!response.ok || !contentType.includes('text/html')) {
+                    throw new Error(`Invalid detail response: ${response.status}`);
+                }
+
+                const html = await response.text();
+                const doc = new DOMParser().parseFromString(html, 'text/html');
+                const dataNode = doc.getElementById('shortVideoInitialData');
+                const sourceSlide = doc.querySelector('#shortDetailOverlay .short-feed-slide');
+
+                if (!dataNode || !sourceSlide) {
+                    throw new Error('Remote detail page is missing required short video nodes');
+                }
+
+                const video = readVideoData(dataNode, doc, targetUrl);
+                const slide = normalizeRemoteSlide(sourceSlide, video);
+                if (!slide) throw new Error('Remote detail slide could not be normalized');
+
+                const record = createVideoRecord(video, slide, {
+                    cartHtml: doc.getElementById('shortDetailCartContent')?.innerHTML || '',
+                    sourceUrl: targetUrl,
+                    loadedFromNetwork: true
+                });
+
+                state.recordsByUrl.set(record.key, record);
+                return record;
+            } catch (error) {
+                console.warn('Fetch short detail record failed:', error);
+                return null;
+            } finally {
+                window.clearTimeout(timeout);
+                state.loadPromises.delete(targetUrl);
+            }
+        })();
+
+        state.loadPromises.set(targetUrl, loadPromise);
+        return loadPromise;
     }
 
     function createPlayerController(ctx, video) {
@@ -453,6 +705,9 @@
             }
             player = null;
             initPromise = null;
+            ensureSlideVideoMarkup(ctx.slide, video);
+            ctx.videoElement = scoped(ctx.slide, '.short-feed-video');
+            resetPresentationMode();
         }
 
         return {
@@ -466,7 +721,7 @@
         };
     }
 
-    function createPanelController(ctx) {
+    function createPanelController(ctx, state) {
         const panelSelector = [
             '.short-feed-cart-panel',
             '.short-feed-comment-panel',
@@ -485,10 +740,16 @@
             scopedAll(ctx.panelsRoot || document, panelSelector).forEach(panel => {
                 panel.classList.remove('active');
             });
+            if (state?.isMobileFeed && state.swiper && typeof state.swiper.enable === 'function') {
+                state.swiper.enable();
+            }
         }
 
         function open(panelId) {
             closeAll();
+            if (state?.isMobileFeed && state.swiper && typeof state.swiper.disable === 'function') {
+                state.swiper.disable();
+            }
             setMask(true);
             byId(panelId)?.classList.add('active');
         }
@@ -496,21 +757,23 @@
         return { open, closeAll };
     }
 
-    function createFormController(ctx, video) {
+    function createFormController(pageCtx, getActiveRecord, getActiveSlideContext) {
         function submitPanelComment() {
-            const input = ctx.panels.commentInput;
+            const input = pageCtx.panels.commentInput;
             const text = String(input?.value || '').trim();
             if (!text) return;
 
-            ctx.panels.comments?.insertAdjacentHTML('beforeend', `<div class="short-feed-comment-item">${escapeHtml(text)}</div>`);
+            pageCtx.panels.comments?.insertAdjacentHTML('beforeend', `<div class="short-feed-comment-item">${escapeHtml(text)}</div>`);
             input.value = '';
 
-            if (ctx.panels.commentCount) {
-                ctx.panels.commentCount.textContent = String(Number(ctx.panels.commentCount.textContent || 0) + 1);
+            if (pageCtx.panels.commentCount) {
+                pageCtx.panels.commentCount.textContent = String(Number(pageCtx.panels.commentCount.textContent || 0) + 1);
             }
         }
 
         function submitDetailComment() {
+            const ctx = getActiveSlideContext();
+            if (!ctx) return;
             const input = ctx.detailCommentInput;
             const text = String(input?.value || '').trim();
             if (!text) return;
@@ -529,11 +792,13 @@
         }
 
         function submitMobileComment() {
+            const ctx = getActiveSlideContext();
+            if (!ctx) return;
             const input = ctx.mobileCommentInput;
             const text = String(input?.value || '').trim();
             if (!text) return;
 
-            ctx.panels.comments?.insertAdjacentHTML('beforeend', `<div class="short-feed-comment-item">${escapeHtml(text)}</div>`);
+            pageCtx.panels.comments?.insertAdjacentHTML('beforeend', `<div class="short-feed-comment-item">${escapeHtml(text)}</div>`);
             ctx.detailComments?.insertAdjacentHTML('beforeend', `
                 <div class="short-feed-detail-comment">
                     <div class="short-feed-detail-comment-avatar official">我</div>
@@ -545,8 +810,8 @@
                 </div>
             `);
 
-            if (ctx.panels.commentCount) {
-                ctx.panels.commentCount.textContent = String(Number(ctx.panels.commentCount.textContent || 0) + 1);
+            if (pageCtx.panels.commentCount) {
+                pageCtx.panels.commentCount.textContent = String(Number(pageCtx.panels.commentCount.textContent || 0) + 1);
             }
 
             input.value = '';
@@ -554,40 +819,41 @@
         }
 
         function submitAiMessage() {
-            const input = ctx.panels.aiInput;
+            const input = pageCtx.panels.aiInput;
             const text = String(input?.value || '').trim();
             if (!text) return;
 
-            ctx.panels.aiBody?.insertAdjacentHTML('beforeend', `<div class="ai-chat-message user">${escapeHtml(text)}</div><div class="ai-chat-message bot">已收到，我们会根据您的问题尽快为您提供帮助。</div>`);
+            pageCtx.panels.aiBody?.insertAdjacentHTML('beforeend', `<div class="ai-chat-message user">${escapeHtml(text)}</div><div class="ai-chat-message bot">已收到，我们会根据您的问题尽快为您提供帮助。</div>`);
             input.value = '';
-            if (ctx.panels.aiBody) ctx.panels.aiBody.scrollTop = ctx.panels.aiBody.scrollHeight;
+            if (pageCtx.panels.aiBody) pageCtx.panels.aiBody.scrollTop = pageCtx.panels.aiBody.scrollHeight;
         }
 
         function submitQuoteMessage() {
             const fields = [
-                ctx.panels.quoteName,
-                ctx.panels.quoteContact,
-                ctx.panels.quoteEmail,
-                ctx.panels.quoteMessage
+                pageCtx.panels.quoteName,
+                pageCtx.panels.quoteContact,
+                pageCtx.panels.quoteEmail,
+                pageCtx.panels.quoteMessage
             ];
-            const name = String(ctx.panels.quoteName?.value || '').trim();
-            const contact = String(ctx.panels.quoteContact?.value || '').trim();
-            const email = String(ctx.panels.quoteEmail?.value || '').trim();
-            const message = String(ctx.panels.quoteMessage?.value || '').trim();
+            const name = String(pageCtx.panels.quoteName?.value || '').trim();
+            const contact = String(pageCtx.panels.quoteContact?.value || '').trim();
+            const email = String(pageCtx.panels.quoteEmail?.value || '').trim();
+            const message = String(pageCtx.panels.quoteMessage?.value || '').trim();
             if (!name && !contact && !email && !message) return;
 
-            ctx.panels.quoteMessages?.insertAdjacentHTML('beforeend', `<div class="short-feed-comment-item"><strong>${escapeHtml(name || '访客')}</strong><br>${escapeHtml(contact)}${contact && email ? ' / ' : ''}${escapeHtml(email)}<p>${escapeHtml(message)}</p></div>`);
+            pageCtx.panels.quoteMessages?.insertAdjacentHTML('beforeend', `<div class="short-feed-comment-item"><strong>${escapeHtml(name || '访客')}</strong><br>${escapeHtml(contact)}${contact && email ? ' / ' : ''}${escapeHtml(email)}<p>${escapeHtml(message)}</p></div>`);
             fields.forEach(input => {
                 if (input) input.value = '';
             });
         }
 
         function setQuickAiMessage(button) {
-            if (ctx.panels.aiInput) ctx.panels.aiInput.value = button.dataset.msg || '';
+            if (pageCtx.panels.aiInput) pageCtx.panels.aiInput.value = button.dataset.msg || '';
         }
 
         function fillShareLink() {
-            if (ctx.panels.shareLink) ctx.panels.shareLink.textContent = video.url;
+            const record = getActiveRecord();
+            if (pageCtx.panels.shareLink) pageCtx.panels.shareLink.textContent = record?.video?.url || window.location.href;
         }
 
         return {
@@ -601,23 +867,31 @@
         };
     }
 
-    function createShareController(video) {
+    function createShareController(getActiveRecord) {
         function copyLink() {
+            const record = getActiveRecord();
+            const url = record?.video?.url || window.location.href;
+
             if (navigator.clipboard?.writeText) {
-                navigator.clipboard.writeText(video.url).catch(error => {
+                navigator.clipboard.writeText(url).catch(error => {
                     console.warn('Copy detail video link failed:', error);
                 });
             }
         }
 
         function share(action) {
+            const record = getActiveRecord();
+            const video = record?.video || {};
+            const title = video.title || document.title;
+            const url = video.url || window.location.href;
+
             if (action === 'whatsapp') {
-                window.open(`https://wa.me/?text=${encodeURIComponent(`${video.title} ${video.url}`)}`, '_blank');
+                window.open(`https://wa.me/?text=${encodeURIComponent(`${title} ${url}`)}`, '_blank');
                 return;
             }
 
             if (action === 'native' && navigator.share) {
-                navigator.share({ title: video.title, url: video.url }).catch(() => {});
+                navigator.share({ title, url }).catch(() => {});
                 return;
             }
 
@@ -653,6 +927,250 @@
         }
 
         return { activateFirstSlide, switchImage, ensureCartMessage };
+    }
+
+    function syncPanelsForRecord(pageCtx, record) {
+        if (!record) return;
+
+        if (pageCtx.panels.cartContent) {
+            pageCtx.panels.cartContent.innerHTML = record.cartHtml || '<div class="short-feed-empty">当前视频未绑定商品。</div>';
+            scoped(pageCtx.panels.cartContent, '.carousel-slide')?.classList.add('active');
+        }
+
+        if (pageCtx.panels.shareLink) {
+            pageCtx.panels.shareLink.textContent = record.video.url || window.location.href;
+        }
+
+        const introBody = byId('shortDetailIntroBody');
+        if (introBody) {
+            const introText = document.createElement('div');
+            introText.className = 'short-feed-intro-text';
+            introText.innerHTML = record.video.description || '暂无视频简介。';
+            introBody.replaceChildren(introText);
+        }
+
+        if (pageCtx.panels.comments) {
+            pageCtx.panels.comments.innerHTML = record.panelCommentsHtml || '';
+        }
+
+        if (pageCtx.panels.commentCount) {
+            pageCtx.panels.commentCount.textContent = String(record.panelCommentCount || 0);
+        }
+    }
+
+    function setMetaContent(node, value) {
+        if (!node || !value) return;
+        node.setAttribute('content', value);
+    }
+
+    function updateMetadata(pageCtx, record) {
+        const video = record?.video;
+        if (!video) return;
+
+        if (video.documentTitle) document.title = video.documentTitle;
+        if (pageCtx.seo.canonical && video.canonicalUrl) pageCtx.seo.canonical.href = video.canonicalUrl;
+
+        setMetaContent(pageCtx.seo.description, video.metaDescription);
+        setMetaContent(pageCtx.seo.ogTitle, video.ogTitle || video.documentTitle || video.title);
+        setMetaContent(pageCtx.seo.ogDescription, video.ogDescription || video.metaDescription);
+        setMetaContent(pageCtx.seo.ogUrl, video.ogUrl || video.url);
+        setMetaContent(pageCtx.seo.ogImage, video.ogImage || video.poster);
+        setMetaContent(pageCtx.seo.twitterTitle, video.twitterTitle || video.documentTitle || video.title);
+        setMetaContent(pageCtx.seo.twitterDescription, video.twitterDescription || video.metaDescription);
+        setMetaContent(pageCtx.seo.twitterImage, video.twitterImage || video.poster);
+
+        if (pageCtx.seo.jsonLd && video.jsonLd) {
+            pageCtx.seo.jsonLd.textContent = video.jsonLd;
+        }
+    }
+
+    function writeHistory(record, replace) {
+        const url = record?.video?.url;
+        if (!url) return;
+
+        const state = {
+            shortVideoDetail: true,
+            url,
+            contentId: record.video.id || ''
+        };
+
+        if (replace) {
+            history.replaceState(state, '', url);
+            return;
+        }
+
+        history.pushState(state, '', url);
+    }
+
+    function savePanelStateForRecord(pageCtx, record) {
+        if (!record) return;
+        record.panelCommentsHtml = pageCtx.panels.comments?.innerHTML || '';
+        record.panelCommentCount = Number(pageCtx.panels.commentCount?.textContent || 0);
+    }
+
+    function activateRecord(pageCtx, state, record, options = {}) {
+        if (!record || !record.slide) return false;
+
+        state.activeRecord = record;
+        state.activeSlideContext = createSlideContext(pageCtx, record.slide);
+        if (!state.activeSlideContext) return false;
+
+        updateMetadata(pageCtx, record);
+        syncPanelsForRecord(pageCtx, record);
+
+        state.activePlayerController = createPlayerController(
+            state.activeSlideContext,
+            record.video
+        );
+
+        if (options.play === true) {
+            state.activePlayerController.play();
+        } else {
+            state.activePlayerController.prepare();
+        }
+
+        return true;
+    }
+
+    function findSlideIndexByRecordKey(swiper, key) {
+        if (!swiper || !key) return -1;
+        return Array.from(swiper.slides || []).findIndex(slide => slide.dataset.recordKey === key);
+    }
+
+    async function prefetchAdjacentRecords(pageCtx, state, record) {
+        if (!record) return;
+
+        await Promise.allSettled([
+            record.video.prevUrl ? fetchDetailRecord(pageCtx, record.video.prevUrl, state) : null,
+            record.video.nextUrl ? fetchDetailRecord(pageCtx, record.video.nextUrl, state) : null
+        ].filter(Boolean));
+    }
+
+    function hasRecordSlide(pageCtx, record) {
+        if (!record) return false;
+        return scopedAll(pageCtx.wrapper, '.short-feed-slide').some(slide => {
+            return slide.dataset.recordKey === record.key;
+        });
+    }
+
+    function appendRecordSlide(pageCtx, state, record, position) {
+        if (!record || !record.slide) return;
+        if (hasRecordSlide(pageCtx, record)) return;
+
+        record.slide.dataset.recordKey = record.key;
+
+        if (state.swiper && typeof state.swiper.appendSlide === 'function') {
+            if (position === 'prepend' && typeof state.swiper.prependSlide === 'function') {
+                const activeKey = state.activeRecord?.key || '';
+                state.swiper.prependSlide(record.slide);
+                state.swiper.update();
+                const newIndex = findSlideIndexByRecordKey(state.swiper, activeKey);
+                if (newIndex >= 0) state.swiper.slideTo(newIndex, 0, false);
+                return;
+            }
+
+            state.swiper.appendSlide(record.slide);
+            state.swiper.update();
+            return;
+        }
+
+        if (position === 'prepend') {
+            pageCtx.wrapper.insertBefore(record.slide, pageCtx.wrapper.firstChild);
+            return;
+        }
+
+        pageCtx.wrapper.appendChild(record.slide);
+    }
+
+    async function ensureAdjacentRecords(pageCtx, state, record) {
+        if (!state.isMobileFeed || !state.swiper || !record) return;
+
+        if (record.video.prevUrl) {
+            const prevRecord = await fetchDetailRecord(pageCtx, record.video.prevUrl, state);
+            if (prevRecord) appendRecordSlide(pageCtx, state, prevRecord, 'prepend');
+        }
+
+        if (record.video.nextUrl) {
+            const nextRecord = await fetchDetailRecord(pageCtx, record.video.nextUrl, state);
+            if (nextRecord) appendRecordSlide(pageCtx, state, nextRecord, 'append');
+        }
+    }
+
+    async function initMobileFeed(pageCtx, state) {
+        if (!window.matchMedia(MOBILE_QUERY).matches) return;
+        if (typeof Swiper === 'undefined') {
+            console.error('Swiper SDK not loaded');
+            return;
+        }
+
+        const currentRecord = state.activeRecord;
+        if (!currentRecord) return;
+
+        await prefetchAdjacentRecords(pageCtx, state, currentRecord);
+
+        const prevRecord = currentRecord.video.prevUrl
+            ? state.recordsByUrl.get(currentRecord.video.prevUrl)
+            : null;
+        const nextRecord = currentRecord.video.nextUrl
+            ? state.recordsByUrl.get(currentRecord.video.nextUrl)
+            : null;
+
+        if (!prevRecord && !nextRecord) return;
+
+        currentRecord.slide.dataset.recordKey = currentRecord.key;
+
+        if (prevRecord) appendRecordSlide(pageCtx, state, prevRecord, 'prepend');
+        if (nextRecord) appendRecordSlide(pageCtx, state, nextRecord, 'append');
+
+        const initialSlide = prevRecord ? 1 : 0;
+        state.isMobileFeed = true;
+
+        state.swiper = new Swiper(pageCtx.frame, {
+            direction: 'vertical',
+            initialSlide,
+            speed: 420,
+            slidesPerView: 1,
+            resistanceRatio: 0.45,
+            preventInteractionOnTransition: true,
+            observer: true,
+            observeParents: true,
+            noSwiping: true,
+            noSwipingSelector: [
+                'button',
+                'a',
+                'input',
+                'textarea',
+                '.video-progress-track',
+                '.short-feed-action-panels'
+            ].join(','),
+            on: {
+                slideChangeTransitionStart() {
+                    state.isSwitching = true;
+                    savePanelStateForRecord(pageCtx, state.activeRecord);
+                    state.activePlayerController?.pause();
+                    state.activePlayerController?.destroy();
+                    state.activePlayerController = null;
+                },
+
+                slideChangeTransitionEnd() {
+                    const activeSlide = this.slides[this.activeIndex];
+                    const key = activeSlide?.dataset.recordKey || '';
+                    const record = state.recordsByUrl.get(key);
+                    if (record) {
+                        activateRecord(pageCtx, state, record, { play: true });
+
+                        if (!state.suppressHistory) {
+                            writeHistory(record, false);
+                        }
+
+                        ensureAdjacentRecords(pageCtx, state, record).catch(error => {
+                            console.warn('Ensure adjacent short detail records failed:', error);
+                        });
+                    }
+                    state.isSwitching = false;
+                }
+            }
+        });
     }
 
     function bindPanelEvents(ctx, panelController, formController, shareController, productCarousel) {
@@ -692,8 +1210,19 @@
         });
     }
 
-    function bindPlayerSurfaceEvents(ctx, playerController, panelController, formController, productCarousel) {
-        ctx.root.addEventListener('click', event => {
+    function bindPlayerSurfaceEvents(pageCtx, state, panelController, formController, productCarousel) {
+        function getActivePlayerController() {
+            return state.activePlayerController;
+        }
+
+        function isFromActiveSlide(target) {
+            const slide = target.closest('.short-feed-slide');
+            return !slide || slide === state.activeSlideContext?.slide;
+        }
+
+        pageCtx.root.addEventListener('click', event => {
+            if (!isFromActiveSlide(event.target)) return;
+
             if (event.target.closest('.short-feed-desktop-detail a[href], .video-info-overlay a[href], .m-home-btn')) {
                 return;
             }
@@ -788,7 +1317,7 @@
             if (event.target.closest('.sound-control-btn')) {
                 event.preventDefault();
                 event.stopPropagation();
-                playerController.toggleSound();
+                getActivePlayerController()?.toggleSound();
                 return;
             }
 
@@ -797,32 +1326,35 @@
 
             event.preventDefault();
             event.stopPropagation();
-            playerController.toggle();
+            getActivePlayerController()?.toggle();
         });
 
-        ctx.root.addEventListener('keydown', event => {
-            if (event.key === 'Enter' && event.target === ctx.mobileCommentInput) {
+        pageCtx.root.addEventListener('keydown', event => {
+            const ctx = state.activeSlideContext;
+            if (event.key === 'Enter' && event.target === ctx?.mobileCommentInput) {
                 event.preventDefault();
                 formController.submitMobileComment();
                 return;
             }
 
-            if (event.key !== 'Enter' || event.target !== ctx.detailCommentInput) return;
+            if (event.key !== 'Enter' || event.target !== ctx?.detailCommentInput) return;
             event.preventDefault();
             formController.submitDetailComment();
         });
 
-        ctx.slide.addEventListener('pointerdown', event => {
+        pageCtx.root.addEventListener('pointerdown', event => {
             const track = event.target.closest('.video-progress-track');
+            if (!track || !isFromActiveSlide(event.target)) return;
+            const playerController = getActivePlayerController();
             if (!track) return;
 
             event.preventDefault();
             event.stopPropagation();
-            playerController.seekFromPointer(event, track);
+            playerController?.seekFromPointer(event, track);
 
             const handlePointerMove = moveEvent => {
                 moveEvent.preventDefault();
-                playerController.seekFromPointer(moveEvent, track);
+                playerController?.seekFromPointer(moveEvent, track);
             };
             const handlePointerUp = () => {
                 window.removeEventListener('pointermove', handlePointerMove);
@@ -836,23 +1368,95 @@
         });
     }
 
-    function initShortVideoDetail() {
-        const ctx = createContext();
-        if (!ctx) return;
+    function bindHistoryEvents(pageCtx, state) {
+        window.addEventListener('popstate', event => {
+            const historyState = event.state;
+            if (!historyState?.shortVideoDetail) return;
 
-        const video = readVideoData(ctx.dataNode);
-        const playerController = createPlayerController(ctx, video);
-        const panelController = createPanelController(ctx);
-        const formController = createFormController(ctx, video);
-        const shareController = createShareController(video);
-        const productCarousel = createProductCarouselController(ctx);
+            const targetUrl = normalizeUrl(historyState.url);
+            const record = targetUrl ? state.recordsByUrl.get(targetUrl) : null;
+
+            if (!record || !state.swiper) {
+                window.location.href = targetUrl || window.location.href;
+                return;
+            }
+
+            const targetIndex = findSlideIndexByRecordKey(state.swiper, record.key);
+            if (targetIndex < 0) {
+                window.location.href = targetUrl;
+                return;
+            }
+
+            state.suppressHistory = true;
+            state.swiper.slideTo(targetIndex, 420);
+            window.setTimeout(() => {
+                state.suppressHistory = false;
+            }, 460);
+        });
+
+        const mediaQuery = window.matchMedia(MOBILE_QUERY);
+        if (typeof mediaQuery.addEventListener === 'function') {
+            mediaQuery.addEventListener('change', event => {
+                if (!event.matches && state.isMobileFeed && state.activeRecord?.video?.url) {
+                    window.location.href = state.activeRecord.video.url;
+                }
+            });
+        }
+    }
+
+    function initShortVideoDetail() {
+        const pageCtx = createPageContext();
+        if (!pageCtx) return;
+
+        const initialSlide = scoped(pageCtx.wrapper, '.short-feed-slide');
+        const slideCtx = createSlideContext(pageCtx, initialSlide);
+        if (!slideCtx) return;
+
+        const video = readVideoData(pageCtx.dataNode);
+        const currentRecord = createVideoRecord(video, slideCtx.slide, {
+            cartHtml: pageCtx.panels.cartContent?.innerHTML || '',
+            panelCommentsHtml: pageCtx.panels.comments?.innerHTML || '',
+            panelCommentCount: Number(pageCtx.panels.commentCount?.textContent || 0),
+            sourceUrl: video.url,
+            loadedFromNetwork: false
+        });
+        const state = {
+            swiper: null,
+            activeRecord: currentRecord,
+            activeSlideContext: slideCtx,
+            activePlayerController: null,
+            recordsByUrl: new Map([[currentRecord.key, currentRecord]]),
+            loadPromises: new Map(),
+            isMobileFeed: false,
+            isSwitching: false,
+            suppressHistory: false,
+            destroyed: false
+        };
+        const playerController = createPlayerController(slideCtx, video);
+        state.activePlayerController = playerController;
+        const panelController = createPanelController(pageCtx, state);
+        const formController = createFormController(
+            pageCtx,
+            () => state.activeRecord,
+            () => state.activeSlideContext
+        );
+        const shareController = createShareController(() => state.activeRecord);
+        const productCarousel = createProductCarouselController(pageCtx);
 
         productCarousel.activateFirstSlide();
-        bindPanelEvents(ctx, panelController, formController, shareController, productCarousel);
-        bindPlayerSurfaceEvents(ctx, playerController, panelController, formController, productCarousel);
+        bindPanelEvents(pageCtx, panelController, formController, shareController, productCarousel);
+        bindPlayerSurfaceEvents(pageCtx, state, panelController, formController, productCarousel);
+        bindHistoryEvents(pageCtx, state);
+        writeHistory(currentRecord, true);
         playerController.prepare();
+        initMobileFeed(pageCtx, state).catch(error => {
+            console.warn('Mobile short detail feed init failed:', error);
+        });
 
-        window.addEventListener('beforeunload', playerController.destroy);
+        window.addEventListener('beforeunload', () => {
+            state.destroyed = true;
+            state.activePlayerController?.destroy();
+        });
     }
 
     ready(initShortVideoDetail);

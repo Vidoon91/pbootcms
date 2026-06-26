@@ -44,7 +44,7 @@
             "embedUrl": "{content:link}"
         }
     </script>
-    <link rel="stylesheet" href="/skin/css/video-short.css?v=shortdetail_ui_align_20260626b">
+    <link rel="stylesheet" href="/skin/css/video-short.css?v=shortdetail_swiper_20260626e">
 </head>
 <body class="sidebar-embedded-page video-short-static-detail">
     <!-- TOPBAR_START -->
@@ -55,6 +55,10 @@
         data-content-id="{content:id}"
         data-poster="{content:ico}"
         data-url="{content:link}"
+        data-prev-url="{content:prelink}"
+        data-next-url="{content:nextlink}"
+        data-prev-title="{content:pretitle}"
+        data-next-title="{content:nexttitle}"
         data-category="{sort:name}"
         data-duration="{content:ext_video_duration}"
         data-date="{content:date}"
@@ -62,7 +66,7 @@
         data-file-id="{content:ext_tcplayer_file_id}"
         data-sign-api="/api/tencent-vod-psign.php">
         <div data-field="title">{content:title}</div>
-        <div data-field="description">{content:description}</div>
+        <div data-field="description">{content:content}</div>
     </div>
 
     <div class="main-content-wrapper">
@@ -76,8 +80,8 @@
                         <div class="short-feed-overlay video-short-player-surface" id="shortDetailOverlay" data-site-logo="{pboot:sitelogo}">
                             <div class="short-feed-shell">
                                 <div class="short-feed-swiper" id="shortVideoPlayerFrame">
-                                    <div class="short-feed-wrapper" id="shortDetailWrapper">
-                                        <div class="short-feed-slide" data-index="0" data-content-id="{content:id}">
+                                    <div class="short-feed-wrapper swiper-wrapper" id="shortDetailWrapper">
+                                        <div class="short-feed-slide swiper-slide" data-index="0" data-content-id="{content:id}" data-detail-url="{content:link}">
                                             <div class="video-card-container">
                                                 <div class="video-portrait">
                                                     <div class="short-feed-mobile-topbar">
@@ -101,6 +105,7 @@
                                                             preload="none"
                                                             poster="{content:ico}">
                                                         </video>
+                                                        <div class="short-feed-loading" hidden>视频加载中...</div>
                                                         <div class="short-feed-error" hidden>视频授权获取失败，请刷新页面后重试</div>
                                                     </div>
 
@@ -113,7 +118,7 @@
                                                                     <span class="video-title">{content:title}</span>
                                                                 </div>
                                                             </div>
-                                                            <div class="video-caption">{content:description}</div>
+                                                            <div class="video-caption">{content:content}</div>
                                                             <div class="video-tags">
                                                                 {pboot:tags id={content:id} target=tag}
                                                                 <a class="video-tag" href="[tags:link]" target="_blank" rel="tag noopener">[tags:text]</a>
@@ -163,7 +168,7 @@
                                                         </div>
                                                     </div>
                                                     <h1 class="short-feed-detail-title">{content:title}</h1>
-                                                    <p class="short-feed-detail-desc">{content:description}</p>
+                                                    <div class="short-feed-detail-desc">{content:content}</div>
                                                     <div class="short-feed-detail-tags">
                                                         {pboot:tags id={content:id} target=tag}
                                                         <a class="short-feed-detail-tag" href="[tags:link]" target="_blank" rel="tag noopener">#[tags:text]</a>
@@ -336,7 +341,7 @@
                 <span class="panel-close" data-short-panel-close>×</span>
             </div>
             <div class="ai-chat-body short-feed-intro-body" id="shortDetailIntroBody">
-                <p class="short-feed-intro-text">{content:description}</p>
+                <div class="short-feed-intro-text">{content:content}</div>
             </div>
         </div>
 
@@ -366,11 +371,12 @@
     <script src="/skin/js/topbar.js"></script>
     <script src="/skin/js/sidebar.js"></script>
     <script src="/skin/vendor/tcplayer/tcplayer.v5.3.3.min.js"></script>
+    <script src="/skin/vendor/swiper/swiper-bundle.min.js"></script>
     <script src="/skin/js/footer.js"></script>
     <script src="/skin/js/mobile-tabbar.js"></script>
     <script src="/skin/js/back-to-top.js"></script>
     <script src="/skin/js/main.js"></script>
-    <script src="/skin/js/video-short.js?v=shortdetail_layout_fix_20260626a"></script>
+    <script src="/skin/js/video-short.js?v=shortdetail_swiper_20260626e"></script>
 
 </body>
 </html>

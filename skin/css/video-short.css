@@ -1192,9 +1192,7 @@
 
   .video-short-static-detail .video-short-player-surface,
   .video-short-static-detail .short-feed-shell,
-  .video-short-static-detail .short-feed-swiper,
-  .video-short-static-detail .short-feed-wrapper,
-  .video-short-static-detail .short-feed-slide {
+  .video-short-static-detail .short-feed-swiper {
     position: fixed !important;
     inset: 0 !important;
     top: 0 !important;
@@ -1205,6 +1203,32 @@
     overflow: hidden !important;
     background: #000 !important;
     transform: none !important;
+  }
+
+  .video-short-static-detail .short-feed-swiper {
+    touch-action: pan-x;
+  }
+
+  .video-short-static-detail .short-feed-wrapper.swiper-wrapper {
+    position: relative !important;
+    inset: auto !important;
+    width: 100% !important;
+    height: 100% !important;
+    display: flex !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    overflow: visible !important;
+  }
+
+  .video-short-static-detail .short-feed-slide.swiper-slide {
+    position: relative !important;
+    inset: auto !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    height: 100dvh !important;
+    flex: 0 0 100% !important;
+    overflow: hidden !important;
+    background: #000 !important;
   }
 
   .video-short-static-detail .video-card-container {
