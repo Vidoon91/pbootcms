@@ -1136,10 +1136,14 @@
             observeParents: true,
             noSwiping: true,
             noSwipingSelector: [
-                'button',
                 'a',
                 'input',
                 'textarea',
+                '.short-feed-mobile-close',
+                '.mobile-slide-sidebar button',
+                '.short-feed-mobile-bottombar button',
+                '.short-feed-mobile-comment',
+                '.sound-control-btn',
                 '.video-progress-track',
                 '.short-feed-action-panels'
             ].join(','),
@@ -1303,14 +1307,13 @@
                 return;
             }
 
-            if (event.target.closest('.short-feed-mobile-close')) {
+            const mobileCloseBtn = event.target.closest('.short-feed-mobile-close');
+            if (mobileCloseBtn) {
                 event.preventDefault();
                 event.stopPropagation();
-                if (window.history.length > 1) {
-                    window.history.back();
-                } else {
-                    window.location.href = '/';
-                }
+
+                const listUrl = normalizeUrl(mobileCloseBtn.dataset.listUrl);
+                window.location.assign(listUrl || '/');
                 return;
             }
 
@@ -1322,7 +1325,14 @@
             }
 
             if (event.target.closest('.mobile-slide-sidebar, .fullscreen-btn')) return;
-            if (!event.target.closest('.video-portrait, .center-play-btn')) return;
+            if (state.isSwitching) return;
+            if (state.swiper && state.swiper.allowClick === false) return;
+
+            const videoTapSurface = event.target.closest(
+                '.short-feed-video-box, .center-play-btn'
+            );
+
+            if (!videoTapSurface) return;
 
             event.preventDefault();
             event.stopPropagation();

@@ -1264,6 +1264,19 @@
     background-color: #000 !important;
   }
 
+  .video-short-static-detail .short-feed-video-box > video,
+  .video-short-static-detail .short-feed-video-box .video-js,
+  .video-short-static-detail .short-feed-video-box .tcplayer,
+  .video-short-static-detail .short-feed-video-box .vjs-tech,
+  .video-short-static-detail .short-feed-video-box .vjs-poster,
+  .video-short-static-detail .short-feed-video-box .vjs-poster img {
+    pointer-events: none !important;
+  }
+
+  .video-short-static-detail .center-play-btn {
+    pointer-events: none !important;
+  }
+
   .video-short-static-detail .short-feed-video-box.is-portrait-video > video,
   .video-short-static-detail .short-feed-video-box.is-portrait-video video.tcp-video,
   .video-short-static-detail .short-feed-video-box.is-portrait-video .tcp-video,
