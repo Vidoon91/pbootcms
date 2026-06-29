@@ -8,6 +8,8 @@
  */
 namespace core\basic;
 
+use app\common\LanguageRouter;
+
 class Url
 {
 
@@ -106,7 +108,8 @@ class Url
     // 生成前端地址
     public static function home($path, $suffix = null, $qs = null)
     {
-        if (! isset(self::$urls[md5($path . $suffix . $qs)])) {
+        $routerKey = class_exists('\\app\\common\\LanguageRouter') ? LanguageRouter::getCacheContextKey() : '';
+        if (! isset(self::$urls[md5($routerKey . $path . $suffix . $qs)])) {
             $url_rule_type = Config::get('url_rule_type') ?: 3;
             $url_rule_suffix = Config::get('url_rule_suffix') ?: '.html';
             
@@ -149,8 +152,25 @@ class Url
                         error('地址模式设置错误,请登录后台重新设置！');
                 }
             }
-            self::$urls[md5($path . $suffix . $qs)] = $link;
+            if (class_exists('\\app\\common\\LanguageRouter')) {
+                $basePath = LanguageRouter::getCurrentBasePath();
+                $linkPath = parse_url($link, PHP_URL_PATH);
+                $rawPath = trim((string) $path, '/');
+                if ($basePath && ! LanguageRouter::isStaticOrSystemPath($rawPath)) {
+                    $prefix = rtrim($basePath, '/');
+                    if ($linkPath === null || (strpos($linkPath, $prefix . '/') !== 0 && $linkPath !== $prefix)) {
+                        if (strpos($link, SITE_INDEX_DIR . '/') === 0) {
+                            $link = SITE_INDEX_DIR . $prefix . substr($link, strlen(SITE_INDEX_DIR));
+                        } elseif (strpos($link, SITE_INDEX_DIR . '?') === 0) {
+                            $link = SITE_INDEX_DIR . $prefix . '/' . substr($link, strlen(SITE_INDEX_DIR) + 1);
+                        } elseif (strpos($link, '/') === 0) {
+                            $link = $prefix . $link;
+                        }
+                    }
+                }
+            }
+            self::$urls[md5($routerKey . $path . $suffix . $qs)] = $link;
         }
-        return self::$urls[md5($path . $suffix . $qs)];
+        return self::$urls[md5($routerKey . $path . $suffix . $qs)];
     }
 }

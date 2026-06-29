@@ -12,6 +12,7 @@ use core\basic\Controller;
 use app\home\model\ParserModel;
 use core\basic\Config;
 use core\basic\Url;
+use app\common\LanguageRouter;
 
 class IndexController extends Controller
 {
@@ -34,6 +35,11 @@ class IndexController extends Controller
     {
         // 地址类型
         $url_rule_type = $this->config('url_rule_type') ?: 3;
+        $routerPath = class_exists('\\app\\common\\LanguageRouter') ? LanguageRouter::getRoutePath() : null;
+        if ($routerPath === '') {
+            $this->getIndexPage();
+            return;
+        }
 
         if (P) { // 采用pathinfo模式及p参数伪静态模式
             if ($url_rule_type == 2) { // 禁止伪静态时带index.php 和动态地址访问
@@ -56,6 +62,9 @@ class IndexController extends Controller
                 $search = new SearchController();
                 $search->index();
             }
+        }
+        if ($routerPath !== null && $routerPath !== '') {
+            $path = $routerPath;
         }
         forbWords(URL);
         // 判断是否存在后缀
@@ -259,7 +268,7 @@ class IndexController extends Controller
     {
         // 调用栏目语言与当前语言不一致时，自动切换语言
         if ($sort->acode != get_lg() && Config::get('lgautosw') !== '0') {
-            cookie('lg', $sort->acode);
+            _404('The requested page does not exist in the current language.');
         }
         if ($sort->listtpl) {
             $this->checkPageLevel($sort->gcode, $sort->gtype, $sort->gnote);
@@ -285,7 +294,7 @@ class IndexController extends Controller
         
         // 调用内容语言与当前语言不一致时，自动切换语言
         if ($data->acode != get_lg() && Config::get('lgautosw') !== '0') {
-            cookie('lg', $data->acode);
+            _404('The requested content does not exist in the current language.');
         }
         
         // 读取模板
@@ -317,7 +326,7 @@ class IndexController extends Controller
     {
         // 调用栏目语言与当前语言不一致时，自动切换语言
         if ($sort->acode != get_lg() && Config::get('lgautosw') !== '0') {
-            cookie('lg', $sort->acode);
+            _404('The requested page does not exist in the current language.');
         }
         
         // 读取数据

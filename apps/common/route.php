@@ -46,6 +46,8 @@ return array(
         'home/sitemap' => 'home/Sitemap/index', // 站点地图默认XML
                                                 
         // =======接口路由============
+        'home/language/switch' => 'home/Language/index',
+        'language/switch' => 'home/Language/index',
         'api/list' => 'api/list/index/scode',
         'api/content' => 'api/content/index/id',
         'api/about' => 'api/about/index/scode',

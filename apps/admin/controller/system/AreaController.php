@@ -54,6 +54,9 @@ class AreaController extends Controller
             $this->outData[$this->count]->blank = $this->blank;
             $this->outData[$this->count]->name = $value->name;
             $this->outData[$this->count]->domain = $value->domain;
+            $this->outData[$this->count]->directory = isset($value->directory) ? $value->directory : '';
+            $this->outData[$this->count]->language_sort = isset($value->language_sort) ? $value->language_sort : 0;
+            $this->outData[$this->count]->flag_icon = isset($value->flag_icon) ? $value->flag_icon : '';
             $this->outData[$this->count]->acode = $value->acode;
             $this->outData[$this->count]->pcode = $value->pcode;
             $this->outData[$this->count]->is_default = $value->is_default;
@@ -92,6 +95,9 @@ class AreaController extends Controller
 			$pcode = str_replace(array('<', '>', '&lt;', '&gt;', '&#039;', '(', ')'),'',$pcode);
 			$name = str_replace(array('<', '>', '&lt;', '&gt;', '&#039;', '(', ')'),'',$name);
             $domain = post('domain');
+            $directory = $this->normalizeDirectory(post('directory'));
+            $language_sort = post('language_sort', 'int');
+            $flag_icon = trim(post('flag_icon'));
             $is_default = post('is_default');
             
             if (! $acode) {
@@ -119,6 +125,10 @@ class AreaController extends Controller
                     alert_back('该域名已经绑定其他区域，不能再使用！');
                 }
             }
+
+            if ($directory && $this->model->checkArea("directory='" . addslashes($directory) . "'")) {
+                alert_back('该语言目录已经绑定其他区域，不能再使用！');
+            }
             
             // 检查编码
             if ($this->model->checkArea("acode='$acode'")) {
@@ -131,6 +141,9 @@ class AreaController extends Controller
                 'pcode' => $pcode,
                 'name' => $name,
                 'domain' => $domain,
+                'directory' => $directory,
+                'language_sort' => $language_sort,
+                'flag_icon' => $flag_icon,
                 'is_default' => $is_default,
                 'create_user' => session('username'),
                 'update_user' => session('username')
@@ -149,6 +162,7 @@ class AreaController extends Controller
                 }
                 $this->log('新增数据区域' . $acode . '成功！');
                 path_delete(RUN_PATH . '/config'); // 清理缓存的配置文件
+                path_delete(RUN_PATH . '/cache'); // 清理页面缓存
                 if (! ! $backurl = get('backurl')) {
                     success('新增成功！', base64_decode($backurl));
                 } else {
@@ -225,6 +239,9 @@ class AreaController extends Controller
 			$pcode = str_replace(array('<', '>', '&lt;', '&gt;', '&#039;', '(', ')'),'',$pcode);
 			$name = str_replace(array('<', '>', '&lt;', '&gt;', '&#039;', '(', ')'),'',$name);
             $domain = post('domain');
+            $directory = $this->normalizeDirectory(post('directory'));
+            $language_sort = post('language_sort', 'int');
+            $flag_icon = trim(post('flag_icon'));
             $is_default = post('is_default');
             
             if (! $acode_new) {
@@ -252,6 +269,10 @@ class AreaController extends Controller
                     alert_back('该域名已经绑定其他区域，不能再使用！');
                 }
             }
+
+            if ($directory && $this->model->checkArea("directory='" . addslashes($directory) . "' AND acode<>'$acode'")) {
+                alert_back('该语言目录已经绑定其他区域，不能再使用！');
+            }
             
             // 检查编码
             if ($this->model->checkArea("acode='$acode_new' AND acode<>'$acode'")) {
@@ -264,6 +285,9 @@ class AreaController extends Controller
                 'pcode' => $pcode,
                 'name' => $name,
                 'domain' => $domain,
+                'directory' => $directory,
+                'language_sort' => $language_sort,
+                'flag_icon' => $flag_icon,
                 'is_default' => $is_default,
                 'update_user' => session('username')
             );
@@ -281,6 +305,7 @@ class AreaController extends Controller
                 }
                 $this->log('修改数据区域' . $acode . '成功！');
                 path_delete(RUN_PATH . '/config'); // 清理缓存的配置文件
+                path_delete(RUN_PATH . '/cache'); // 清理页面缓存
                 if (! ! $backurl = get('backurl')) {
                     success('修改成功！', base64_decode($backurl));
                 } else {
@@ -305,5 +330,22 @@ class AreaController extends Controller
             
             $this->display('system/area.html');
         }
+    }
+
+    private function normalizeDirectory($directory)
+    {
+        $directory = strtolower(trim((string) $directory));
+        $directory = trim($directory, '/');
+        if (! $directory) {
+            return '';
+        }
+        if (! preg_match('/^[a-z0-9][a-z0-9-]*$/', $directory)) {
+            alert_back('语言目录只能使用小写字母、数字和中划线！');
+        }
+        $reserved = array('admin', 'api', 'apps', 'core', 'config', 'data', 'runtime', 'static', 'skin', 'template', 'upload', 'uploads');
+        if (in_array($directory, $reserved, true)) {
+            alert_back('该语言目录为系统保留目录，不能使用！');
+        }
+        return $directory;
     }
 }

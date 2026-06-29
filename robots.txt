@@ -1,0 +1,123 @@
+# ==============================
+# 禁止 AI 训练模型爬虫
+# ==============================
+
+User-agent: GPTBot
+Disallow: /
+
+
+# ==============================
+# 允许 ChatGPT 搜索 / GEO 爬虫
+# 不禁止参数 URL
+# ==============================
+
+User-agent: OAI-SearchBot
+Allow: /
+Disallow: /ad*
+Disallow: /admin/
+Disallow: /skin/
+Disallow: /template/
+Disallow: /static/
+Disallow: /api/
+Disallow: /deng.php
+Disallow: /apps/
+
+User-agent: ChatGPT-User
+Allow: /
+Disallow: /ad*
+Disallow: /admin/
+Disallow: /skin/
+Disallow: /template/
+Disallow: /static/
+Disallow: /api/
+Disallow: /deng.php
+Disallow: /apps/
+
+
+# ==============================
+# 允许主流搜索引擎爬虫
+# 不禁止参数 URL
+# ==============================
+
+User-agent: Googlebot
+Allow: /
+Disallow: /ad*
+Disallow: /admin/
+Disallow: /skin/
+Disallow: /template/
+Disallow: /static/
+Disallow: /api/
+Disallow: /deng.php
+Disallow: /apps/
+
+User-agent: Bingbot
+Allow: /
+Disallow: /ad*
+Disallow: /admin/
+Disallow: /skin/
+Disallow: /template/
+Disallow: /static/
+Disallow: /api/
+Disallow: /deng.php
+Disallow: /apps/
+
+User-agent: Baiduspider
+Allow: /
+Disallow: /ad*
+Disallow: /admin/
+Disallow: /skin/
+Disallow: /template/
+Disallow: /static/
+Disallow: /api/
+Disallow: /deng.php
+Disallow: /apps/
+
+User-agent: 360Spider
+Allow: /
+Disallow: /ad*
+Disallow: /admin/
+Disallow: /skin/
+Disallow: /template/
+Disallow: /static/
+Disallow: /api/
+Disallow: /deng.php
+Disallow: /apps/
+
+User-agent: Sogou web spider
+Allow: /
+Disallow: /ad*
+Disallow: /admin/
+Disallow: /skin/
+Disallow: /template/
+Disallow: /static/
+Disallow: /api/
+Disallow: /deng.php
+Disallow: /apps/
+
+User-agent: YandexBot
+Allow: /
+Disallow: /ad*
+Disallow: /admin/
+Disallow: /skin/
+Disallow: /template/
+Disallow: /static/
+Disallow: /api/
+Disallow: /deng.php
+Disallow: /apps/
+
+
+# ==============================
+# 其他普通爬虫
+# ==============================
+
+User-agent: *
+Disallow: /ad*
+Disallow: /admin/
+Disallow: /skin/
+Disallow: /template/
+Disallow: /static/
+Disallow: /api/
+Disallow: /deng.php
+Disallow: /apps/
+
+Sitemap: https://test.wishpower.net/sitemap.xml

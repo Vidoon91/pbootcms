@@ -16,6 +16,9 @@
 			               <th>区域名称</th>
 			               <th>区域编码</th>
 			               <th>绑定域名</th>
+			               <th>Language Dir</th>
+			               <th>Sort</th>
+			               <th>Flag</th>
 			               <th>是否默认</th>
 			               <th>添加人员</th>
 			               <th>更新时间</th>
@@ -37,6 +40,9 @@
 			                </td>
 			                <td>[value->acode]</td>
 			                <td>[value->domain]</td>
+			                <td>[value->directory]</td>
+			                <td>[value->language_sort]</td>
+			                <td>[value->flag_icon]</td>
 			                <td>{if($value->is_default)}是{else}否{/if}</td>
 			                <td>[value->create_user]</td>
 			                <td>[value->update_time]</td>
@@ -73,6 +79,27 @@
 	                     <label class="layui-form-label">绑定域名</label>
 	                     <div class="layui-input-block">
 	                     	<input type="text" name="domain"  placeholder="请不要填写重复的域名，不区分就不填！" class="layui-input">
+	                     </div>
+	                </div>
+
+	                <div class="layui-form-item">
+	                     <label class="layui-form-label">Language Dir</label>
+	                     <div class="layui-input-block">
+	                     	<input type="text" name="directory" placeholder="en / es / ar, domain language can be empty" class="layui-input">
+	                     </div>
+	                </div>
+
+	                <div class="layui-form-item">
+	                     <label class="layui-form-label">Sort</label>
+	                     <div class="layui-input-block">
+	                     	<input type="number" name="language_sort" value="0" class="layui-input">
+	                     </div>
+	                </div>
+
+	                <div class="layui-form-item">
+	                     <label class="layui-form-label">Flag Icon</label>
+	                     <div class="layui-input-block">
+	                     	<input type="text" name="flag_icon" placeholder="/skin/images/flags/en.svg" class="layui-input">
 	                     </div>
 	                </div>
 	                
@@ -125,6 +152,27 @@
                      <label class="layui-form-label">绑定域名</label>
                      <div class="layui-input-block">
                      	<input type="text" name="domain"  value="{$area->domain}" placeholder="请不要填写重复的域名，不区分就不填！" class="layui-input">
+                     </div>
+                </div>
+
+                <div class="layui-form-item">
+                     <label class="layui-form-label">Language Dir</label>
+                     <div class="layui-input-block">
+                     	<input type="text" name="directory" value="{$area->directory}" placeholder="en / es / ar, domain language can be empty" class="layui-input">
+                     </div>
+                </div>
+
+                <div class="layui-form-item">
+                     <label class="layui-form-label">Sort</label>
+                     <div class="layui-input-block">
+                     	<input type="number" name="language_sort" value="{$area->language_sort}" class="layui-input">
+                     </div>
+                </div>
+
+                <div class="layui-form-item">
+                     <label class="layui-form-label">Flag Icon</label>
+                     <div class="layui-input-block">
+                     	<input type="text" name="flag_icon" value="{$area->flag_icon}" placeholder="/skin/images/flags/en.svg" class="layui-input">
                      </div>
                 </div>
                

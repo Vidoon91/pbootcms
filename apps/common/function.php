@@ -7,6 +7,7 @@
  * 公共处理函数
  */
 use core\basic\Config;
+use app\common\LanguageRouter;
 
 // 获取字符串型自动编码
 function get_auto_code($string, $start = '1')
@@ -217,6 +218,13 @@ function get_default_lg()
 // 获取当前语言并进行安全处理
 function get_lg()
 {
+    if (class_exists('\\app\\common\\LanguageRouter')) {
+        $routerLg = LanguageRouter::getCurrentAreaCode();
+        if ($routerLg && preg_match('/^[\w\-]+$/', $routerLg)) {
+            cookie('lg', $routerLg);
+            return $routerLg;
+        }
+    }
     $lg = cookie('lg');
     if (! $lg || ! preg_match('/^[\w\-]+$/', $lg)) {
         $lg = get_default_lg();
@@ -252,5 +260,4 @@ function post_baidu($api, $urls)
     $result = json_decode(curl_exec($ch));
     return $result;
 }
-
 

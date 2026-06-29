@@ -13,6 +13,7 @@ use app\home\model\ParserModel;
 use core\basic\Url;
 use app\home\model\DoModel;
 use app\home\model\MemberModel;
+use app\common\LanguageRouter;
 
 class ParserController extends Controller
 {
@@ -196,6 +197,7 @@ class ParserController extends Controller
         $content = str_replace('{pboot:commentstatus}', $this->config('comment_status') === '0' ? 0 : 1, $content); // 是否开启评论
                                                                                                                     
         // 记录蜘蛛爬行
+        $content = $this->parserLanguageLabels($content);
         if ($this->config('spiderlog') !== '0') {
             if ($this->config('tpl_html_cache')) { // 缓存时插入script,否则直接执行
                 $spidercode = "<script src='" . Url::home('Spider', null, 'url=' . URL) . "' async='async'></script>";
@@ -210,6 +212,56 @@ class ParserController extends Controller
     }
 
     // 解析站点标签
+    private function parserLanguageLabels($content)
+    {
+        if (! class_exists('\\app\\common\\LanguageRouter')) {
+            return $content;
+        }
+
+        if (preg_match_all('/\{pboot:langurl\s+code=([a-zA-Z0-9_-]+)\}/', $content, $matches)) {
+            foreach ($matches[0] as $index => $search) {
+                $content = str_replace($search, LanguageRouter::buildLanguageSwitchUrl($matches[1][$index]), $content);
+            }
+        }
+
+        if (preg_match_all('/\{pboot:languages\}([\s\S]*?)\{\/pboot:languages\}/', $content, $blocks)) {
+            $areas = LanguageRouter::getAreas();
+            usort($areas, function ($a, $b) {
+                $sortA = isset($a['language_sort']) ? (int) $a['language_sort'] : 0;
+                $sortB = isset($b['language_sort']) ? (int) $b['language_sort'] : 0;
+                if ($sortA === $sortB) {
+                    $defaultCompare = (int) ! empty($b['is_default']) - (int) ! empty($a['is_default']);
+                    if ($defaultCompare !== 0) {
+                        return $defaultCompare;
+                    }
+                    return strcmp($a['acode'], $b['acode']);
+                }
+                return $sortA - $sortB;
+            });
+
+            foreach ($blocks[0] as $blockIndex => $fullBlock) {
+                $tpl = $blocks[1][$blockIndex];
+                $html = '';
+                foreach ($areas as $area) {
+                    $code = isset($area['acode']) ? $area['acode'] : '';
+                    if (! $code) {
+                        continue;
+                    }
+                    $item = $tpl;
+                    $item = str_replace('[language:name]', isset($area['name']) ? $area['name'] : $code, $item);
+                    $item = str_replace('[language:code]', $code, $item);
+                    $item = str_replace('[language:flag]', isset($area['flag_icon']) ? $area['flag_icon'] : '', $item);
+                    $item = str_replace('[language:url]', LanguageRouter::buildLanguageSwitchUrl($code), $item);
+                    $item = str_replace('[language:active]', $code === LanguageRouter::getCurrentAreaCode() ? 'active' : '', $item);
+                    $html .= $item;
+                }
+                $content = str_replace($fullBlock, $html, $content);
+            }
+        }
+
+        return $content;
+    }
+
     public function parserSiteLabel($content)
     {
         $pattern = '/\{pboot:site([\w]+)(\s+[^}]+)?\}/';

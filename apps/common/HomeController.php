@@ -10,6 +10,7 @@ namespace app\common;
 
 use core\basic\Controller;
 use core\basic\Config;
+use app\common\LanguageRouter;
 
 class HomeController extends Controller
 {
@@ -18,6 +19,7 @@ class HomeController extends Controller
     {
         // 自动缓存基础信息
         cache_config();
+        $languageContext = LanguageRouter::boot();
         
         // 从配置文件读取cmsname参数来设置系统名称
         define("CMSNAME", $this->config("cmsname") ?: 'PbootCMS');
@@ -89,6 +91,7 @@ class HomeController extends Controller
         }
         
         // 手机自适应主题
+        cookie('lg', $languageContext['area_code']);
         if ($this->config('open_wap')) {
             if ($this->config('wap_domain') && $this->config('wap_domain') == get_http_host()) {
                 $this->setTheme(get_theme() . '/wap'); // 已绑域名并且一致则自动手机版本

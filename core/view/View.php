@@ -9,6 +9,7 @@
 namespace core\view;
 
 use core\basic\Config;
+use app\common\LanguageRouter;
 
 class View
 {
@@ -144,7 +145,7 @@ class View
     public function cache($content)
     {
         if (Config::get('tpl_html_cache') && ! query_string('p,s')) {
-            $lg = cookie('lg');
+            $lg = class_exists('\\app\\common\\LanguageRouter') ? LanguageRouter::getCacheContextKey() : cookie('lg');
             if (Config::get('open_wap') && (is_mobile() || Config::get('wap_domain') == get_http_host())) {
                 $wap = 'wap';
             } else {
