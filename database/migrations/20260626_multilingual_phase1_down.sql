@@ -42,15 +42,5 @@ CALL pboot_phase1_drop_column('ay_area', 'flag_icon', 'ALTER TABLE `ay_area` DRO
 CALL pboot_phase1_drop_column('ay_area', 'language_sort', 'ALTER TABLE `ay_area` DROP COLUMN `language_sort`');
 CALL pboot_phase1_drop_column('ay_area', 'directory', 'ALTER TABLE `ay_area` DROP COLUMN `directory`');
 
-DELETE FROM `ay_config`
-WHERE `name` IN ('global_primary_domain', 'extra_trusted_hosts', 'multilingual_routing_enabled')
-  AND `value` = ''
-  AND `description` IN ('Primary global multilingual host', 'Extra trusted multilingual hosts', 'Enable fixed multilingual routing');
-
-DELETE FROM `ay_config`
-WHERE `name` = 'multilingual_routing_enabled'
-  AND `value` = '0'
-  AND `description` = 'Enable fixed multilingual routing';
-
 DROP PROCEDURE pboot_phase1_drop_index;
 DROP PROCEDURE pboot_phase1_drop_column;

@@ -31,7 +31,7 @@ class DoController extends Controller
             if (function_exists('cache_config')) {
                 cache_config();
             }
-            if (class_exists('\\app\\common\\LanguageRouter') && LanguageRouter::isEnabled()) {
+            if (class_exists('\\app\\common\\LanguageRouter')) {
                 $target = LanguageRouter::buildLanguageSwitchUrl($lg);
                 if ($target) {
                     header('Location: ' . $target, true, 302);
@@ -103,5 +103,4 @@ class DoController extends Controller
         }
     }
 }
-
 

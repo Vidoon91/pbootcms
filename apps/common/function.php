@@ -218,7 +218,7 @@ function get_default_lg()
 // 获取当前语言并进行安全处理
 function get_lg()
 {
-    if (class_exists('\\app\\common\\LanguageRouter') && LanguageRouter::isEnabled()) {
+    if (class_exists('\\app\\common\\LanguageRouter')) {
         $routerLg = LanguageRouter::getCurrentAreaCode();
         if ($routerLg && preg_match('/^[\w\-]+$/', $routerLg)) {
             cookie('lg', $routerLg);

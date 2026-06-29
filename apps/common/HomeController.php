@@ -25,7 +25,7 @@ class HomeController extends Controller
 
         if (! ($this->config('wap_domain') && is_mobile()) && (! ! $main_domain = Config::get('main_domain')) && (! ! $to_main_domain = Config::get('to_main_domain'))) {
             $currentHost = get_http_host(true);
-            $skipMainDomainRedirect = LanguageRouter::isEnabled() && LanguageRouter::isConfiguredEntryHost($currentHost);
+            $skipMainDomainRedirect = LanguageRouter::isConfiguredEntryHost($currentHost);
             if (! $skipMainDomainRedirect && ! preg_match('{^' . preg_quote($main_domain, '{') . '$}i', $currentHost)) {
                 $pre = is_https() ? 'https://' : 'http://';
                 header('Location: ' . $pre . $main_domain . $_SERVER['REQUEST_URI'], true, 301);
@@ -51,24 +51,6 @@ class HomeController extends Controller
 
             if ($ip_allow && ! isset($allow)) {
                 error('本站启用了白名单功能，您的IP(' . $user_ip . ')不在允许范围！');
-            }
-        }
-
-        if (! LanguageRouter::isEnabled()) {
-            $lgs = Config::get('lgs');
-            if (count($lgs) > 1) {
-                $domain = get_http_host();
-                foreach ($lgs as $value) {
-                    if ($value['domain'] == $domain) {
-                        cookie('lg', $value['acode']);
-                        break;
-                    }
-                }
-            }
-
-            $black_lg = array('pboot', 'system');
-            if (! isset($_COOKIE['lg']) || in_array($_COOKIE['lg'], $black_lg)) {
-                cookie('lg', get_default_lg());
             }
         }
 

@@ -87,8 +87,8 @@
 		               <div class="layui-form-item">
 		                     <label class="layui-form-label">跨语言自动切换</label>
 		                     <div class="layui-input-block">
-		                     	<input type="radio" name="lgautosw" value="1" {if([$configs.lgautosw.value]=='1'||[$configs.lgautosw.value]=='')} checked="checked" {/if} title="启用">
-								<input type="radio" name="lgautosw" value="0" {if([$configs.lgautosw.value]=='0')} checked="checked" {/if} title="禁用">
+		                     	<input type="radio" name="lgautosw" value="1" {if([$configs.lgautosw.value]=='1'||[$configs.lgautosw.value]=='')} checked="checked" {/if} title="启用" disabled>
+								<input type="radio" name="lgautosw" value="0" {if([$configs.lgautosw.value]=='0')} checked="checked" {/if} title="禁用" disabled>`n`t`t`t`t`t`t`t`t<input type="hidden" name="lgautosw" value="0">`n`t`t`t`t`t`t`t`t<span class="layui-word-aux">已停用：前台固定URL语言由域名和语言目录决定。</span>
 		                     </div>
 		                </div>
 		                

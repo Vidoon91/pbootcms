@@ -28,9 +28,7 @@ namespace {
     }
 
     Config::$data = array(
-        'global_primary_domain' => 'wishpower.net',
-        'default_global_area' => 'en',
-        'trusted_hosts' => 'wishpower.net,wishpower.com,fr.wishpower.com',
+        'main_domain' => 'wishpower.net',
         'lgs' => array(
             array('acode' => 'en', 'name' => 'English', 'domain' => '', 'directory' => '', 'is_default' => '1', 'language_sort' => 1),
             array('acode' => 'es', 'name' => 'Spanish', 'domain' => '', 'directory' => 'es', 'is_default' => '0', 'language_sort' => 2),
@@ -55,7 +53,7 @@ namespace {
     assertSameValue('', $context['base_path'], 'Domain language should not add directory base path.');
 
     $switchUrl = LanguageRouter::buildLanguageSwitchUrl('es');
-    assertSameValue('https://wishpower.net/es/products/pump.html', $switchUrl, 'Switch URL should target Spanish directory on primary host.');
+    assertSameValue('https://wishpower.net/language/switch?code=es&entry=directory', $switchUrl, 'Switch URL should target switch endpoint on primary host.');
 
     echo "LanguageRouter smoke tests passed.\n";
 }

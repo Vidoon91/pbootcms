@@ -9,11 +9,6 @@ class LanguageRouter
     private static $context = array();
     private static $areas = array();
 
-    public static function isEnabled()
-    {
-        return (string) Config::get('multilingual_routing_enabled') === '1';
-    }
-
     public static function boot()
     {
         if (self::$booted) {
@@ -21,7 +16,7 @@ class LanguageRouter
         }
 
         self::$areas = self::normalizeAreas(Config::get('lgs') ?: array());
-        self::$context = self::isEnabled() ? self::resolveRequest() : self::resolveLegacyRequest();
+        self::$context = self::resolveRequest();
         self::$booted = true;
 
         return self::$context;
@@ -33,15 +28,7 @@ class LanguageRouter
         $host = self::normalizeHost(isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : '');
         $urlPath = self::normalizePath(parse_url(isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : '/', PHP_URL_PATH));
         $businessPath = self::extractBusinessPath();
-        $globalHost = self::normalizeHost(Config::get('global_primary_domain'));
-        $defaultArea = self::getDefaultArea();
-        $trustedHosts = self::getTrustedHosts();
-
-        if ($trustedHosts && ! in_array($host, $trustedHosts, true)) {
-            http_response_code(400);
-            exit('Bad Request: untrusted host');
-        }
-
+        $mainDomain = self::normalizeHost(Config::get('main_domain'));
         $area = self::resolveAreaByHost($host);
         $entryType = 'default';
         $basePath = '';
@@ -52,62 +39,44 @@ class LanguageRouter
             $firstSegment = self::firstPathSegment($businessPath);
             $directoryArea = self::resolveAreaByDirectory($firstSegment);
             if ($directoryArea) {
-                if ($directoryArea['acode'] === $area['acode'] && self::normalizeDirectory(isset($area['directory']) ? $area['directory'] : '')) {
+                if ($directoryArea['acode'] === $area['acode'] && ! empty($area['directory'])) {
                     self::redirect(self::stripLanguageDirectory($urlPath, $firstSegment), 301);
                 }
                 self::notFound();
             }
-        } elseif ($globalHost && $host === $globalHost) {
+        } elseif ($mainDomain && $host === $mainDomain) {
             $firstSegment = self::firstPathSegment($businessPath);
             $directoryArea = self::resolveAreaByDirectory($firstSegment);
             if ($directoryArea) {
                 $entryType = 'directory';
                 $area = $directoryArea;
-                $basePath = '/' . self::normalizeDirectory($firstSegment);
+                $basePath = '/' . $directoryArea['directory'];
                 $routePath = self::stripLanguageDirectory($businessPath, $firstSegment);
 
                 $nextSegment = self::firstPathSegment($routePath);
-                if ($nextSegment && $nextSegment === self::normalizeDirectory($firstSegment)) {
+                if ($nextSegment && $nextSegment === $directoryArea['directory']) {
                     self::redirect($basePath . '/' . self::stripLanguageDirectory($routePath, $nextSegment), 301);
                 }
             } else {
-                $area = $defaultArea;
+                $area = self::getDefaultArea();
             }
         } else {
-            $area = $defaultArea;
+            $area = self::getDefaultArea();
         }
 
         $area = $area ?: self::firstArea();
-        $areaCode = isset($area['acode']) ? $area['acode'] : '';
 
         return array(
-            'area_code' => $areaCode,
+            'area_code' => isset($area['acode']) ? $area['acode'] : '',
             'entry_type' => $entryType,
             'entry_host' => $host,
             'scheme' => $scheme,
             'base_path' => $basePath,
             'original_path' => $urlPath,
             'route_path' => trim($routePath, '/'),
-            'is_global_host' => $globalHost && $host === $globalHost,
+            'is_main_domain' => $mainDomain && $host === $mainDomain,
             'is_domain_entry' => $entryType === 'domain',
             'is_directory_entry' => $entryType === 'directory'
-        );
-    }
-
-    private static function resolveLegacyRequest()
-    {
-        $area = self::findAreaByCode(function_exists('cookie') ? cookie('lg') : '') ?: self::getDefaultArea() ?: self::firstArea();
-        return array(
-            'area_code' => isset($area['acode']) ? $area['acode'] : '',
-            'entry_type' => 'legacy',
-            'entry_host' => self::normalizeHost(isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : ''),
-            'scheme' => self::getCurrentScheme(),
-            'base_path' => '',
-            'original_path' => self::normalizePath(parse_url(isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : '/', PHP_URL_PATH)),
-            'route_path' => trim(self::extractBusinessPath(), '/'),
-            'is_global_host' => false,
-            'is_domain_entry' => false,
-            'is_directory_entry' => false
         );
     }
 
@@ -115,8 +84,7 @@ class LanguageRouter
     {
         $host = self::normalizeHost($host);
         foreach (self::$areas as $area) {
-            $domain = self::normalizeHost(isset($area['domain']) ? $area['domain'] : '');
-            if ($domain && $domain === $host) {
+            if (! empty($area['domain']) && $area['domain'] === $host) {
                 return $area;
             }
         }
@@ -130,8 +98,7 @@ class LanguageRouter
             return null;
         }
         foreach (self::$areas as $area) {
-            $areaDirectory = self::normalizeDirectory(isset($area['directory']) ? $area['directory'] : '');
-            if ($areaDirectory && $areaDirectory === $directory) {
+            if (! empty($area['directory']) && $area['directory'] === $directory) {
                 return $area;
             }
         }
@@ -191,8 +158,7 @@ class LanguageRouter
         if (! $directory) {
             return trim($path, '/');
         }
-        $pattern = '#^/' . preg_quote($directory, '#') . '(/|$)#i';
-        return trim(preg_replace($pattern, '/', $path, 1), '/');
+        return trim(preg_replace('#^/' . preg_quote($directory, '#') . '(/|$)#i', '/', $path, 1), '/');
     }
 
     public static function buildAreaHomeUrl($areaCode, $entry = null, $absolute = false)
@@ -213,9 +179,7 @@ class LanguageRouter
         }
 
         $context = self::getContext();
-        $path = trim((string) $path, '/');
         $url = self::joinUrlPath($target['base_path'], $path);
-
         if ($absolute || $target['host'] !== $context['entry_host']) {
             return $context['scheme'] . '://' . $target['host'] . $url;
         }
@@ -228,16 +192,11 @@ class LanguageRouter
         if (! $area) {
             return '';
         }
-
         $target = self::resolveTargetEntry($area, $entry);
         if (! $target) {
             return '';
         }
-
-        $query = http_build_query(array(
-            'code' => $areaCode,
-            'entry' => $target['entry']
-        ));
+        $query = http_build_query(array('code' => $areaCode, 'entry' => $target['entry']));
         $context = self::getContext();
         return $context['scheme'] . '://' . $target['host'] . '/language/switch?' . $query;
     }
@@ -258,18 +217,19 @@ class LanguageRouter
     public static function isStaticOrSystemPath($path)
     {
         $first = self::firstPathSegment('/' . trim($path, '/'));
-        return in_array($first, self::reservedDirectories(), true);
-    }
-
-    public static function isKnownLanguageDirectory($directory)
-    {
-        return self::resolveAreaByDirectory($directory) !== null;
+        return in_array($first, self::staticPrefixSkips(), true);
     }
 
     public static function isConfiguredEntryHost($host)
     {
         $host = self::normalizeHost($host);
-        return in_array($host, self::getTrustedHosts(), true);
+        if ($host && $host === self::normalizeHost(Config::get('main_domain'))) {
+            return true;
+        }
+        if ($host && $host === self::normalizeHost(Config::get('wap_domain'))) {
+            return true;
+        }
+        return self::resolveAreaByHost($host) ? true : false;
     }
 
     public static function normalizeHost($host)
@@ -283,8 +243,7 @@ class LanguageRouter
 
     public static function normalizeDirectory($directory)
     {
-        $directory = strtolower(trim((string) $directory));
-        return trim($directory, "/ \t\n\r\0\x0B");
+        return trim(strtolower(trim((string) $directory)), "/ \t\n\r\0\x0B");
     }
 
     public static function getAreas()
@@ -309,6 +268,14 @@ class LanguageRouter
         );
     }
 
+    public static function staticPrefixSkips()
+    {
+        return array(
+            'admin', 'api', 'apps', 'config', 'core', 'data', 'runtime', 'static',
+            'skin', 'style', 'template', 'upload', 'uploads', 'rewrite', 'language'
+        );
+    }
+
     private static function normalizeAreas($areas)
     {
         $normalized = array();
@@ -324,29 +291,6 @@ class LanguageRouter
             $normalized[$area['acode']] = $area;
         }
         return $normalized;
-    }
-
-    private static function getTrustedHosts()
-    {
-        $hosts = array();
-        foreach (array(Config::get('global_primary_domain'), Config::get('wap_domain')) as $host) {
-            $host = self::normalizeHost($host);
-            if ($host) {
-                $hosts[] = $host;
-            }
-        }
-        foreach (explode(',', (string) Config::get('extra_trusted_hosts')) as $host) {
-            $host = self::normalizeHost($host);
-            if ($host) {
-                $hosts[] = $host;
-            }
-        }
-        foreach (self::$areas as $area) {
-            if (! empty($area['domain'])) {
-                $hosts[] = self::normalizeHost($area['domain']);
-            }
-        }
-        return array_values(array_unique($hosts));
     }
 
     private static function getDefaultArea()
@@ -375,43 +319,40 @@ class LanguageRouter
     private static function resolveTargetEntry($area, $entry = null)
     {
         $entry = $entry ?: self::selectEntryForArea($area);
-        $globalHost = self::normalizeHost(Config::get('global_primary_domain'));
+        $mainDomain = self::normalizeHost(Config::get('main_domain'));
 
         if ($entry === 'directory') {
-            if (empty($area['directory']) || ! $globalHost) {
+            if (empty($area['directory']) || ! $mainDomain) {
                 return null;
             }
-            return array('entry' => 'directory', 'host' => $globalHost, 'base_path' => '/' . $area['directory']);
+            return array('entry' => 'directory', 'host' => $mainDomain, 'base_path' => '/' . $area['directory']);
         }
-
         if ($entry === 'domain') {
             if (empty($area['domain'])) {
                 return null;
             }
-            return array('entry' => 'domain', 'host' => self::normalizeHost($area['domain']), 'base_path' => '');
+            return array('entry' => 'domain', 'host' => $area['domain'], 'base_path' => '');
         }
-
         if ($entry === 'global') {
-            $defaultArea = self::getDefaultArea();
-            if (! $globalHost || empty($defaultArea['acode']) || $defaultArea['acode'] !== $area['acode']) {
+            $default = self::getDefaultArea();
+            if (! $mainDomain || empty($default['acode']) || $default['acode'] !== $area['acode']) {
                 return null;
             }
-            return array('entry' => 'global', 'host' => $globalHost, 'base_path' => '');
+            return array('entry' => 'global', 'host' => $mainDomain, 'base_path' => '');
         }
-
         return null;
     }
 
     private static function selectEntryForArea($area)
     {
-        if (! empty($area['directory']) && self::normalizeHost(Config::get('global_primary_domain'))) {
+        if (! empty($area['directory']) && self::normalizeHost(Config::get('main_domain'))) {
             return 'directory';
         }
         if (! empty($area['domain'])) {
             return 'domain';
         }
-        $defaultArea = self::getDefaultArea();
-        if (! empty($defaultArea['acode']) && $defaultArea['acode'] === $area['acode']) {
+        $default = self::getDefaultArea();
+        if (! empty($default['acode']) && $default['acode'] === $area['acode']) {
             return 'global';
         }
         return '';
@@ -424,13 +365,10 @@ class LanguageRouter
         if ($path !== '/') {
             return trim($path, '/');
         }
-
         $query = isset($_SERVER['QUERY_STRING']) ? trim($_SERVER['QUERY_STRING']) : '';
         if ($query && strpos($query, '=') === false) {
-            $query = preg_replace('/[&#].*$/', '', $query);
-            return trim($query, '/');
+            return trim(preg_replace('/[&#].*$/', '', $query), '/');
         }
-
         return '';
     }
 
@@ -446,8 +384,7 @@ class LanguageRouter
 
     private static function normalizePath($path)
     {
-        $path = '/' . trim((string) $path, '/');
-        return preg_replace('#/+#', '/', $path);
+        return preg_replace('#/+#', '/', '/' . trim((string) $path, '/'));
     }
 
     private static function joinUrlPath($basePath, $path)
@@ -479,8 +416,7 @@ class LanguageRouter
         $scheme = self::getCurrentScheme();
         $host = self::normalizeHost(isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : '');
         $query = isset($_SERVER['QUERY_STRING']) && $_SERVER['QUERY_STRING'] !== '' ? '?' . $_SERVER['QUERY_STRING'] : '';
-        $path = self::joinUrlPath('', $path);
-        header('Location: ' . $scheme . '://' . $host . $path . $query, true, $status);
+        header('Location: ' . $scheme . '://' . $host . self::joinUrlPath('', $path) . $query, true, $status);
         exit();
     }
 
